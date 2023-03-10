@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.santoise.batis.act.mapper.DdlWorkMapper">
+
+    <select id="selectTableColumnAll" resultType="cn.santoise.batis.act.dto.ActDdTableColumnDTO" databaseId="pg">
+        select c
+        .relname as tableName,
+        case when A.attnotnull then false else true end AS nullable,
+        a.attname as columnName,
+        format_type ( a.atttypid, a.atttypmod ) as columnType
+        from
+        pg_class as c,
+        pg_attribute as a
+        where
+        1=1
+        and exists (select 1 from pg_tables t where t.tablename = c.relname and t.schemaname not in ('pg_catalog','information_schema'))
+        and a.attrelid = c.oid
+        and a.attnum > 0
+    </select>
+
+    <select id="selectTableIndexAll" resultType="cn.santoise.batis.act.dto.ActDdTableIndexDTO" databaseId="pg">
+        select a.tablename as tableName,
+        a.indexname as indexName,
+        c.indisunique as isUnique,
+        substr(a.indexdef,position( '(' in a.indexdef )+1,char_length(a.indexdef)-position( '(' in a.indexdef )-1) indexFields
+        from pg_indexes a
+        inner join pg_class b on a.indexname = b.relname
+        inner join pg_index c on b.oid = c.indexrelid
+        where a.schemaname ='public'  and c.indisprimary=false
+    </select>
+
+    <update id="createTable" parameterType="cn.santoise.batis.act.bo.ActTableBO">
+        create table ${name} (
+        <foreach collection="columns"  separator=","  item="column" index="index">
+            ${column.name}  ${column.actSuggestDatatypeBO.targetType}
+            <if test="!column.nullable">not null</if>
+        </foreach>
+        ,primary key (${primaryKey})
+        )
+    </update>
+
+    <update id="createIndex" parameterType="cn.santoise.batis.act.bo.ActTableIndexBO">
+        create <if test="unique">unique</if> index ${name} on ${tableName} (
+        ${fields}
+        )
+    </update>
+
+</mapper>

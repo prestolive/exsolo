@@ -1,0 +1,7 @@
+.idea
+*.class
+
+**/.svn
+**/.idea
+**/dist
+**/target
