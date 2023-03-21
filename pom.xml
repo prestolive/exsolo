@@ -6,11 +6,10 @@
     <modules>
         <module>comm</module>
         <module>console</module>
-        <module>san-batis</module>
-        <module>san-spring-mvc-ext</module>
-        <module>san-builder-comm</module>
-        <module>san-builder-service</module>
-        <module>san-builder-console</module>
+        <module>es-batis</module>
+        <module>es-spring-mvc-ext</module>
+        <module>es-builder-console</module>
+        <module>es-builder-sdk</module>
     </modules>
     <!-- 父工程没东西，主要是控制子工程的版本 参考 https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E -->
     <parent>
@@ -19,7 +18,7 @@
         <version>2.6.11</version>
     </parent>
 
-    <groupId>cn.santoise</groupId>
+    <groupId>cn.exsolo</groupId>
     <artifactId>admin</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -69,6 +68,26 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>5.8.9</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>comm</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>es-batis</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>es-builder-sdk</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>es-spring-mvc-ext</artifactId>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
