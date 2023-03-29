@@ -2,14 +2,17 @@ package cn.exsolo.kit.dev;
 
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.comm.utils.EsAnnotationUtil;
+import cn.exsolo.kit.console.api.ApiDocController;
 import cn.exsolo.kit.console.api.ItemApiController;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
 import cn.exsolo.kit.dev.bo.ApiDocTypeBO;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +20,7 @@ import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,9 +38,11 @@ public class ApiDocService {
     @Autowired
     private ApplicationContext applicationContext;
 
+    private static DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
+
     public List<ApiDocClzBO> getAllController() {
         List<Class<?>> list = EsAnnotationUtil.getAnnotationFromContext(applicationContext, RequestMapping.class);
-        return list.stream().map(row->{
+        return list.stream().map(row -> {
             ApiDocClzBO bo = new ApiDocClzBO();
             bo.setModule(getModuleFromClz(row.getName()));
             bo.setClz(row.getName());
@@ -62,26 +68,16 @@ public class ApiDocService {
             doc.setNameLower(firstCharLower(doc.getName()));
             //解析返回参数
             Class genericClz;
-            try {
-                genericClz = Class.forName(((ParameterizedTypeImpl) method.getGenericReturnType()).getActualTypeArguments()[0].getTypeName());
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException("");
-            }
-            doc.setReturnType(getDocTypeBO(doc.getName(), doc.getNameLower() + "Resp", method.getReturnType(),genericClz));
+            doc.setReturnType(getDocTypeBO( doc.getName(),null, method.getGenericReturnType()));
             //解析参数
-            Class[] paramTypes = method.getParameterTypes();
-//            method.getParameters()[0].getParameterizedType();
-            method.getGenericParameterTypes();
-            if(paramTypes.length>0){
+            String[] paramNames = discoverer.getParameterNames(method);
+            Type[] paramTypes = method.getGenericParameterTypes();
+            if (paramTypes.length > 0) {
                 List<ApiDocTypeBO> paramTypeList = new ArrayList<>();
-                for(Class paramType:paramTypes){
-                    Class paramGenericClz;
-                    try {
-                        paramGenericClz = Class.forName(((ParameterizedTypeImpl) method.getGenericReturnType()).getActualTypeArguments()[0].getTypeName());
-                    } catch (ClassNotFoundException e) {
-                        throw new RuntimeException("");
-                    }
-//                    paramTypeList.add(getDocTypeBO(doc.getName(),"",paramType,))
+                for (int i=0;i<paramTypes.length;i++) {
+                    Type type = paramTypes[i];
+                    String paramName = paramNames[i];
+                    paramTypeList.add(getDocTypeBO(doc.getName(),paramName, type));
                 }
                 doc.setParamTypes(paramTypeList);
             }
@@ -118,7 +114,6 @@ public class ApiDocService {
         return null;
     }
 
-
     private String pathToName(String path) {
         List<String> words = splitCode(path);
         StringBuilder sb = new StringBuilder();
@@ -130,32 +125,71 @@ public class ApiDocService {
         return sb.toString();
     }
 
-    private ApiDocTypeBO getDocTypeBO(String rootName, String name, Class clz, Type genericType) {
-        ApiDocTypeBO bo = new ApiDocTypeBO();
-        bo.setArray(isArray(clz));
-        Class realClz = null;
-        if (bo.getArray()) {
-           realClz = getGenericClz(genericType);
-        } else {
-            realClz = clz;
+    private String classToName(String clz) {
+        String[] arr = clz.split("\\.");
+        return arr[arr.length-1];
+    }
+
+    private Class getClassByName(String className) {
+        try {
+            if ("long".equals(className)) {
+                className = Long.class.getName();
+            } else if ("int".equals(className)) {
+                className = Integer.class.getName();
+            } else if ("short".equals(className)) {
+                className = Short.class.getName();
+            } else if ("double".equals(className)) {
+                className = Double.class.getName();
+            }
+            return Class.forName(className);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
-        bo.setClz(realClz);
-        bo.setName(name);
+    }
+
+
+
+    private ApiDocTypeBO getDocTypeBO(String rootName,String name, Type type) {
+        Class rawClz = null;
+        Class realClz = null;
+        if (type instanceof ParameterizedType) {
+            rawClz = getClassByName(((ParameterizedType) type).getRawType().getTypeName());
+            Type[] genericTypes = ((ParameterizedType) type).getActualTypeArguments();
+            if (genericTypes.length > 0) {
+                realClz = getClassByName(genericTypes[0].getTypeName());
+            } else {
+                realClz = rawClz;
+            }
+        } else {
+            rawClz = getClassByName(type.getTypeName());
+            realClz = rawClz;
+        }
+        ApiDocTypeBO bo = new ApiDocTypeBO();
+        bo.setListType(isArray(rawClz));
+        bo.setClz(rawClz.getName());
+        String returnName=classToName(rawClz.getName());
+        bo.setName(StringUtils.isEmpty(name)?returnName:name);
         String jsType = JsTypeMapEnum.getJavaScriptTypeName(realClz);
         if ("object".equals(jsType)) {
-            bo.setTsType(name);
             Field[] fields = realClz.getDeclaredFields();
+            boolean loop = false;
             List<ApiDocTypeBO> types = new ArrayList<>();
             for (Field field : fields) {
-                Class fieldClz = getGenericClz(field.getGenericType());
                 Column col = field.getAnnotation(Column.class);
-                ApiDocTypeBO docType = getDocTypeBO(bo.getTsType(), field.getName(), fieldClz, genericType);
+                if(field.getGenericType().getTypeName().equals(type.getTypeName())){
+                    loop = true;
+                    break;
+                }
+                ApiDocTypeBO docType = getDocTypeBO(rootName, field.getName(), field.getGenericType());
                 if (col != null) {
                     docType.setDatatype(docType.getDatatype());
                 }
                 types.add(docType);
             }
-            bo.setFieldTypes(types);
+            if(!loop){
+                bo.setFieldTypes(types);
+            }
+            bo.setTsType(firstCharUpper(classToName(realClz.getName())));
             bo.setObject(true);
         } else {
             bo.setTsType(jsType);
@@ -164,29 +198,6 @@ public class ApiDocService {
         return bo;
     }
 
-    private Class getGenericClz(Type genericType){
-        Class realClz = null;
-        if(genericType instanceof ParameterizedTypeImpl){
-            realClz =((ParameterizedTypeImpl) genericType).getRawType();
-        }else{
-            try {
-                String type = genericType.getTypeName();
-                if("long".equals(type)){
-                    type = Long.class.getName();
-                }else if("int".equals(type)){
-                    type = Integer.class.getName();
-                }else if("short".equals(type)){
-                    type = Short.class.getName();
-                }else if("double".equals(type)){
-                    type = Double.class.getName();
-                }
-                realClz = Class.forName(type);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return realClz;
-    }
 
     private String firstCharUpper(String word) {
         return word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1, word.length());
@@ -217,7 +228,7 @@ public class ApiDocService {
             }
             idx++;
         }
-        list.add(sb==null?"":sb.toString());
+        list.add(sb == null ? "" : sb.toString());
         List<String> result = new ArrayList<>();
         for (String str : list) {
             str = str.replaceAll("-", "");
@@ -235,20 +246,20 @@ public class ApiDocService {
         return clz.isArray() || Collection.class.isAssignableFrom(clz);
     }
 
-    private String getModuleFromClz(String clzName){
+    private String getModuleFromClz(String clzName) {
         String[] arr = clzName.split("\\.");
         List<String> list = new ArrayList<>();
-        for(int i=0;i<3;i++){
-            if(arr.length>=(i+1)){
+        for (int i = 0; i < 3; i++) {
+            if (arr.length >= (i + 1)) {
                 list.add(arr[i]);
             }
         }
-        return StringUtils.join(list,".");
+        return StringUtils.join(list, ".");
     }
 
     public static void main(String[] args) {
         ApiDocService service = new ApiDocService();
-        List<ApiDocBO> list = service.processClz(ItemApiController.class);
+        List<ApiDocBO> list = service.processClz(ApiDocController.class);
         System.out.println(list.size());
     }
 

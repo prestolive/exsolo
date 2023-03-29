@@ -5,11 +5,11 @@ package cn.exsolo.kit.console.api;
  * @date 2023/3/26
  **/
 
-import cn.exsolo.batis.core.Condition;
-import cn.exsolo.comm.utils.EsAnnotationUtil;
+import cn.exsolo.kit.console.ExKitConsoleErrorCodeEnum;
 import cn.exsolo.kit.dev.ApiDocService;
+import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
-import cn.exsolo.kit.item.po.ItemTagPO;
+import cn.exsolo.kit.ex.ExErrorCodeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,12 +31,26 @@ public class ApiDocController {
     @Autowired
     private ApiDocService apiDocService;
 
-    @RequestMapping("api-preview")
+    @RequestMapping("api-previews")
     public List<ApiDocClzBO> allController() {
         if(list==null){
             list = apiDocService.getAllController();
         }
         return list;
+    }
+
+    @RequestMapping("api-doc")
+    public List<ApiDocBO> getApiDoc(String className){
+        try {
+            Class clz = Class.forName(className);
+            RequestMapping clzAnna = (RequestMapping) clz.getAnnotation(RequestMapping.class);
+            if(clzAnna==null){
+                throw new ExErrorCodeException(ExKitConsoleErrorCodeEnum.NOT_REQUEST_MAPPING_ANNA,className);
+            }
+            return apiDocService.processClz(clz);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e.getMessage(),e);
+        }
     }
 
 }

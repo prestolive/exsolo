@@ -26,13 +26,13 @@ public class ItemApiController {
     @Autowired
     private BaseDAO baseDAO;
 
-    @RequestMapping("item-tags")
-    public List<ItemTagPO> tags() {
-        return baseDAO.queryBeanByCond(ItemTagPO.class, new Condition().orderBy("id"));
-    }
+//    @RequestMapping("item-tags")
+//    public List<ItemTagPO> tags() {
+//        return baseDAO.queryBeanByCond(ItemTagPO.class, new Condition().orderBy("id"));
+//    }
 
     @RequestMapping(path = "items", method = RequestMethod.POST)
-    public PageObject<ItemPO> items(@RequestParam(required = false) String module,
+    public PageObject<ItemPO> items(List<ItemTagPO> tags,@RequestParam(required = false) String module,
                                     @RequestParam(required = false) String schema,
                                     @RequestParam(required = false) String tag,
                                     @RequestParam(required = false) String keyword,

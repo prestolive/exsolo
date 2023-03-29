@@ -9,7 +9,7 @@ import java.util.List;
  **/
 public class ApiDocTypeBO {
 
-    private Class clz;
+    private String clz;
 
     private String datatype;
 
@@ -19,9 +19,17 @@ public class ApiDocTypeBO {
 
     private Boolean isObject ;
 
-    private Boolean isArray;
+    private Boolean isListType;
 
     private List<ApiDocTypeBO> fieldTypes;
+
+    public String getClz() {
+        return clz;
+    }
+
+    public void setClz(String clz) {
+        this.clz = clz;
+    }
 
     public String getDatatype() {
         return datatype;
@@ -37,14 +45,6 @@ public class ApiDocTypeBO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Class getClz() {
-        return clz;
-    }
-
-    public void setClz(Class clz) {
-        this.clz = clz;
     }
 
     public String getTsType() {
@@ -63,12 +63,12 @@ public class ApiDocTypeBO {
         isObject = object;
     }
 
-    public Boolean getArray() {
-        return isArray;
+    public Boolean getListType() {
+        return isListType;
     }
 
-    public void setArray(Boolean array) {
-        isArray = array;
+    public void setListType(Boolean listType) {
+        isListType = listType;
     }
 
     public List<ApiDocTypeBO> getFieldTypes() {
