@@ -1,0 +1,72 @@
+import { request } from '@/utils/request'
+export interface PageObject<T> {
+  values?: T[]
+  pagination: Pagination
+}
+#set($arraySign='[]')
+#foreach ($ot in $objectTypeList)
+export interface $!ot.tsType {
+#foreach ($field in $ot.fieldTypes)
+#if($field.listType)
+    $!field.name?:$!{field.tsType}$arraySign
+#else
+    $!field.name?:$!field.tsType
+#end
+#end
+}
+#end
+
+interface POST {
+#foreach ($doc in $docList)
+  '$doc.path': {
+#if($doc.paramTypes&&$doc.paramTypes.size()>0)
+    req: {
+#foreach ($field in $doc.paramTypes)
+#if($field.listType)
+        $!field.name?:$!{field.tsType}$arraySign
+#else
+        $!field.name?:$!field.tsType
+#end
+#end
+    }
+#else
+    req: null
+#end
+
+#if($doc.returnType)
+#if($doc.returnType.listType)
+    resp: $!{doc.returnType.tsType}$arraySign
+#elseif($doc.returnType.object)
+#if($doc.returnType.name!=$doc.returnType.tsType)
+    resp: $!{doc.returnType.name}<$!{doc.returnType.tsType}>
+#else
+    resp:$!doc.returnType.tsType
+#end
+#else
+    resp:$!doc.returnType.tsType
+#end
+#else
+    resp: null
+#end
+  }
+#end
+}
+
+export function get<URL extends keyof GET>(
+  url: URL,
+  params?: GET[URL]['req']
+): Promise<GET[URL]['resp']> {
+  return request.get<GET[URL]['resp']>({
+    url,
+    params,
+  })
+}
+export function post<URL extends keyof POST>(
+  url: URL,
+  params?: POST[URL]['req']
+): Promise<POST[URL]['resp']> {
+  return request.post<POST[URL]['resp']>({
+    url,
+    params,
+  })
+}

@@ -67,7 +67,6 @@ public class ApiDocService {
             doc.setName(pathToName(doc.getPath()));
             doc.setNameLower(firstCharLower(doc.getName()));
             //解析返回参数
-            Class genericClz;
             doc.setReturnType(getDocTypeBO( doc.getName(),null, method.getGenericReturnType()));
             //解析参数
             String[] paramNames = discoverer.getParameterNames(method);
@@ -76,6 +75,12 @@ public class ApiDocService {
                 List<ApiDocTypeBO> paramTypeList = new ArrayList<>();
                 for (int i=0;i<paramTypes.length;i++) {
                     Type type = paramTypes[i];
+                    if(type.getTypeName().equals("javax.servlet.http.HttpServletRequest")||
+                            type.getTypeName().equals("javax.servlet.http.HttpServletResponse")||
+                            type.getTypeName().equals("javax.servlet.ServletRequest")||
+                            type.getTypeName().equals("javax.servlet.ServletResponse")){
+                        continue;
+                    }
                     String paramName = paramNames[i];
                     paramTypeList.add(getDocTypeBO(doc.getName(),paramName, type));
                 }
@@ -147,9 +152,10 @@ public class ApiDocService {
         }
     }
 
-
-
     private ApiDocTypeBO getDocTypeBO(String rootName,String name, Type type) {
+        if(type.getTypeName().equals("void")){
+            return null;
+        }
         Class rawClz = null;
         Class realClz = null;
         if (type instanceof ParameterizedType) {
