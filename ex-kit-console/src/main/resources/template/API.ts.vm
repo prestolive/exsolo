@@ -32,7 +32,6 @@ interface POST {
 #else
     req: null
 #end
-
 #if($doc.returnType)
 #if($doc.returnType.listType)
     resp: $!{doc.returnType.tsType}$arraySign

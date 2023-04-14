@@ -17,18 +17,18 @@ public class ActSuggestDatatypeBO {
 
     private int scale;
 
-    private StandType StandType;
+    private StandType standType;
 
     private String targetType;
 
     private Class classType;
 
     public cn.exsolo.batis.act.utils.StandType getStandType() {
-        return StandType;
+        return standType;
     }
 
     public void setStandType(cn.exsolo.batis.act.utils.StandType standType) {
-        StandType = standType;
+        this.standType = standType;
     }
 
     public Class getClassType() {

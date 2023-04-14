@@ -7,6 +7,7 @@ import cn.exsolo.kit.console.api.ItemApiController;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
 import cn.exsolo.kit.dev.bo.ApiDocTypeBO;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
@@ -156,6 +157,12 @@ public class ApiDocService {
         if(type.getTypeName().equals("void")){
             return null;
         }
+        boolean forceArray  = false;
+        String typeName = type.getTypeName();
+        if(typeName.endsWith("[]")){
+            forceArray = true;
+            typeName = typeName.replace("[]","");
+        }
         Class rawClz = null;
         Class realClz = null;
         if (type instanceof ParameterizedType) {
@@ -167,11 +174,11 @@ public class ApiDocService {
                 realClz = rawClz;
             }
         } else {
-            rawClz = getClassByName(type.getTypeName());
+            rawClz = getClassByName(typeName);
             realClz = rawClz;
         }
         ApiDocTypeBO bo = new ApiDocTypeBO();
-        bo.setListType(isArray(rawClz));
+        bo.setListType(forceArray||isArray(rawClz));
         bo.setClz(rawClz.getName());
         String returnName=classToName(rawClz.getName());
         bo.setName(StringUtils.isEmpty(name)?returnName:name);

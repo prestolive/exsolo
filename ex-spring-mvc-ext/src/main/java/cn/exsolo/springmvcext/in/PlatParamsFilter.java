@@ -20,7 +20,6 @@ public class PlatParamsFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         PlatParamsRequestWrapper requestWrapper = new PlatParamsRequestWrapper( (HttpServletRequest) request );
-        System.out.println();
         chain.doFilter(requestWrapper, response);
     }
 

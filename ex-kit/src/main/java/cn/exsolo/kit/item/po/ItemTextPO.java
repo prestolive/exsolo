@@ -17,10 +17,12 @@ public class ItemTextPO extends AbstractSanBatisPO {
     @Column(name = "content",nullable = false,datatype = "text")
     private String content;
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
