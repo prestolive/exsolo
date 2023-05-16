@@ -30,6 +30,10 @@
             <groupId>cn.exsolo</groupId>
             <artifactId>comm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>ex-batis</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

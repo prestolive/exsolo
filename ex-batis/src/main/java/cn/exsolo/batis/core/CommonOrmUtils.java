@@ -4,6 +4,8 @@ import cn.exsolo.batis.core.condition.*;
 import cn.exsolo.batis.core.ex.BaseOrmException;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Table;
+import cn.hutool.core.util.ReflectUtil;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -31,6 +33,7 @@ public class CommonOrmUtils {
         /*临时代码*/
         List<String> columnList=new ArrayList<String>();
         Field[] fields  = clz.getDeclaredFields();
+//        Field[] fields = ReflectUtil.getFields(clz);
         for (Field f:fields) {
             Column col = f.getAnnotation(Column.class);
             if(col==null){

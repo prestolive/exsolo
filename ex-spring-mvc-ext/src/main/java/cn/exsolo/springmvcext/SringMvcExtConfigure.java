@@ -1,6 +1,6 @@
 package cn.exsolo.springmvcext;
 
-import cn.exsolo.springmvcext.in.RequestJSONArgumentResolver;
+import cn.exsolo.springmvcext.in.RequestJsonArgumentResolver;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -18,7 +18,7 @@ public class SringMvcExtConfigure implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new RequestJSONArgumentResolver());
+        resolvers.add(new RequestJsonArgumentResolver());
     }
 
     @Override

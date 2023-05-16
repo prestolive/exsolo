@@ -1,9 +1,9 @@
 package cn.exsolo.springmvcext.in;
 
+import cn.exsolo.batis.core.Condition;
+import cn.exsolo.springmvcext.plugins.SpringMvcExtForBatis;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author prestolive
  * @date 2023/1/18
  **/
-public class RequestJSONArgumentResolver implements HandlerMethodArgumentResolver {
+public class RequestJsonArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(RequestJSON.class);
@@ -57,8 +57,13 @@ public class RequestJSONArgumentResolver implements HandlerMethodArgumentResolve
             }
             return obj;
         } else {
-            Object obj = JSON.parseObject(inputContent.toString(),clz);
-            return obj;
+            Object obj ;
+            if(!clz.getName().equals(Condition.class.getName())){
+                obj = JSON.parseObject(inputContent.toString(),clz);
+                return obj;
+            }else{
+                return SpringMvcExtForBatis.json2Condition(inputContent.toString());
+            }
         }
     }
 

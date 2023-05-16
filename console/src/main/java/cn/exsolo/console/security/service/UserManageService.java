@@ -33,13 +33,17 @@ public class UserManageService {
     @Autowired
     private BaseDAO baseDAO;
 
-    public PageObject<UserPO> page(String userCode, String userName, List<ExUserStatusEnum> enumStatus, Pagination pagination) {
+    public PageObject<UserPO> page(Condition fCond, List<ExUserStatusEnum> enumStatus, Pagination pagination) {
         Condition cond = new Condition();
-        cond.ifNotEmpty().lk("userCode", userCode);
-        cond.ifNotEmpty().lk("userName", userName);
+        if(fCond!=null){
+            cond.and(fCond);
+        }
+//        cond.ifNotEmpty().lk("userCode", userCode);
+//        cond.ifNotEmpty().lk("userName", userName);
         if(ObjectUtils.isNotEmpty(enumStatus)){
             cond.in("status",enumStatus);
         }
+        cond.orderBy("createTs", Condition.DESC);
         return baseDAO.queryBeanPageByCond(UserPO.class, cond, pagination);
     }
 
@@ -61,7 +65,7 @@ public class UserManageService {
      * @param userPO
      * @param password
      */
-    public void updateUser(UserPO userPO, String password) {
+    public void modifyUser(UserPO userPO) {
         ExAssert.isNull(userPO, userPO.getId());
         UserPO exist = baseDAO.queryBeanByID(UserPO.class, userPO.getId());
         //copy
@@ -70,9 +74,12 @@ public class UserManageService {
         exist.setPhone(userPO.getPhone());
         exist.setEmail(userPO.getEmail());
         saveUser(userPO);
-        if (StringUtils.isNotEmpty(password)) {
-            updatePassword(userPO, password, true);
-        }
+    }
+
+    public void changePassword(String userId,String password){
+        ExAssert.isNull(userId,password);
+        UserPO exist = baseDAO.queryBeanByID(UserPO.class, userId);
+        updatePassword(exist, password, true);
     }
 
     private void saveUser(UserPO userPO) {

@@ -242,6 +242,7 @@ public class BaseDAO {
     public <T extends AbstractSanBatisPO> List<T> queryBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
         String tableName = CommonOrmUtils.getTableFromClz(clz);
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(clz);
+        fieldList.add("createTs");
         //通用部分
         StringBuilder sql = new StringBuilder();
         Map<String, Object> values = new HashMap<>();

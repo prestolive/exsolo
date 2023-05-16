@@ -173,6 +173,13 @@ public class Condition {
         return this;
     }
 
+    public Condition and(Condition... conds){
+        for(Condition cond:conds){
+            this.compares.addAll(cond.getCompares());
+        }
+        return this;
+    }
+
 
     public Condition orderBy(String field){
         this.orders.add(new OrderBaseBean(OrderBaseBean.OrderType.ASC,field));

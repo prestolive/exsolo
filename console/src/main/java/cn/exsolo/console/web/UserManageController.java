@@ -1,12 +1,12 @@
 package cn.exsolo.console.web;
 
+import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.console.item.ExUserStatusEnum;
 import cn.exsolo.console.security.po.UserPO;
 import cn.exsolo.console.security.service.UserManageService;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
-import cn.hutool.core.util.EnumUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,20 +32,20 @@ public class UserManageController {
     private UserManageService userManageService;
 
     @RequestMapping(path = "users", method = RequestMethod.POST)
-    public PageObject<UserPO> page(@RequestParam(required = false) String userCode,
-                                   @RequestParam(required = false) String userName,
+    public PageObject<UserPO> page(
                                    @RequestJSON() String[] status,
+                                   @RequestJSON Condition cond,
                                    @RequestJSON Pagination pagination) {
         List<ExUserStatusEnum> enumStatus = null;
         if(status!=null){
             enumStatus = Arrays.stream(status).map(row->Enum.valueOf(ExUserStatusEnum.class,row)).collect(Collectors.toList());
         }
-        return userManageService.page(userCode,userName,enumStatus,pagination);
+        return userManageService.page(cond,enumStatus,pagination);
     }
 
     @RequestMapping(path = "user-info", method = RequestMethod.POST)
-    public void userInfo(@RequestParam() String userId){
-        userManageService.get(userId);
+    public UserPO userInfo(@RequestParam() String userId){
+        return userManageService.get(userId);
     }
 
     @RequestMapping(path = "user-add", method = RequestMethod.POST)
@@ -53,9 +53,14 @@ public class UserManageController {
         userManageService.addNewUser(userPO,password);
     }
 
-    @RequestMapping(path = "user-update", method = RequestMethod.POST)
-    public void update(@RequestJSON UserPO userPO,@RequestParam(required = false) String password){
-        userManageService.updateUser(userPO,password);
+    @RequestMapping(path = "user-modify", method = RequestMethod.POST)
+    public void update(@RequestJSON UserPO userPO){
+        userManageService.modifyUser(userPO);
+    }
+
+    @RequestMapping(path = "user-change-password", method = RequestMethod.POST)
+    public void changePassword(@RequestParam String userId,@RequestParam(required = false) String password){
+        userManageService.changePassword(userId,password);
     }
 
     @RequestMapping(path = "user-locked", method = RequestMethod.POST)

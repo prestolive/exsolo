@@ -8,11 +8,8 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-@Documented//action生成注释
 public @interface RequestJSON {
 
     String value() default "";
-
-    Class bean() default Object.class;
 
 }
