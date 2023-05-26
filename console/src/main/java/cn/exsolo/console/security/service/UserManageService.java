@@ -5,15 +5,15 @@ import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.batis.core.utils.GenerateID;
-import cn.exsolo.batis.core.utils.TsUtil;
+import cn.exsolo.comm.utils.TsUtil;
 import cn.exsolo.console.item.ExUserErrorCodeEnum;
 import cn.exsolo.console.item.ExUserStatusEnum;
 import cn.exsolo.console.security.po.UserEncryptPO;
 import cn.exsolo.console.security.po.UserPO;
 import cn.exsolo.console.security.utils.PasswordCheckStrength;
 import cn.exsolo.console.security.utils.PasswordHelper;
-import cn.exsolo.kit.ex.ExAssert;
-import cn.exsolo.kit.ex.ExErrorCodeException;
+import cn.exsolo.kit.utils.ExAssert;
+import cn.exsolo.comm.ex.ExDeclaredException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +38,6 @@ public class UserManageService {
         if(fCond!=null){
             cond.and(fCond);
         }
-//        cond.ifNotEmpty().lk("userCode", userCode);
-//        cond.ifNotEmpty().lk("userName", userName);
         if(ObjectUtils.isNotEmpty(enumStatus)){
             cond.in("status",enumStatus);
         }
@@ -52,8 +50,8 @@ public class UserManageService {
     }
 
     public void addNewUser(UserPO userPO, String password) {
-        if (baseDAO.existsByCond(UserPO.class, new Condition().lower().eq("userCode", userPO.getUserCode()))) {
-            throw new ExErrorCodeException(ExUserErrorCodeEnum.USER_ALREADY_EXISTS, userPO.getUserCode());
+        if (baseDAO.existsByCond(UserPO.class, new Condition().lower().eq("loginCode", userPO.getLoginCode().toLowerCase()))) {
+            throw new ExDeclaredException(ExUserErrorCodeEnum.USER_ALREADY_EXISTS, userPO.getLoginCode());
         }
         saveUser(userPO);
         updatePassword(userPO, password, true);
@@ -69,7 +67,7 @@ public class UserManageService {
         ExAssert.isNull(userPO, userPO.getId());
         UserPO exist = baseDAO.queryBeanByID(UserPO.class, userPO.getId());
         //copy
-        exist.setUserCode(userPO.getUserCode());
+        exist.setLoginCode(userPO.getLoginCode());
         exist.setUserName(userPO.getUserName());
         exist.setPhone(userPO.getPhone());
         exist.setEmail(userPO.getEmail());
@@ -83,7 +81,7 @@ public class UserManageService {
     }
 
     private void saveUser(UserPO userPO) {
-        ExAssert.isNull(userPO, userPO.getUserCode(), userPO.getUserName());
+        ExAssert.isNull(userPO, userPO.getLoginCode(), userPO.getUserName());
         if (userPO.getStatus() == null) {
             userPO.setStatus(ExUserStatusEnum.NORMAL);
         }
@@ -137,7 +135,7 @@ public class UserManageService {
             UserEncryptPO last = exists.stream().filter(row -> row.getActive()).findFirst().orElse(null);
             if (last != null) {
                 if (!force && last.getEncrypt().equals(cryptoPO.getEncrypt())) {
-                    new ExErrorCodeException(ExUserErrorCodeEnum.SAME_PASSWORD);
+                    new ExDeclaredException(ExUserErrorCodeEnum.SAME_PASSWORD);
                 }
             }
             //只保留使用超过3天的密码
@@ -162,7 +160,7 @@ public class UserManageService {
                     String historyEncrypt = PasswordHelper.encryptPassword(password, salt);
                     //如果用历史的盐和现在的密码算出来的哈希值等于历史的encrypt，则意味着密码一致
                     if (historyEncrypt.equals(cryptoPO.getEncrypt())) {
-                        new ExErrorCodeException(ExUserErrorCodeEnum.RETRY_PASSWORD);
+                        new ExDeclaredException(ExUserErrorCodeEnum.RETRY_PASSWORD);
                     }
                 }
             }

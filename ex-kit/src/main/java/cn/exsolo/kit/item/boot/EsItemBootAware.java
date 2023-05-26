@@ -98,6 +98,9 @@ public class EsItemBootAware implements ApplicationContextAware {
                 Class clz = null;
                 clz = Class.forName(item.getClz());
                 Map<String, Object> map =  EnumUtil.getNameFieldMap(clz, "name");
+                if(map==null){
+                    continue;
+                }
                 for(Map.Entry<String,Object> entry:map.entrySet()){
                     ItemPO po = new ItemPO();
                     po.setTag(item.getId());

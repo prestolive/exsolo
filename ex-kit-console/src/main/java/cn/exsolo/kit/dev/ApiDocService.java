@@ -3,27 +3,26 @@ package cn.exsolo.kit.dev;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.comm.utils.EsAnnotationUtil;
 import cn.exsolo.kit.console.api.ApiDocController;
-import cn.exsolo.kit.console.api.ItemApiController;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
 import cn.exsolo.kit.dev.bo.ApiDocTypeBO;
-import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -76,10 +75,10 @@ public class ApiDocService {
                 List<ApiDocTypeBO> paramTypeList = new ArrayList<>();
                 for (int i=0;i<paramTypes.length;i++) {
                     Type type = paramTypes[i];
-                    if(type.getTypeName().equals("javax.servlet.http.HttpServletRequest")||
-                            type.getTypeName().equals("javax.servlet.http.HttpServletResponse")||
-                            type.getTypeName().equals("javax.servlet.ServletRequest")||
-                            type.getTypeName().equals("javax.servlet.ServletResponse")){
+                    if("javax.servlet.http.HttpServletRequest".equals(type.getTypeName())||
+                            "javax.servlet.http.HttpServletResponse".equals(type.getTypeName())||
+                            "javax.servlet.ServletRequest".equals(type.getTypeName())||
+                            "javax.servlet.ServletResponse".equals(type.getTypeName())){
                         continue;
                     }
                     String paramName = paramNames[i];
@@ -154,7 +153,7 @@ public class ApiDocService {
     }
 
     private ApiDocTypeBO getDocTypeBO(String rootName,String name, Type type) {
-        if(type.getTypeName().equals("void")){
+        if("void".equals(type.getTypeName())){
             return null;
         }
         boolean forceArray  = false;

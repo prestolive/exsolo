@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
  **/
 
 @Component
-@RequestMapping("api/ex-basic/security/")
+@RequestMapping("api/ex-basic/user/")
 @RestController()
 public class UserManageController {
 
     @Autowired
     private UserManageService userManageService;
 
-    @RequestMapping(path = "users", method = RequestMethod.POST)
+    @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<UserPO> page(
                                    @RequestJSON() String[] status,
                                    @RequestJSON Condition cond,
@@ -43,37 +43,37 @@ public class UserManageController {
         return userManageService.page(cond,enumStatus,pagination);
     }
 
-    @RequestMapping(path = "user-info", method = RequestMethod.POST)
+    @RequestMapping(path = "info", method = RequestMethod.POST)
     public UserPO userInfo(@RequestParam() String userId){
         return userManageService.get(userId);
     }
 
-    @RequestMapping(path = "user-add", method = RequestMethod.POST)
+    @RequestMapping(path = "add", method = RequestMethod.POST)
     public void add(@RequestJSON UserPO userPO,@RequestParam(required = false) String password){
         userManageService.addNewUser(userPO,password);
     }
 
-    @RequestMapping(path = "user-modify", method = RequestMethod.POST)
+    @RequestMapping(path = "modify", method = RequestMethod.POST)
     public void update(@RequestJSON UserPO userPO){
         userManageService.modifyUser(userPO);
     }
 
-    @RequestMapping(path = "user-change-password", method = RequestMethod.POST)
+    @RequestMapping(path = "change-password", method = RequestMethod.POST)
     public void changePassword(@RequestParam String userId,@RequestParam(required = false) String password){
         userManageService.changePassword(userId,password);
     }
 
-    @RequestMapping(path = "user-locked", method = RequestMethod.POST)
+    @RequestMapping(path = "locked", method = RequestMethod.POST)
     public void userLocked(@RequestParam String userId){
         userManageService.updateUserStatus(userId,ExUserStatusEnum.LOCKED);
     }
 
-    @RequestMapping(path = "user-deleted", method = RequestMethod.POST)
+    @RequestMapping(path = "deleted", method = RequestMethod.POST)
     public void userDeleted(@RequestParam String userId){
         userManageService.updateUserStatus(userId,ExUserStatusEnum.DELETED);
     }
 
-    @RequestMapping(path = "user-recover", method = RequestMethod.POST)
+    @RequestMapping(path = "recover", method = RequestMethod.POST)
     public void userRecover(@RequestParam String userId){
         userManageService.updateUserStatus(userId,ExUserStatusEnum.NORMAL);
     }

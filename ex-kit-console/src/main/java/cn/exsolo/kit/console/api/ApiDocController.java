@@ -11,7 +11,7 @@ import cn.exsolo.kit.dev.ApiDocService;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
 import cn.exsolo.kit.dev.utils.FileUtil;
-import cn.exsolo.kit.ex.ExErrorCodeException;
+import cn.exsolo.comm.ex.ExDeclaredException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +55,7 @@ public class ApiDocController {
             Class clz = Class.forName(className);
             RequestMapping clzAnna = (RequestMapping) clz.getAnnotation(RequestMapping.class);
             if(clzAnna==null){
-                throw new ExErrorCodeException(ExKitConsoleErrorCodeEnum.NOT_REQUEST_MAPPING_ANNA,className);
+                throw new ExDeclaredException(ExKitConsoleErrorCodeEnum.NOT_REQUEST_MAPPING_ANNA,className);
             }
             return apiDocService.processClz(clz);
         } catch (ClassNotFoundException e) {

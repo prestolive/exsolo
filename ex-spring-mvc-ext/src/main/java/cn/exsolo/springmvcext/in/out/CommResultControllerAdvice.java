@@ -21,7 +21,10 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
                                   Class aClass,
                                   ServerHttpRequest serverHttpRequest,
                                   ServerHttpResponse serverHttpResponse) {
-        BaseResponse<?> baseResponse = BaseResponse.ok(body);
+        if(body!=null&&body instanceof BaseResponse){
+            return body;
+        }
+        BaseResponse<?> baseResponse = new BaseResponse(0,null,null,body);
         return baseResponse;
     }
 

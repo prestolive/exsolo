@@ -4,26 +4,32 @@ import org.springframework.lang.NonNull;
 
 public class BaseResponse<T> {
 
+    /**
+     * 0 成功 -1 失败 -2限流
+     */
     private Integer code;
 
-    private String message;
+    private String errcode;
+    private String errmsg;
 
     private T data;
 
-    public BaseResponse(Integer status, String message) {
+    public BaseResponse(Integer status, String errcode, String errmsg) {
         this.code = status;
-        this.message = message;
+        this.errcode = errcode;
+        this.errmsg = errmsg;
     }
 
-    public BaseResponse(Integer status, String message, T data) {
+    public BaseResponse(Integer status, String errcode, String errmsg, T data) {
         this.code = status;
-        this.message = message;
+        this.errcode = errcode;
+        this.errmsg = errmsg;
         this.data = data;
     }
 
-    public static <T> BaseResponse<T> ok(@NonNull T data) {
-        return new BaseResponse<>(0,"", data);
-    }
+//    public static <T> BaseResponse<T> ok(@NonNull T data) {
+//        return new BaseResponse<>(0, null,null, data);
+//    }
 
     public Integer getCode() {
         return code;
@@ -33,12 +39,20 @@ public class BaseResponse<T> {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getErrmsg() {
+        return errmsg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setErrmsg(String errmsg) {
+        this.errmsg = errmsg;
+    }
+
+    public String getErrcode() {
+        return errcode;
+    }
+
+    public void setErrcode(String errcode) {
+        this.errcode = errcode;
     }
 
     public T getData() {

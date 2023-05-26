@@ -14,14 +14,14 @@ import cn.exsolo.kit.item.stereotype.BaseData;
 
 @Table("ex_user")
 @BaseData(name="系统用户表")
-@Index(name = "uq_ex_user_a",unique = true,fields = "userCode")
+@Index(name = "uq_ex_user_a",unique = true,fields = "loginCode")
 public class UserPO  extends AbstractSanBatisPO {
 
     @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
     private String id;
 
-    @Column(name = "userCode",nullable = false,maxLength = 128,datatype = "varchar(128)")
-    private String userCode;
+    @Column(name = "loginCode",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    private String loginCode;
 
     @Column(name = "userName",nullable = false,maxLength = 128,datatype = "varchar(128)")
     private String userName;
@@ -49,12 +49,12 @@ public class UserPO  extends AbstractSanBatisPO {
         this.id = id;
     }
 
-    public String getUserCode() {
-        return userCode;
+    public String getLoginCode() {
+        return loginCode;
     }
 
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
+    public void setLoginCode(String loginCode) {
+        this.loginCode = loginCode;
     }
 
     public String getUserName() {
@@ -96,4 +96,5 @@ public class UserPO  extends AbstractSanBatisPO {
     public void setActiveTs(String activeTs) {
         this.activeTs = activeTs;
     }
+
 }

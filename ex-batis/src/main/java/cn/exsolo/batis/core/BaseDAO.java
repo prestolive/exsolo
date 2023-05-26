@@ -72,6 +72,7 @@ public class BaseDAO {
             case 3: {
                 removeByID(vo.getClass(), vo.getId());
             }
+            default:{}
         }
         return vo.getId();
     }

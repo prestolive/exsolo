@@ -10,6 +10,7 @@ import cn.exsolo.kit.item.stereotype.Item;
 public enum ItemSchemaEnum {
 
     ENUM("枚举"),
+    PERMISSION("权限"),
     BASE_DATA("基础数据"),
     TREE("树"),
     ERROR_CODE("错误码");

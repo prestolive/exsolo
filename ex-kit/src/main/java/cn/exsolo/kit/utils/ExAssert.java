@@ -1,8 +1,9 @@
-package cn.exsolo.kit.ex;
+package cn.exsolo.kit.utils;
 
 
-import cn.exsolo.kit.item.ExKitErrorCodeEnum;
+import cn.exsolo.comm.ex.ExDevException;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public class ExAssert {
 
     public static void isNull(Object obj){
         if(obj==null||obj.toString().length()==0) {
-            throw new ExNerverException(ExKitErrorCodeEnum.DEV_NULL);
+            throw new ExDevException("assert null");
         }
     }
 
@@ -25,16 +26,16 @@ public class ExAssert {
 
     public static void isEmpty(Object obj){
         if(obj==null){
-            throw new ExNerverException(ExKitErrorCodeEnum.DEV_NULL);
+            throw new ExDevException("assert null");
         }
-        if(obj instanceof List){
+        if(obj instanceof Collection){
             List list = (List) obj;
             if(list.size()==0){
-                throw new ExNerverException(ExKitErrorCodeEnum.DEV_EMPTY);
+                throw new ExDevException("assert collection empty");
             }
         }else{
             if(obj.toString().length()==0){
-                throw new ExNerverException(ExKitErrorCodeEnum.DEV_NULL);
+                throw new ExDevException("assert zero length");
             }
         }
 

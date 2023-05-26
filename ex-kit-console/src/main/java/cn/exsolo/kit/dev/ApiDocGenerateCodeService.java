@@ -4,7 +4,7 @@ import cn.exsolo.kit.console.ExKitConsoleErrorCodeEnum;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
 import cn.exsolo.kit.dev.bo.ApiDocTypeBO;
-import cn.exsolo.kit.ex.ExErrorCodeException;
+import cn.exsolo.comm.ex.ExDeclaredException;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -52,7 +52,7 @@ public class ApiDocGenerateCodeService {
                 clz = Class.forName(className);
                 RequestMapping clzAnna = (RequestMapping) clz.getAnnotation(RequestMapping.class);
                 if(clzAnna==null){
-                    throw new ExErrorCodeException(ExKitConsoleErrorCodeEnum.NOT_REQUEST_MAPPING_ANNA,className);
+                    throw new ExDeclaredException(ExKitConsoleErrorCodeEnum.NOT_REQUEST_MAPPING_ANNA,className);
                 }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e.getMessage(),e);

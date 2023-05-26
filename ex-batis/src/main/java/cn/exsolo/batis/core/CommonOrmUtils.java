@@ -4,6 +4,7 @@ import cn.exsolo.batis.core.condition.*;
 import cn.exsolo.batis.core.ex.BaseOrmException;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.comm.utils.TsUtil;
 import cn.hutool.core.util.ReflectUtil;
 
 import java.beans.PropertyDescriptor;
@@ -131,6 +132,9 @@ public class CommonOrmUtils {
                 case DESC:{
                     sb.append(field+" desc");
                     break;
+                }
+                default:{
+
                 }
             }
         }
@@ -501,6 +505,6 @@ public class CommonOrmUtils {
     }
 
     private static String getTimeStamp(){
-        return TIME_STAMP_FORMAT.format(new Date());
+        return TsUtil.getTimestamp();
     }
 }
