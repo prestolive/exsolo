@@ -17,7 +17,7 @@ public class AccessUtil {
 
     public static String TOKEN_FIELD = "access_token";
 
-    public static String getIpAddr(HttpServletRequest request) {
+    public static String getRequestClientIP(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");

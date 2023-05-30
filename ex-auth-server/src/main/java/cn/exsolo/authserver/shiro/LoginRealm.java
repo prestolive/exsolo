@@ -32,7 +32,7 @@ public class LoginRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         LoginAuthenticationToken token = (LoginAuthenticationToken) authenticationToken;
         String loginCode = (String) token.getPrincipal();
-        UserAuthVO  userAuthVO = authService.getUserByLoginCode(loginCode);
+        UserAuthVO  userAuthVO = authService.getUserAuthByLoginCode(loginCode);
         if(userAuthVO==null){
             throw new UnknownAccountException();
         }

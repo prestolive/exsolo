@@ -1,9 +1,6 @@
 package cn.exsolo.springmvcext.in.out;
 
-import cn.exsolo.comm.ex.ExBizException;
-import cn.exsolo.comm.ex.ExDeclaredException;
-import cn.exsolo.comm.ex.ExDevException;
-import cn.exsolo.comm.ex.ExNeverException;
+import cn.exsolo.comm.ex.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 /**
@@ -36,12 +34,6 @@ public class ControllerExceptionHandler {
         return new BaseResponse<>(-1,EX_UNKNOWN_EXCEPTION_ERROR_CODE,e.getMessage());
     }
 
-    @ExceptionHandler(ExBizException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public BaseResponse<?> handleBizException(Throwable e) {
-        e.printStackTrace();
-        return new BaseResponse<>(-1,EX_BIZ_EXCEPTION_ERROR_CODE,e.getMessage());
-    }
 
     @ExceptionHandler(ExDevException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -57,6 +49,13 @@ public class ControllerExceptionHandler {
         return new BaseResponse<>(-1,EX_NEVER_EXCEPTION_ERROR_CODE,e.getMessage());
     }
 
+    @ExceptionHandler(ExBizException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public BaseResponse<?> handleBizException(Throwable e) {
+        e.printStackTrace();
+        return new BaseResponse<>(-1,EX_BIZ_EXCEPTION_ERROR_CODE,e.getMessage());
+    }
+
     @ExceptionHandler(ExDeclaredException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleDeclaredException(Throwable e) {
@@ -64,8 +63,9 @@ public class ControllerExceptionHandler {
         ExDeclaredException exception = (ExDeclaredException) e;
         String errcode= exception.getErrorItem().name();
         String errmsg = formatErrorMessage(exception);
-        return new BaseResponse<>(-1,errcode,errmsg);
+        return new BaseResponse<>(-1,errcode,errmsg,exception.getResponseData());
     }
+
 
     /**
      * 从ExDeclaredException 的错误枚举中，默认提取name，用来输出套打后的错误消息。

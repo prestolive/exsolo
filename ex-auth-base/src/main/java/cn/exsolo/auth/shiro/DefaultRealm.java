@@ -19,6 +19,11 @@ public class DefaultRealm extends AuthorizingRealm {
     @Value("${exsolo.auth.publicKey}")
     private String authPublicKey;
 
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof DefaultAuthenticationToken;
+    }
+
     /**
      * 提供用户信息返回权限信息
      *
@@ -52,8 +57,4 @@ public class DefaultRealm extends AuthorizingRealm {
 
     }
 
-    @Override
-    public boolean supports(AuthenticationToken token) {
-        return token instanceof DefaultAuthenticationToken;
-    }
 }

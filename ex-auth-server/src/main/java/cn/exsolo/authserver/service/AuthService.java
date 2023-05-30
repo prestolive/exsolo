@@ -1,11 +1,11 @@
 package cn.exsolo.authserver.service;
 
 import cn.exsolo.authserver.vo.UserAuthVO;
+import cn.exsolo.authserver.vo.UserVO;
 import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.kit.utils.ExAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ public class AuthService {
     @Autowired
     private BaseDAO baseDAO;
 
-    public UserAuthVO getUserByLoginCode(String loginCode){
+    public UserAuthVO getUserAuthByLoginCode(String loginCode){
         ExAssert.isNull(loginCode);
         String sql = " select a.id userId,a.loginCode,a.userName,a.status,b.encrypt,b.salt" +
                 " from ex_user a" +
@@ -30,6 +30,20 @@ public class AuthService {
         Map<String,Object> params = new HashMap<>();
         params.put("loginCode",loginCode);
         List<UserAuthVO> list = baseDAO.queryForList(sql,params,UserAuthVO.class);
+        if(list.size()>0){
+            return list.get(0);
+        }
+        return null;
+    }
+
+    public UserVO getUserByLoginCode(String loginCode){
+        ExAssert.isNull(loginCode);
+        String sql = " select a.id userId,a.loginCode,a.userName,a.status" +
+                " from ex_user a"+
+                " where a.loginCode = #{loginCode}";
+        Map<String,Object> params = new HashMap<>();
+        params.put("loginCode",loginCode);
+        List<UserVO> list = baseDAO.queryForList(sql,params,UserVO.class);
         if(list.size()>0){
             return list.get(0);
         }

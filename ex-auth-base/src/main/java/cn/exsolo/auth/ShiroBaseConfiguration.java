@@ -2,6 +2,9 @@ package cn.exsolo.auth;
 
 import cn.exsolo.auth.shiro.DefaultAuthFilter;
 import cn.exsolo.auth.shiro.DefaultRealm;
+import cn.exsolo.auth.shiro.FixShiroAtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
@@ -29,15 +32,25 @@ import java.util.Map;
 @Configuration
 public class ShiroBaseConfiguration {
 
+    @Bean("authenticator")
+    public ModularRealmAuthenticator modularRealmAuthenticator(){
+        ModularRealmAuthenticator modularRealmAuthenticator = new ModularRealmAuthenticator();
+        modularRealmAuthenticator.setAuthenticationStrategy(new FixShiroAtLeastOneSuccessfulStrategy());
+        return modularRealmAuthenticator;
+    }
+
     /**
+     * ehcache shiro的套接
      *  缓存管理器
      * @return
      */
-    @Bean(name = "cacheManager")
-    public CacheManager ehCacheManager() {
-        EhCacheManager cacheManager = new EhCacheManager();
-        cacheManager.setCacheManagerConfigFile("classpath:ehcache_shiro.xml");
-        return cacheManager;
+    @Bean(name = "shiroCacheManager")
+    public CacheManager shiroCacheManager(@Qualifier("cacheManager") net.sf.ehcache.CacheManager cacheManager) {
+        EhCacheManager shiroCacheManager = new EhCacheManager();
+//        shiroCacheManager.setCacheManagerConfigFile("classpath:ehcache_shiro.xml");
+        shiroCacheManager.setCacheManager(cacheManager);
+        return shiroCacheManager;
+
     }
 
     /**
@@ -56,6 +69,7 @@ public class ShiroBaseConfiguration {
         DefaultRealm defaultRealm = new DefaultRealm();
         //开启授权缓存
         defaultRealm.setAuthorizationCachingEnabled(true);
+        defaultRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
         //指定授权缓存的名字(与 ehcache.xml 中声明的相同)
         defaultRealm.setAuthorizationCacheName("shiro-authorizationCache");
         return defaultRealm;

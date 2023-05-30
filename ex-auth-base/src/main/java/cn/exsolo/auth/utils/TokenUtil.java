@@ -10,6 +10,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Calendar;
@@ -20,22 +21,37 @@ import java.util.Calendar;
  **/
 public class TokenUtil {
 
-    public TokenInfo createTokenInfo(
+    public static TokenInfo createTokenInfo(
                                      String userId,
                                      String loginCode,
                                      String userName,
-                                     String ticketId,
+                                     String ticket,
                                      String ip,String ua){
         TokenInfo token = new TokenInfo();
         token.setUserId(userId);
         token.setLoginCode(loginCode);
         token.setUserName(userName);
-        token.setTicket(ticketId);
+        token.setTicket(ticket);
         token.setTs(TsUtil.getTimestamp());
         token.setIp(ip);
 //        UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));
         token.setUa(ua);
         return token;
+    }
+
+    /**
+     *
+     * @param tokenInfo
+     * @param expireTimes
+     * @param privateKey
+     * @return
+     */
+    public static String crateToken(TokenInfo tokenInfo,int expireTimes,String privateKey){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MILLISECOND,expireTimes);
+        Algorithm algorithm =  Algorithm.RSA256(null,(RSAPrivateKey) getPrivateKeyByStr(privateKey));
+        return JWT.create().withClaim("name","wuby")
+                .withExpiresAt(cal.getTime()).sign(algorithm);
     }
 
 //    public static String sign(TokenInfo info, long expire_time) {
@@ -55,7 +71,7 @@ public class TokenUtil {
 //    }
 
     public static void verify(String token,String publicKeyStr){
-        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) getPublicKey(publicKeyStr),null);
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) getPublicKeyByStr(publicKeyStr),null);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT jwt = verifier.verify(token);
     }
@@ -91,12 +107,24 @@ public class TokenUtil {
 //        return ip;
 //    }
 
-    private static PublicKey getPublicKey(String publicKeyStr) {
+    private static PublicKey getPublicKeyByStr(String publicKeyStr) {
         try {
             byte[] keyBytes = Base64.getMimeDecoder().decode(publicKeyStr.getBytes());
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePublic(keySpec);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(),e);
+        }
+    }
+
+
+    private static PrivateKey getPrivateKeyByStr(String privateKey) {
+        try {
+            byte[] keyBytes = Base64.getMimeDecoder().decode(privateKey.getBytes());
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec (keyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePrivate(keySpec);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(),e);
         }

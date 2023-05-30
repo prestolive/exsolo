@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ehcache name="shirocache">
+<ehcache name="exsolo">
     <diskStore path="java.io.tmpdir" />
     <defaultCache
             maxElementsInMemory="10000"
@@ -10,11 +10,4 @@
             diskPersistent="false"
             diskExpiryThreadIntervalSeconds="120"
     />
-    <cache name="shiro-authorizationCache"
-           maxElementsInMemory="2000"
-           eternal="false"
-           timeToIdleSeconds="1800"
-           timeToLiveSeconds="0"
-           overflowToDisk="false">
-    </cache>
 </ehcache>

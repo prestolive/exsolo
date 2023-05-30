@@ -1,0 +1,68 @@
+package cn.exsolo.kit.cache.impl;
+
+import cn.exsolo.kit.cache.IExCacheStorage;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+
+/**
+ * @author prestolive
+ * @date 2023/5/30
+ **/
+public class ExCacheStorageCacheImpl implements IExCacheStorage {
+
+    private Cache cache;
+
+    public ExCacheStorageCacheImpl(Cache cache) {
+        this.cache = cache;
+    }
+
+    @Override
+    public void putString(String key, String value) {
+        Element element = new Element(key,value);
+        this.cache.put(element);
+    }
+
+    @Override
+    public String getString(String key) {
+        Element element = this.cache.get(key);
+        if(element!=null){
+            return (String) element.getObjectValue();
+        }
+        return null;
+    }
+
+    @Override
+    public void putInt(String key, Integer value) {
+        Element element = new Element(key,value);
+        this.cache.put(element);
+    }
+
+    @Override
+    public Integer getInt(String key) {
+        Element element = this.cache.get(key);
+        if(element!=null){
+            return (Integer) element.getObjectValue();
+        }
+        return null;
+    }
+
+    @Override
+    public void putBoolean(String key, boolean value) {
+        Element element = new Element(key,value);
+        this.cache.put(element);
+    }
+
+    @Override
+    public boolean isTrue(String key) {
+        Element element = this.cache.get(key);
+        if(element!=null){
+            return (Boolean) element.getObjectValue();
+        }
+        return false;
+    }
+
+    @Override
+    public void remove(String key){
+        this.cache.remove(key);
+    }
+}

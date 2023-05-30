@@ -16,9 +16,8 @@ import org.springframework.context.annotation.Configuration;
 public class ShiroAuthServerConfiguration {
 
     @Bean()
-    public Realm getLoginRealm(@Qualifier("cacheManager") CacheManager cacheManager) {
+    public Realm getLoginRealm( LoginMatcher loginMatcher) {
         LoginRealm loginRealm = new LoginRealm();
-        LoginMatcher loginMatcher = new LoginMatcher(cacheManager);
         loginRealm.setCredentialsMatcher(loginMatcher);
         //开启授权缓存
         loginRealm.setAuthorizationCachingEnabled(true);

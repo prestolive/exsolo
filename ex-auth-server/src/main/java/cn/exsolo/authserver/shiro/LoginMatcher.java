@@ -1,38 +1,33 @@
 package cn.exsolo.authserver.shiro;
 
 import cn.exsolo.auth.shiro.LoginAuthenticationToken;
+import cn.exsolo.authserver.service.AuthCacheService;
 import cn.exsolo.authserver.utils.PasswordHelper;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
-import org.apache.shiro.cache.CacheManager;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import org.apache.shiro.cache.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author prestolive
  * @date 2023/5/26
  **/
+@Component
 public class LoginMatcher extends SimpleCredentialsMatcher {
 
-    private Cache<String, AtomicInteger> passwordRetryCache;
-
-    public LoginMatcher(CacheManager cacheManager) {
-        passwordRetryCache = cacheManager.getCache("passwordRetryCache");
-    }
+    @Autowired
+    private AuthCacheService authCacheService;
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         String loginCode = (String) token.getPrincipal();
         //重试校验
-        AtomicInteger retryCount = passwordRetryCache.get(loginCode);
-        if (retryCount == null) {
-            retryCount = new AtomicInteger(0);
-            passwordRetryCache.put(loginCode, retryCount);
-        }
-        if (retryCount.incrementAndGet() > 5) {
+        Integer retryCount = authCacheService.addAuthRetryCount(loginCode);
+        if (retryCount > 10) {
             throw new ExcessiveAttemptsException();
         }
         //将用户提交的密码，用用同等的方式编码
@@ -43,7 +38,13 @@ public class LoginMatcher extends SimpleCredentialsMatcher {
         loginToken.setCredentials(encryptStr);
         boolean check =  super.doCredentialsMatch(token, info);
         if(check){
-            retryCount.set(0);
+            authCacheService.removeAuthRetryCount(loginCode);
+            authCacheService.setCaptchaRequire(loginCode,false);
+        }else{
+            //超过3次要验证码
+            if (retryCount> 3) {
+                authCacheService.setCaptchaRequire(loginCode,true);
+            }
         }
         return check;
     }

@@ -47,6 +47,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.botaruibo</groupId>
+            <artifactId>xvcode</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>ex-batis</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

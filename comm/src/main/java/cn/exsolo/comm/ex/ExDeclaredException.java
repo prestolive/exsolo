@@ -4,11 +4,13 @@ package cn.exsolo.comm.ex;
  * @author prestolive
  * @date 2023/3/28
  **/
-public class ExDeclaredException extends RuntimeException{
+public class ExDeclaredException extends ExBizException{
 
     private Enum errorItem;
 
     private Object[] args;
+
+    private Object responseData;
 
     public ExDeclaredException(Enum errorItem, Object ...args) {
         this.errorItem = errorItem;
@@ -21,5 +23,14 @@ public class ExDeclaredException extends RuntimeException{
 
     public Object[] getArgs() {
         return args;
+    }
+
+    public ExDeclaredException withData(Object obj){
+        this.responseData = obj;
+        return this;
+    }
+
+    public Object getResponseData() {
+        return responseData;
     }
 }
