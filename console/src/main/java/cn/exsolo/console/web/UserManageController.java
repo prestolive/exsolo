@@ -1,5 +1,7 @@
 package cn.exsolo.console.web;
 
+import cn.exsolo.auth.shiro.ext.stereotype.Access;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
@@ -26,16 +28,26 @@ import java.util.stream.Collectors;
 @Component
 @RequestMapping("api/ex-basic/user/")
 @RestController()
+@AccessProvider(module = "sys",node = "user",label = "系统-用户管理")
 public class UserManageController {
 
     @Autowired
     private UserManageService userManageService;
 
+    @Access
+    @RequestMapping(path = "test", method = RequestMethod.GET)
+    public String test() {
+        return "xxxxxxxx";
+    }
+
+//    @RequiresPermissions(ExConsoleSecurityPermissionEnum.USER_MANAGER_VIEW)
+    @Access
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<UserPO> page(
                                    @RequestJSON() String[] status,
                                    @RequestJSON Condition cond,
                                    @RequestJSON Pagination pagination) {
+
         List<ExUserStatusEnum> enumStatus = null;
         if(status!=null){
             enumStatus = Arrays.stream(status).map(row->Enum.valueOf(ExUserStatusEnum.class,row)).collect(Collectors.toList());

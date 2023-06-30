@@ -3,17 +3,20 @@ package cn.exsolo.auth;
 import cn.exsolo.auth.shiro.DefaultAuthFilter;
 import cn.exsolo.auth.shiro.DefaultRealm;
 import cn.exsolo.auth.shiro.FixShiroAtLeastOneSuccessfulStrategy;
+import cn.exsolo.auth.shiro.ext.AccessAuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.DefaultWebSessionStorageEvaluator;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -32,49 +35,6 @@ import java.util.Map;
 @Configuration
 public class ShiroBaseConfiguration {
 
-    @Bean("authenticator")
-    public ModularRealmAuthenticator modularRealmAuthenticator(){
-        ModularRealmAuthenticator modularRealmAuthenticator = new ModularRealmAuthenticator();
-        modularRealmAuthenticator.setAuthenticationStrategy(new FixShiroAtLeastOneSuccessfulStrategy());
-        return modularRealmAuthenticator;
-    }
-
-    /**
-     * ehcache shiro的套接
-     *  缓存管理器
-     * @return
-     */
-    @Bean(name = "shiroCacheManager")
-    public CacheManager shiroCacheManager(@Qualifier("cacheManager") net.sf.ehcache.CacheManager cacheManager) {
-        EhCacheManager shiroCacheManager = new EhCacheManager();
-//        shiroCacheManager.setCacheManagerConfigFile("classpath:ehcache_shiro.xml");
-        shiroCacheManager.setCacheManager(cacheManager);
-        return shiroCacheManager;
-
-    }
-
-    /**
-     * 注入自定义Filter
-     * @return
-     */
-    @Bean(name = "authFilter")
-    public Map<String, Filter> LoginAuthcFilter() {
-        Map<String, Filter> filters = new HashMap<>();
-        filters.put("defaultAuthClient", new DefaultAuthFilter());
-        return filters;
-    }
-
-    @Bean()
-    public Realm getRealm() {
-        DefaultRealm defaultRealm = new DefaultRealm();
-        //开启授权缓存
-        defaultRealm.setAuthorizationCachingEnabled(true);
-        defaultRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
-        //指定授权缓存的名字(与 ehcache.xml 中声明的相同)
-        defaultRealm.setAuthorizationCacheName("shiro-authorizationCache");
-        return defaultRealm;
-    }
-
     /**
      * 关闭session
      * @return
@@ -84,6 +44,72 @@ public class ShiroBaseConfiguration {
         DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultWebSessionStorageEvaluator();
         sessionStorageEvaluator.setSessionStorageEnabled(false);
         return sessionStorageEvaluator;
+    }
+
+    /**
+     * 持久化
+     * @return
+     */
+    @Bean(name = "subjectDAO")
+    public DefaultSubjectDAO subjectDAO() {
+        DefaultSubjectDAO defaultSubjectDAO = new DefaultSubjectDAO();
+        defaultSubjectDAO.setSessionStorageEvaluator(sessionStorageEvaluator());
+        return defaultSubjectDAO;
+    }
+
+    /**
+     * 核心
+     * @param subjectDAO
+     * @return
+     */
+    @Bean(name = "securityManager")
+    public SecurityManager securityManager( @Qualifier("subjectDAO") DefaultSubjectDAO subjectDAO) {
+        DefaultRealm defaultRealm = new DefaultRealm();
+        //开启授权缓存
+        defaultRealm.setAuthorizationCachingEnabled(true);
+        defaultRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
+        //指定授权缓存的名字(与 ehcache.xml 中声明的相同)
+        defaultRealm.setAuthorizationCacheName("shiro-authorizationCache");
+        //
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setRealm(defaultRealm);
+        securityManager.setSubjectDAO(subjectDAO);
+        return securityManager;
+    }
+
+
+    @Bean("authenticator")
+    public ModularRealmAuthenticator modularRealmAuthenticator() {
+        ModularRealmAuthenticator modularRealmAuthenticator = new ModularRealmAuthenticator();
+        modularRealmAuthenticator.setAuthenticationStrategy(new FixShiroAtLeastOneSuccessfulStrategy());
+        return modularRealmAuthenticator;
+    }
+
+    /**
+     * ehcache shiro的套接
+     * 缓存管理器
+     * 当有需要自定义缓存文件时
+     * shiroCacheManager.setCacheManagerConfigFile("classpath:ehcache_shiro.xml");
+     * @return
+     */
+    @Bean(name = "shiroCacheManager")
+    public CacheManager shiroCacheManager(@Qualifier("cacheManager") net.sf.ehcache.CacheManager cacheManager) {
+        EhCacheManager shiroCacheManager = new EhCacheManager();
+        shiroCacheManager.setCacheManager(cacheManager);
+        return shiroCacheManager;
+
+    }
+
+    /**
+     * 注入自定义Filter
+     *
+     * @return
+     */
+    @Bean(name = "authFilter")
+    public Map<String, Filter> LoginAuthcFilter() {
+        Map<String, Filter> filters = new HashMap<>();
+        filters.put("defaultAuthClient", new DefaultAuthFilter());
+        return filters;
     }
 
     @Bean
@@ -109,7 +135,7 @@ public class ShiroBaseConfiguration {
         filterFactoryBean.setLoginUrl("/login");
         filterFactoryBean.setUnauthorizedUrl("/unauth");
         Map<String, Filter> allFilter = filters;
-        if(extFilter!=null){
+        if (extFilter != null) {
             allFilter.putAll(extFilter);
         }
         filterFactoryBean.setFilters(allFilter);
@@ -121,10 +147,10 @@ public class ShiroBaseConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator defaultAAP = new DefaultAdvisorAutoProxyCreator();
-        defaultAAP.setProxyTargetClass(true);
-        return defaultAAP;
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+        AccessAuthorizationAttributeSourceAdvisor advisor = new AccessAuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
     }
 
 }
