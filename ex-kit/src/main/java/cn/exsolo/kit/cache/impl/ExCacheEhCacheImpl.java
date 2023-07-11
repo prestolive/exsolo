@@ -8,6 +8,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,7 +48,7 @@ public class ExCacheEhCacheImpl implements IExCache {
                 cache =  new Cache(configuration);
                 cacheManager.addCache(cache);
             }
-            exCacheStorage = new ExCacheStorageCacheImpl(cache);
+            exCacheStorage = new ExCacheEhCacheStorageCacheImpl(cache);
             map.put(cacheName,exCacheStorage);
         }
         return exCacheStorage;

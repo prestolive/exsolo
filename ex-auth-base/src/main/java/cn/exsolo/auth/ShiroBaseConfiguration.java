@@ -1,9 +1,9 @@
 package cn.exsolo.auth;
 
 import cn.exsolo.auth.shiro.DefaultAuthFilter;
-import cn.exsolo.auth.shiro.DefaultRealm;
 import cn.exsolo.auth.shiro.FixShiroAtLeastOneSuccessfulStrategy;
-import cn.exsolo.auth.shiro.ext.AccessAuthorizationAttributeSourceAdvisor;
+import cn.exsolo.auth.shiro.ext.AccessSourceAdvisor;
+import org.apache.shiro.authc.Authenticator;
 import org.apache.shiro.authc.credential.AllowAllCredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.cache.CacheManager;
@@ -12,6 +12,7 @@ import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.mgt.SessionStorageEvaluator;
+import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -25,7 +26,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,31 +60,44 @@ public class ShiroBaseConfiguration {
         return defaultSubjectDAO;
     }
 
-    /**
-     * 核心
-     * @param subjectDAO
-     * @return
-     */
-    @Bean(name = "securityManager")
-    public SecurityManager securityManager( @Qualifier("subjectDAO") DefaultSubjectDAO subjectDAO) {
-        DefaultRealm defaultRealm = new DefaultRealm();
+    @Bean(name="exsoloRealms")
+    public List<Realm> exsoloRealms(AuthorizingRealm defaultRealm, Realm defaultAuthServerRealm){
         //开启授权缓存
         defaultRealm.setAuthorizationCachingEnabled(true);
         defaultRealm.setCredentialsMatcher(new AllowAllCredentialsMatcher());
         //指定授权缓存的名字(与 ehcache.xml 中声明的相同)
         defaultRealm.setAuthorizationCacheName("shiro-authorizationCache");
         //
+        List<Realm> realmList =new ArrayList<>();
+        realmList.add(defaultRealm);
+        if(defaultAuthServerRealm!=null){
+            realmList.add(defaultAuthServerRealm);
+        }
+        return realmList;
+    }
+
+    /**
+     * 核心
+     * @param subjectDAO
+     * @return
+     */
+    @Bean(name = "securityManager")
+    public SecurityManager securityManager(@Qualifier("subjectDAO") DefaultSubjectDAO subjectDAO,@Qualifier("exsoloRealms") List<Realm> exsoloRealms,Authenticator authenticator) {
+
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(defaultRealm);
+//        securityManager.setRealm(defaultRealm);
+        securityManager.setRealms(exsoloRealms);
         securityManager.setSubjectDAO(subjectDAO);
+        securityManager.setAuthenticator(authenticator);
         return securityManager;
     }
 
 
     @Bean("authenticator")
-    public ModularRealmAuthenticator modularRealmAuthenticator() {
+    public ModularRealmAuthenticator modularRealmAuthenticator(@Qualifier("exsoloRealms") List<Realm> exsoloRealms) {
         ModularRealmAuthenticator modularRealmAuthenticator = new ModularRealmAuthenticator();
         modularRealmAuthenticator.setAuthenticationStrategy(new FixShiroAtLeastOneSuccessfulStrategy());
+        modularRealmAuthenticator.setRealms(exsoloRealms);
         return modularRealmAuthenticator;
     }
 
@@ -144,11 +160,18 @@ public class ShiroBaseConfiguration {
         return filterFactoryBean;
 
     }
+//    @Bean
+//    @ConditionalOnMissingBean
+//    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
+//        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+//        advisor.setSecurityManager(securityManager);
+//        return advisor;
+//    }
 
     @Bean
     @ConditionalOnMissingBean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
-        AccessAuthorizationAttributeSourceAdvisor advisor = new AccessAuthorizationAttributeSourceAdvisor();
+        AccessSourceAdvisor advisor = new AccessSourceAdvisor();
         advisor.setSecurityManager(securityManager);
         return advisor;
     }

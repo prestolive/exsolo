@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ShiroAuthServerConfiguration {
 
-    @Bean()
-    public Realm getLoginRealm( LoginMatcher loginMatcher) {
+    @Bean("defaultAuthServerRealm")
+    public Realm getDefaultAuthServerRealm( LoginMatcher loginMatcher) {
         LoginRealm loginRealm = new LoginRealm();
         loginRealm.setCredentialsMatcher(loginMatcher);
         //开启授权缓存

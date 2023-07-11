@@ -5,6 +5,7 @@ import cn.exsolo.comm.utils.TsUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.security.*;
@@ -50,7 +51,14 @@ public class TokenUtil {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MILLISECOND,expireTimes);
         Algorithm algorithm =  Algorithm.RSA256(null,(RSAPrivateKey) getPrivateKeyByStr(privateKey));
-        return JWT.create().withClaim("name","wuby")
+        return JWT.create()
+                .withClaim("code",tokenInfo.getLoginCode())
+                .withClaim("name",tokenInfo.getUserName())
+                .withClaim("id",tokenInfo.getUserId())
+                .withClaim("ip",tokenInfo.getIp())
+                .withClaim("ticket",tokenInfo.getTicket())
+                .withClaim("ts",tokenInfo.getTs())
+                .withClaim("ua",tokenInfo.getUa())
                 .withExpiresAt(cal.getTime()).sign(algorithm);
     }
 
@@ -74,6 +82,15 @@ public class TokenUtil {
         Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) getPublicKeyByStr(publicKeyStr),null);
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT jwt = verifier.verify(token);
+    }
+
+    public static String getUserCode(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("code").asString();
+        } catch (JWTDecodeException e) {
+            return null;
+        }
     }
 
 //

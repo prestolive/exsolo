@@ -8,11 +8,11 @@ import net.sf.ehcache.Element;
  * @author prestolive
  * @date 2023/5/30
  **/
-public class ExCacheStorageCacheImpl implements IExCacheStorage {
+public class ExCacheEhCacheStorageCacheImpl implements IExCacheStorage {
 
     private Cache cache;
 
-    public ExCacheStorageCacheImpl(Cache cache) {
+    public ExCacheEhCacheStorageCacheImpl(Cache cache) {
         this.cache = cache;
     }
 
@@ -27,6 +27,21 @@ public class ExCacheStorageCacheImpl implements IExCacheStorage {
         Element element = this.cache.get(key);
         if(element!=null){
             return (String) element.getObjectValue();
+        }
+        return null;
+    }
+
+    @Override
+    public void putStringArray(String key, String[] values) {
+        Element element = new Element(key,values);
+        this.cache.put(element);
+    }
+
+    @Override
+    public String[] getStringArray(String key) {
+        Element element = this.cache.get(key);
+        if(element!=null){
+            return (String[]) element.getObjectValue();
         }
         return null;
     }

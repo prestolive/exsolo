@@ -1,6 +1,6 @@
 package cn.exsolo.console.web;
 
-import cn.exsolo.auth.shiro.ext.stereotype.Access;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessCommon;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
@@ -34,14 +34,7 @@ public class UserManageController {
     @Autowired
     private UserManageService userManageService;
 
-    @Access
-    @RequestMapping(path = "test", method = RequestMethod.GET)
-    public String test() {
-        return "xxxxxxxx";
-    }
-
-//    @RequiresPermissions(ExConsoleSecurityPermissionEnum.USER_MANAGER_VIEW)
-    @Access
+    @AccessCommon
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<UserPO> page(
                                    @RequestJSON() String[] status,

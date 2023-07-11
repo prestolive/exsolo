@@ -1,23 +1,40 @@
 package cn.exsolo.auth.shiro;
 
+import cn.exsolo.auth.shiro.service.RdbcViewService;
 import cn.exsolo.auth.utils.TokenUtil;
+import cn.exsolo.kit.cache.CacheEnum;
+import cn.exsolo.kit.cache.IExCache;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author prestolive
  * @date 2023/5/24
  **/
+@Component("defaultRealm")
 public class DefaultRealm extends AuthorizingRealm {
 
     @Value("${exsolo.auth.publicKey}")
     private String authPublicKey;
+
+    @Autowired
+    private IExCache iExCache;
+
+    @Autowired
+    private RdbcViewService rdbcViewService;
 
     @Override
     public boolean supports(AuthenticationToken token) {
@@ -32,7 +49,28 @@ public class DefaultRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        return null;
+        Set<String> realNames =  principalCollection.getRealmNames();
+        String realName = null;
+        if(realNames.size()>0){
+            realName = realNames.stream().findFirst().get();
+        }
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        Set<String> permissions = new HashSet<>();
+        if(StringUtils.isNotEmpty(realName)){
+            String[] caches = iExCache.getCache(CacheEnum.PERMISSION).getStringArray(realName);
+            if(caches==null){
+                List<String> list = rdbcViewService.getPermission(realName);
+                if(list!=null){
+                    caches = list.toArray(new String[list.size()]);
+                }
+                iExCache.getCache(CacheEnum.PERMISSION).putStringArray(realName,caches);
+            }
+            if(caches!=null&&caches.length>0){
+                permissions.addAll(Arrays.stream(caches).collect(Collectors.toList()));
+            }
+        }
+        authorizationInfo.setStringPermissions(permissions);
+        return authorizationInfo;
     }
 
     /**
@@ -44,12 +82,13 @@ public class DefaultRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String realName = null;
+
         if (authenticationToken instanceof DefaultAuthenticationToken) {
             DefaultAuthenticationToken defaultToken = (DefaultAuthenticationToken) authenticationToken;
             String token = defaultToken.getToken();
             TokenUtil.verify(token, authPublicKey);
-            return new SimpleAuthenticationInfo(authenticationToken.getPrincipal(), authenticationToken.getCredentials(), realName);
+            String userCode = TokenUtil.getUserCode(token);
+            return new SimpleAuthenticationInfo("0", "0", userCode);
         }
         throw new AuthenticationException("未定义的认证方式");
 //        String token = (String) authenticationToken.getPrincipal()

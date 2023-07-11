@@ -6,16 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ *
  * @author prestolive
  */
+
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Access {
-
-    AccessType type() default AccessType.COMMON;
-
-    String customKey() default "";
-
-    String customLabel() default "";
+public @interface AccessCommon {
 
 }

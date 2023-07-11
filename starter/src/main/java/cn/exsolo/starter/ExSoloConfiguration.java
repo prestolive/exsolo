@@ -37,8 +37,9 @@ public class ExSoloConfiguration {
         filterChainDefinitionMap.put("/static/**", "anon");
         filterChainDefinitionMap.put("/api/auth/**", "anon");
         filterChainDefinitionMap.put("/", "defaultAuthClient");
-        filterChainDefinitionMap.put("/api/**", "anon");
-        filterChainDefinitionMap.put("**", "defaultAuthClient");
+        //FIXME
+//        filterChainDefinitionMap.put("/api/**", "defaultAuthClient");
+        filterChainDefinitionMap.put("**", "anon");
         return  filterChainDefinitionMap;
     }
 }

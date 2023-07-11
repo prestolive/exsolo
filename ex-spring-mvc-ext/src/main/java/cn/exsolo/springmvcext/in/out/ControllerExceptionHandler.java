@@ -34,7 +34,6 @@ public class ControllerExceptionHandler {
         return new BaseResponse<>(-1,EX_UNKNOWN_EXCEPTION_ERROR_CODE,e.getMessage());
     }
 
-
     @ExceptionHandler(ExDevException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleDevException(Throwable e) {
