@@ -11,10 +11,10 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  * @date 2023/3/30
  **/
 
-@Table("ex_role_power")
+@Table("ex_role_permission")
 @BaseData(name="系统角色权限表")
-@Index(name = "uq_ex_role_power",unique = true,fields = "roleId,powerCode")
-public class RolePowerPO extends AbstractSanBatisPO {
+@Index(name = "uq_ex_role_permission",unique = true,fields = "roleId,permission")
+public class RolePermissionPO extends AbstractSanBatisPO {
 
     @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
     private String id;
@@ -22,8 +22,8 @@ public class RolePowerPO extends AbstractSanBatisPO {
     @Column(name = "roleId",nullable = false,maxLength = 24,datatype = "char(24)")
     private String roleId;
 
-    @Column(name = "powerCode",nullable = false,maxLength = 128,datatype = "varchar(128)")
-    private String powerCode;
+    @Column(name = "permission",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    private String permission;
 
     @Column(name = "operator",maxLength = 24,datatype = "char(24)")
     private String operator;
@@ -46,12 +46,12 @@ public class RolePowerPO extends AbstractSanBatisPO {
         this.roleId = roleId;
     }
 
-    public String getPowerCode() {
-        return powerCode;
+    public String getPermission() {
+        return permission;
     }
 
-    public void setPowerCode(String powerCode) {
-        this.powerCode = powerCode;
+    public void setPermission(String permission) {
+        this.permission = permission;
     }
 
     public String getOperator() {

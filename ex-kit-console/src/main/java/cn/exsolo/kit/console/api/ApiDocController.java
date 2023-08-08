@@ -5,6 +5,9 @@ package cn.exsolo.kit.console.api;
  * @date 2023/3/26
  **/
 
+import cn.exsolo.auth.shiro.ext.stereotype.AccessCustom;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.kit.console.ExKitConsoleErrorCodeEnum;
 import cn.exsolo.kit.dev.ApiDocGenerateCodeService;
 import cn.exsolo.kit.dev.ApiDocService;
@@ -31,6 +34,7 @@ import java.util.List;
 @Component
 @RequestMapping("api/ex-kit-console/")
 @RestController()
+@AccessProvider(module = "kit",node = "api",label = "开发套件-API管理")
 public class ApiDocController {
 
     private List<ApiDocClzBO> list;
@@ -41,6 +45,7 @@ public class ApiDocController {
     @Autowired
     private ApiDocGenerateCodeService apiDocGenerateCodeService;
 
+    @AccessView
     @RequestMapping(value = "api-previews",method = RequestMethod.POST)
     public List<ApiDocClzBO> allController() {
         if(list==null){
@@ -49,6 +54,7 @@ public class ApiDocController {
         return list;
     }
 
+    @AccessView
     @RequestMapping(value="api-doc",method = RequestMethod.POST)
     public List<ApiDocBO> getApiDoc(String className){
         try {
@@ -64,12 +70,14 @@ public class ApiDocController {
     }
 
 
+    @AccessCustom(key = "codeMaker",label = "代码生成")
     @RequestMapping(value="api-doc2code",method = RequestMethod.POST)
     public void downloadApiTsCode(HttpServletRequest request,HttpServletResponse response, String className) {
         String content = apiDocGenerateCodeService.generateClass(className);
         FileUtil.download(response,new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)),"API.ts","text/plain");
     }
 
+    @AccessCustom(key = "codeMaker",label = "代码生成")
     @RequestMapping(value="api-docs2code",method = RequestMethod.POST)
     public void downloadApiTsCodeModule(HttpServletRequest request,HttpServletResponse response, String module) {
         String content = apiDocGenerateCodeService.generateModule(module);

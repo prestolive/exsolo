@@ -1,8 +1,7 @@
 package cn.exsolo.console.security.vo;
 
 import cn.exsolo.console.security.po.RolePO;
-import cn.exsolo.console.security.po.RolePowerPO;
-import cn.exsolo.console.security.po.UserPO;
+import cn.exsolo.console.security.po.RolePermissionPO;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class RoleInfoVO {
 
     private RolePO rolePO;
 
-    private List<RolePowerPO> powers;
+    private List<RolePermissionPO> permissions;
 
     public RolePO getRolePO() {
         return rolePO;
@@ -24,11 +23,11 @@ public class RoleInfoVO {
         this.rolePO = rolePO;
     }
 
-    public List<RolePowerPO> getPowers() {
-        return powers;
+    public List<RolePermissionPO> getPermissions() {
+        return permissions;
     }
 
-    public void setPowers(List<RolePowerPO> powers) {
-        this.powers = powers;
+    public void setPermissions(List<RolePermissionPO> permissions) {
+        this.permissions = permissions;
     }
 }

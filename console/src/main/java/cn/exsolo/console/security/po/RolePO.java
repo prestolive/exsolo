@@ -31,8 +31,8 @@ public class RolePO extends AbstractSanBatisPO {
     @Column(name = "moduleCount",maxLength = 2,datatype = "smallint")
     private Integer moduleCount;
 
-    @Column(name = "powerCount",maxLength = 2,datatype = "smallint")
-    private Integer powerCount;
+    @Column(name = "permissionCount",maxLength = 2,datatype = "smallint")
+    private Integer permissionCount;
 
     @Override
     public String getId() {
@@ -68,12 +68,12 @@ public class RolePO extends AbstractSanBatisPO {
         this.moduleCount = moduleCount;
     }
 
-    public Integer getPowerCount() {
-        return powerCount;
+    public Integer getPermissionCount() {
+        return permissionCount;
     }
 
-    public void setPowerCount(Integer powerCount) {
-        this.powerCount = powerCount;
+    public void setPermissionCount(Integer permissionCount) {
+        this.permissionCount = permissionCount;
     }
 
     public String getRoleSchema() {

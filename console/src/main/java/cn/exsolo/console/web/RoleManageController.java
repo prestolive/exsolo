@@ -1,12 +1,17 @@
 package cn.exsolo.console.web;
 
+import cn.exsolo.auth.shiro.ext.stereotype.AccessConfig;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
-import cn.exsolo.console.item.ExUserStatusEnum;
 import cn.exsolo.console.security.po.RolePO;
 import cn.exsolo.console.security.po.UserPO;
+import cn.exsolo.console.security.service.PermissionAnnotationService;
 import cn.exsolo.console.security.service.RoleManageService;
+import cn.exsolo.console.security.vo.PermissionVO;
 import cn.exsolo.console.security.vo.RoleInfoVO;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +31,16 @@ import java.util.List;
 @Component
 @RequestMapping("api/ex-basic/role/")
 @RestController()
+@AccessProvider(module = "sys",node = "role",label = "系统-角色管理")
 public class RoleManageController {
 
     @Autowired
     private RoleManageService roleManageService;
 
+    @Autowired
+    private PermissionAnnotationService permissionAnnotationService;
+
+    @AccessView
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<RolePO> page(
                                    @RequestJSON Condition cond,
@@ -38,14 +48,16 @@ public class RoleManageController {
         return roleManageService.page(cond,pagination);
     }
 
+    @AccessView
     @RequestMapping(path = "info", method = RequestMethod.POST)
     public RoleInfoVO info(@RequestParam() String roleId){
         RoleInfoVO vo = new RoleInfoVO();
         vo.setRolePO(roleManageService.get(roleId));
-        vo.setPowers(roleManageService.getRolePowers(roleId));
+        vo.setPermissions(roleManageService.getRolePowers(roleId));
         return vo;
     }
 
+    @AccessView
     @RequestMapping(path = "user-page", method = RequestMethod.POST)
     public PageObject<UserPO> userPage(
             @RequestParam String roleId,
@@ -54,21 +66,31 @@ public class RoleManageController {
         return roleManageService.getUserByRole(roleId,cond,pagination);
     }
 
+    @AccessEdit
     @RequestMapping(path = "add", method = RequestMethod.POST)
     public void add(@RequestJSON RolePO role){
         roleManageService.addRole(role);
     }
 
+    @AccessEdit
     @RequestMapping(path = "modify", method = RequestMethod.POST)
     public void modify(String roleId,String roleName){
         roleManageService.modifyRoleName(roleId,roleName);
     }
 
-    @RequestMapping(path = "config-power", method = RequestMethod.POST)
-    public void updateRoleName(String roleId, List<String> powers){
-        roleManageService.configRolePower(roleId,powers);
+    @AccessView
+    @RequestMapping(path = "permission-all", method = RequestMethod.POST)
+    public List<PermissionVO> getAllPermission(){
+        return permissionAnnotationService.getPermissions();
     }
 
+    @AccessConfig
+    @RequestMapping(path = "permission-set", method = RequestMethod.POST)
+    public void setPermission(String roleId, List<String> permissions){
+        roleManageService.configRolePermission(roleId,permissions);
+    }
+
+    @AccessEdit
     @RequestMapping(path = "delete", method = RequestMethod.POST)
     public void deleted(@RequestParam String roleId){
         roleManageService.deleteRole(roleId);

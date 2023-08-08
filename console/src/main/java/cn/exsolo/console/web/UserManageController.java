@@ -1,7 +1,9 @@
 package cn.exsolo.console.web;
 
 import cn.exsolo.auth.shiro.ext.stereotype.AccessCommon;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
+import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
@@ -48,6 +50,7 @@ public class UserManageController {
         return userManageService.page(cond,enumStatus,pagination);
     }
 
+    @AccessView
     @RequestMapping(path = "info", method = RequestMethod.POST)
     public UserPO userInfo(@RequestParam() String userId){
         return userManageService.get(userId);
@@ -58,26 +61,31 @@ public class UserManageController {
         userManageService.addNewUser(userPO,password);
     }
 
+    @AccessEdit
     @RequestMapping(path = "modify", method = RequestMethod.POST)
     public void update(@RequestJSON UserPO userPO){
         userManageService.modifyUser(userPO);
     }
 
+    @AccessEdit
     @RequestMapping(path = "change-password", method = RequestMethod.POST)
     public void changePassword(@RequestParam String userId,@RequestParam(required = false) String password){
         userManageService.changePassword(userId,password);
     }
 
+    @AccessEdit
     @RequestMapping(path = "locked", method = RequestMethod.POST)
     public void userLocked(@RequestParam String userId){
         userManageService.updateUserStatus(userId,ExUserStatusEnum.LOCKED);
     }
 
+    @AccessEdit
     @RequestMapping(path = "deleted", method = RequestMethod.POST)
     public void userDeleted(@RequestParam String userId){
         userManageService.updateUserStatus(userId,ExUserStatusEnum.DELETED);
     }
 
+    @AccessEdit
     @RequestMapping(path = "recover", method = RequestMethod.POST)
     public void userRecover(@RequestParam String userId){
         userManageService.updateUserStatus(userId,ExUserStatusEnum.NORMAL);

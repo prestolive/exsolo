@@ -3,7 +3,7 @@ package cn.exsolo.console.security.service;
 import cn.exsolo.batis.core.*;
 import cn.exsolo.console.item.ExUserErrorCodeEnum;
 import cn.exsolo.console.security.po.RolePO;
-import cn.exsolo.console.security.po.RolePowerPO;
+import cn.exsolo.console.security.po.RolePermissionPO;
 import cn.exsolo.console.security.po.UserPO;
 import cn.exsolo.console.security.po.UserRolePO;
 import cn.exsolo.kit.utils.ExAssert;
@@ -36,8 +36,8 @@ public class RoleManageService {
         return baseDAO.queryBeanByID(RolePO.class,roleId);
     }
 
-    public List<RolePowerPO> getRolePowers(String roleId){
-        return baseDAO.queryBeanByCond(RolePowerPO.class,new Condition().eq("roleId",roleId));
+    public List<RolePermissionPO> getRolePowers(String roleId){
+        return baseDAO.queryBeanByCond(RolePermissionPO.class,new Condition().eq("roleId",roleId));
     }
 
     public PageObject<UserPO> getUserByRole(String roleID,Condition fCond,  Pagination pagination){
@@ -70,25 +70,25 @@ public class RoleManageService {
 
     public void deleteRole(String roleId){
         //先清空权限
-        configRolePower(roleId,null);
+        configRolePermission(roleId,null);
         baseDAO.deleteByID(RolePO.class,roleId);
     }
 
-    public void configRolePower(String roleId, List<String> powers){
+    public void configRolePermission(String roleId, List<String> permissions){
         RolePO role = baseDAO.queryBeanByID(RolePO.class,roleId);
         ExAssert.isNull(role);
-        baseDAO.deleteByCond(RolePowerPO.class,new Condition().eq("roleId",roleId));
-        if(powers!=null&&powers.size()>0){
-            for(String power:powers){
-                RolePowerPO po = new RolePowerPO();
+        baseDAO.deleteByCond(RolePermissionPO.class,new Condition().eq("roleId",roleId));
+        if(permissions!=null&&permissions.size()>0){
+            for(String permission:permissions){
+                RolePermissionPO po = new RolePermissionPO();
                 po.setRoleId(roleId);
-                po.setPowerCode(power);
+                po.setPermission(permission);
                 //FIXME operator
                 baseDAO.insertOrUpdateValueObject(po);
             }
-            role.setPowerCount(powers.size());
+            role.setPermissionCount(permissions.size());
         }else{
-            role.setPowerCount(0);
+            role.setPermissionCount(0);
         }
         baseDAO.insertOrUpdateValueObject(role);
         //更新相关角色的所有权限
