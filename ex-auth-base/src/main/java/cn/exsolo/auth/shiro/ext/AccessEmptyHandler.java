@@ -1,6 +1,5 @@
 package cn.exsolo.auth.shiro.ext;
 
-import cn.exsolo.auth.shiro.ext.stereotype.AccessCommon;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationHandler;
 
@@ -12,13 +11,14 @@ import java.lang.annotation.Annotation;
  **/
 public class AccessEmptyHandler extends AuthorizingAnnotationHandler {
 
-    public AccessEmptyHandler() {
-        //这个没有任何作者用，确保不报错而已
-        super(AccessCommon.class);
+    public AccessEmptyHandler(Class<? extends Annotation> annotationClz) {
+        //FIXME 这个有作用，只有注入了，才会触发过滤和realmdo的GetAuthorizationInfo的
+        super(annotationClz);
     }
 
     @Override
     public void assertAuthorized(Annotation annotation) throws AuthorizationException {
+        System.out.println(annotation);
         //do nothing
     }
 }

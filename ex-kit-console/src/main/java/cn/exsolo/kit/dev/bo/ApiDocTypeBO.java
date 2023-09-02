@@ -21,7 +21,17 @@ public class ApiDocTypeBO {
 
     private Boolean isListType;
 
+    private Boolean isNullAble;
+
     private List<ApiDocTypeBO> fieldTypes;
+
+    public Boolean getNullAble() {
+        return isNullAble;
+    }
+
+    public void setNullAble(Boolean nullAble) {
+        isNullAble = nullAble;
+    }
 
     public String getClz() {
         return clz;

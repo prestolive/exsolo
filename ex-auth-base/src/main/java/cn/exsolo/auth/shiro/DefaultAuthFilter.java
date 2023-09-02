@@ -27,6 +27,7 @@ public class DefaultAuthFilter extends BasicHttpAuthenticationFilter {
         String tokenStr = AccessUtil.getToken(request);
         DefaultAuthenticationToken token = new DefaultAuthenticationToken(tokenStr);
         getSubject(request,response).login(token);
+        //FIXME 权限控制
         return true;
     }
 

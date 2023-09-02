@@ -11,7 +11,7 @@ import cn.exsolo.kit.item.ItemOriginEnum;
 import cn.exsolo.kit.item.ItemSchemaEnum;
 import cn.exsolo.kit.item.po.ItemPO;
 import cn.exsolo.kit.item.po.ItemTextPO;
-import cn.exsolo.comm.utils.EsAnnotationUtil;
+import cn.exsolo.comm.utils.ExAnnotationUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 @Transactional(rollbackOn = Exception.class)
 @Component
-public class EsItemBootAware implements ApplicationContextAware {
+public class ExItemBootAware implements ApplicationContextAware {
 
     @Autowired
     private BaseDAO baseDAO;
@@ -47,7 +47,7 @@ public class EsItemBootAware implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         //从注解构建
-        List<Class<?>> list = EsAnnotationUtil.getAnnotationFromContext(applicationContext, Item.class);
+        List<Class<?>> list = ExAnnotationUtil.getAnnotationFromContext(applicationContext, Item.class);
         List<ItemTagPO> allItems = list.stream().map(clz -> {
             Item itemAnna = clz.getAnnotation(Item.class);
             ItemTagPO po = new ItemTagPO();

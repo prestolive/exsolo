@@ -70,14 +70,14 @@ public class ApiDocController {
     }
 
 
-    @AccessCustom(key = "codeMaker",label = "代码生成")
+    @AccessCustom(key = "code_gen",label = "代码生成")
     @RequestMapping(value="api-doc2code",method = RequestMethod.POST)
     public void downloadApiTsCode(HttpServletRequest request,HttpServletResponse response, String className) {
         String content = apiDocGenerateCodeService.generateClass(className);
         FileUtil.download(response,new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)),"API.ts","text/plain");
     }
 
-    @AccessCustom(key = "codeMaker",label = "代码生成")
+    @AccessCustom(key = "code_gen",label = "代码生成")
     @RequestMapping(value="api-docs2code",method = RequestMethod.POST)
     public void downloadApiTsCodeModule(HttpServletRequest request,HttpServletResponse response, String module) {
         String content = apiDocGenerateCodeService.generateModule(module);

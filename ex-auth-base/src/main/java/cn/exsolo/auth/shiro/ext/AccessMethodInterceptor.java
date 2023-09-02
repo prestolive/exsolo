@@ -10,6 +10,7 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.aop.AuthorizingAnnotationMethodInterceptor;
 import org.apache.shiro.subject.Subject;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,9 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
  **/
 public class AccessMethodInterceptor extends AuthorizingAnnotationMethodInterceptor implements MethodInterceptor {
 
+    private Class<? extends Annotation> annotationClz;
 
-    public AccessMethodInterceptor(AnnotationResolver resolver) {
-        super(new AccessEmptyHandler(),resolver);
+    public AccessMethodInterceptor(Class<? extends Annotation> annotationClz,AnnotationResolver resolver) {
+        super(new AccessEmptyHandler(annotationClz),resolver);
+        this.annotationClz = annotationClz;
     }
 
     @Override
@@ -40,30 +43,26 @@ public class AccessMethodInterceptor extends AuthorizingAnnotationMethodIntercep
             throw new ExDevException(" No annotation @AccessProvider set in target class "+parent.getName()+"");
         }
         String[] keys = getAnnotationKeys(accessProvider.module(),accessProvider.node(),mi);
-        subject.checkPermissions(keys);
+        //FIXME 关闭权限校验
+//        subject.checkPermissions(keys);
     }
 
     private String[] getAnnotationKeys(String module, String node, MethodInvocation mi){
         List<String> keys = new ArrayList<>();
-        AccessCommon ac = (AccessCommon) getResolver().getAnnotation(mi,AccessCommon.class);
-        if(ac!=null){
+        Annotation ac = getResolver().getAnnotation(mi,annotationClz);
+        if(ac instanceof  AccessCommon){
             keys.add(getPermission(module,node,"common"));
-        }
-        AccessEdit ae = (AccessEdit) getResolver().getAnnotation(mi,AccessEdit.class);
-        if(ae!=null){
-            keys.add(getPermission(module,node,"edit"));
-        }
-        AccessView av = (AccessView) getResolver().getAnnotation(mi,AccessView.class);
-        if(av!=null){
+        }else if(ac instanceof  AccessView){
             keys.add(getPermission(module,node,"view"));
-        }
-        AccessConfig ag = (AccessConfig) getResolver().getAnnotation(mi,AccessConfig.class);
-        if(ag!=null){
+        }else if(ac instanceof  AccessEdit){
+            keys.add(getPermission(module,node,"edit"));
+        }else if(ac instanceof  AccessConfig){
             keys.add(getPermission(module,node,"config"));
-        }
-        AccessCustom am = (AccessCustom) getResolver().getAnnotation(mi,AccessCustom.class);
-        if(am!=null){
-            keys.add(getPermission(module,node,am.key()));
+        }else if(ac instanceof  AccessCustom){
+            AccessCustom accessCustom = (AccessCustom) ac;
+            keys.add(getPermission(module,node,accessCustom.key()));
+        }else{
+            throw new RuntimeException("不支持的类型"+ac.getClass().getName());
         }
         return keys.toArray(new String[keys.size()]);
     }

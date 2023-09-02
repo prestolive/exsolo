@@ -1,7 +1,7 @@
 package cn.exsolo.kit.dev;
 
 import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.comm.utils.EsAnnotationUtil;
+import cn.exsolo.comm.utils.ExAnnotationUtil;
 import cn.exsolo.kit.console.api.ApiDocController;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
 import cn.exsolo.kit.dev.bo.ApiDocClzBO;
@@ -41,7 +41,7 @@ public class ApiDocService {
     private static DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
     public List<ApiDocClzBO> getAllController() {
-        List<Class<?>> list = EsAnnotationUtil.getAnnotationFromContext(applicationContext, RequestMapping.class);
+        List<Class<?>> list = ExAnnotationUtil.getAnnotationFromContext(applicationContext, RequestMapping.class);
         return list.stream().map(row -> {
             ApiDocClzBO bo = new ApiDocClzBO();
             bo.setModule(getModuleFromClz(row.getName()));
@@ -181,6 +181,7 @@ public class ApiDocService {
         bo.setClz(rawClz.getName());
         String returnName=classToName(rawClz.getName());
         bo.setName(StringUtils.isEmpty(name)?returnName:name);
+        bo.setNullAble(true);
         String jsType = JsTypeMapEnum.getJavaScriptTypeName(realClz);
         if ("object".equals(jsType)) {
             Field[] fields = realClz.getDeclaredFields();
@@ -195,6 +196,7 @@ public class ApiDocService {
                 ApiDocTypeBO docType = getDocTypeBO(rootName, field.getName(), field.getGenericType());
                 if (col != null) {
                     docType.setDatatype(docType.getDatatype());
+                    docType.setNullAble(col.nullable());
                 }
                 types.add(docType);
             }

@@ -91,8 +91,8 @@ public class AuthController {
             tokenInfo.setTicket(GenerateID.generateShortUuid());
             tokenInfo.setTs(TsUtil.getTimestamp());
             tokenInfo.setIp(AccessUtil.getRequestClientIP(request));
-            //TODO 时效时间改成可配置，默认15分钟
-            int expireTimes = 60*15*1000;
+            //TODO 时效时间改成可配置，默认3天
+            int expireTimes = 60*24*1000*3;
             return new AuthResultVO().success(TokenUtil.crateToken(tokenInfo,expireTimes,authPrivateKey));
         }catch (IncorrectCredentialsException e){
             AuthResultVO resultVO ;

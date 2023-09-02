@@ -11,6 +11,7 @@ import cn.exsolo.console.item.ExUserStatusEnum;
 import cn.exsolo.console.security.po.UserPO;
 import cn.exsolo.console.security.service.UserManageService;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +37,7 @@ public class UserManageController {
     @Autowired
     private UserManageService userManageService;
 
-    @AccessCommon
+    @AccessView
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<UserPO> page(
                                    @RequestJSON() String[] status,
@@ -56,6 +57,7 @@ public class UserManageController {
         return userManageService.get(userId);
     }
 
+    @AccessEdit
     @RequestMapping(path = "add", method = RequestMethod.POST)
     public void add(@RequestJSON UserPO userPO,@RequestParam(required = false) String password){
         userManageService.addNewUser(userPO,password);

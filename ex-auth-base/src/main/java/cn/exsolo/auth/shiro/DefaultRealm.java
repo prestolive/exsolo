@@ -49,6 +49,7 @@ public class DefaultRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        //FIXME 现在不走这个方法了 查下为啥
         Set<String> realNames =  principalCollection.getRealmNames();
         String realName = null;
         if(realNames.size()>0){

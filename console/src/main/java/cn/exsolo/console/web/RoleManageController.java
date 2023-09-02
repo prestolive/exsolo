@@ -1,9 +1,6 @@
 package cn.exsolo.console.web;
 
-import cn.exsolo.auth.shiro.ext.stereotype.AccessConfig;
-import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
-import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
-import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
+import cn.exsolo.auth.shiro.ext.stereotype.*;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
@@ -40,7 +37,7 @@ public class RoleManageController {
     @Autowired
     private PermissionAnnotationService permissionAnnotationService;
 
-    @AccessView
+    @AccessCommon
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<RolePO> page(
                                    @RequestJSON Condition cond,
@@ -86,7 +83,7 @@ public class RoleManageController {
 
     @AccessConfig
     @RequestMapping(path = "permission-set", method = RequestMethod.POST)
-    public void setPermission(String roleId, List<String> permissions){
+    public void setPermission(@RequestParam String roleId, @RequestJSON String[] permissions){
         roleManageService.configRolePermission(roleId,permissions);
     }
 

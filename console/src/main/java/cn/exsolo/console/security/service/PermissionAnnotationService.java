@@ -1,7 +1,7 @@
 package cn.exsolo.console.security.service;
 
 import cn.exsolo.auth.shiro.ext.stereotype.*;
-import cn.exsolo.comm.utils.EsAnnotationUtil;
+import cn.exsolo.comm.utils.ExAnnotationUtil;
 import cn.exsolo.console.security.vo.PermissionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,7 +33,7 @@ public class PermissionAnnotationService {
     @PostConstruct
     public void init() {
         Map<String,PermissionVO> map = new LinkedHashMap<>();
-        List<Class<?>> clzs = EsAnnotationUtil.getAnnotationFromContext(context, AccessProvider.class);
+        List<Class<?>> clzs = ExAnnotationUtil.getAnnotationFromContext(context, AccessProvider.class);
         for (Class clz : clzs) {
             Method[] methods = clz.getMethods();
             AccessProvider ap = (AccessProvider) clz.getAnnotation(AccessProvider.class);

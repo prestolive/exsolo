@@ -2,7 +2,7 @@ package cn.exsolo.batis.act;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.exsolo.batis.act.service.DdlServcie;
-import cn.exsolo.comm.utils.EsAnnotationUtil;
+import cn.exsolo.comm.utils.ExAnnotationUtil;
 import cn.exsolo.batis.act.bo.ActSuggestDatatypeBO;
 import cn.exsolo.batis.act.dto.ActDdTableColumnDTO;
 import cn.exsolo.batis.act.dto.ActDdTableIndexDTO;
@@ -44,7 +44,7 @@ public class EsBatisActAware implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         //从注解构建
-        List<Class<?>> list = EsAnnotationUtil.getAnnotationFromContext(applicationContext, Table.class);
+        List<Class<?>> list = ExAnnotationUtil.getAnnotationFromContext(applicationContext, Table.class);
         List<ActTableBO> actTables = list.stream().map(clz -> {
             ActTableBO table = ActAnnotationUtil.getTableMeta(clz);
             table.getColumns().forEach(column->{

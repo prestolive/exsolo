@@ -74,11 +74,11 @@ public class RoleManageService {
         baseDAO.deleteByID(RolePO.class,roleId);
     }
 
-    public void configRolePermission(String roleId, List<String> permissions){
+    public void configRolePermission(String roleId, String[] permissions){
         RolePO role = baseDAO.queryBeanByID(RolePO.class,roleId);
         ExAssert.isNull(role);
         baseDAO.deleteByCond(RolePermissionPO.class,new Condition().eq("roleId",roleId));
-        if(permissions!=null&&permissions.size()>0){
+        if(permissions!=null&&permissions.length>0){
             for(String permission:permissions){
                 RolePermissionPO po = new RolePermissionPO();
                 po.setRoleId(roleId);
@@ -86,7 +86,7 @@ public class RoleManageService {
                 //FIXME operator
                 baseDAO.insertOrUpdateValueObject(po);
             }
-            role.setPermissionCount(permissions.size());
+            role.setPermissionCount(permissions.length);
         }else{
             role.setPermissionCount(0);
         }
