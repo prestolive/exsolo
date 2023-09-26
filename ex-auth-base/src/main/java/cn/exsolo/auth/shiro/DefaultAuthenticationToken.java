@@ -4,7 +4,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 
 /**
  * @author prestolive
- * @date 2023/5/25
+ * @date 2021/5/25
  **/
 public class DefaultAuthenticationToken implements AuthenticationToken {
 

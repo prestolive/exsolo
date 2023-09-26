@@ -3,7 +3,7 @@ package cn.exsolo.console.security.vo;
 /**
  * 所有注解权限
  * @author prestolive
- * @date 2023/7/12
+ * @date 2021/7/12
  **/
 public class PermissionVO {
 

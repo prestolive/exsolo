@@ -3,7 +3,7 @@ package cn.exsolo.batis.act.dto;
 /**
  * 从数据库实时查询的表结构
  * @author prestolive
- * @date 2023/3/9
+ * @date 2021/3/9
  **/
 public class ActDdTableColumnDTO {
 

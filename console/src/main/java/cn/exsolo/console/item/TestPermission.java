@@ -2,7 +2,7 @@ package cn.exsolo.console.item;
 
 /**
  * @author prestolive
- * @date 2023/6/26
+ * @date 2021/6/26
  **/
 public interface TestPermission {
 

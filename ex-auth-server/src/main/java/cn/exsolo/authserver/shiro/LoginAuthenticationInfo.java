@@ -6,7 +6,7 @@ import org.apache.shiro.subject.SimplePrincipalCollection;
 
 /**
  * @author prestolive
- * @date 2023/5/27
+ * @date 2021/5/27
  **/
 public class LoginAuthenticationInfo implements AuthenticationInfo {
 

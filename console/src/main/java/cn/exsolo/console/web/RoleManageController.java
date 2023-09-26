@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author prestolive
- * @date 2023/4/1
+ * @date 2021/4/1
  **/
 
 @Component
@@ -42,7 +42,7 @@ public class RoleManageController {
     public PageObject<RolePO> page(
                                    @RequestJSON Condition cond,
                                    @RequestJSON Pagination pagination) {
-        return roleManageService.page(cond,pagination);
+        return roleManageService.rolePage(cond,pagination);
     }
 
     @AccessView
@@ -50,7 +50,7 @@ public class RoleManageController {
     public RoleInfoVO info(@RequestParam() String roleId){
         RoleInfoVO vo = new RoleInfoVO();
         vo.setRolePO(roleManageService.get(roleId));
-        vo.setPermissions(roleManageService.getRolePowers(roleId));
+        vo.setPermissions(roleManageService.permissionRole(roleId));
         return vo;
     }
 
@@ -60,7 +60,7 @@ public class RoleManageController {
             @RequestParam String roleId,
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
-        return roleManageService.getUserByRole(roleId,cond,pagination);
+        return roleManageService.userPageByRole(roleId,cond,pagination);
     }
 
     @AccessEdit
@@ -77,14 +77,25 @@ public class RoleManageController {
 
     @AccessView
     @RequestMapping(path = "permission-all", method = RequestMethod.POST)
-    public List<PermissionVO> getAllPermission(){
-        return permissionAnnotationService.getPermissions();
+    public List<PermissionVO> permissionAll(){
+        return permissionAnnotationService.permissionAll();
     }
 
     @AccessConfig
     @RequestMapping(path = "permission-set", method = RequestMethod.POST)
-    public void setPermission(@RequestParam String roleId, @RequestJSON String[] permissions){
-        roleManageService.configRolePermission(roleId,permissions);
+    public void permissionSet(@RequestParam String roleId, @RequestJSON String[] permissions){
+        roleManageService.permissionSet(roleId,permissions);
+    }
+
+    @AccessConfig
+    @RequestMapping(path = "user-set", method = RequestMethod.POST)
+    public void userSet(@RequestParam String roleId, @RequestJSON String[] userIds){
+        roleManageService.userSet(roleId,userIds);
+    }
+    @AccessConfig
+    @RequestMapping(path = "user-delete", method = RequestMethod.POST)
+    public void userDelete(@RequestParam String roleId, @RequestJSON String userId){
+        roleManageService.userDelete(roleId,userId);
     }
 
     @AccessEdit

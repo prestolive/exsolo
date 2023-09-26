@@ -10,7 +10,7 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  * 1、每修改一次代码，增加一行，如果和当前密码一样则抛错。
  * 2、每次修改成功后保存，删除出当前密码那行以外，所有创建时间到现在少于3天的密码，以及删除5条以外的记录。
  * @author prestolive
- * @date 2023/3/30
+ * @date 2021/3/30
  **/
 
 @Table("ex_user_encrypt")

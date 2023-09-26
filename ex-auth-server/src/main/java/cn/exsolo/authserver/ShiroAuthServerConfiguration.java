@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author prestolive
- * @date 2023/5/24
+ * @date 2021/5/24
  **/
 @Configuration
 public class ShiroAuthServerConfiguration {

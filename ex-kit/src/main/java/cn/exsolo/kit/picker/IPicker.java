@@ -5,9 +5,11 @@ import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.kit.picker.bo.ExPickerOptionBO;
 
+import java.util.List;
+
 /**
  * @author prestolive
- * @date 2023/8/13
+ * @date 2021/8/13
  **/
 public interface IPicker {
 
@@ -15,6 +17,8 @@ public interface IPicker {
 
     PageObject<ExPickerOptionBO> find(Pagination pagination, String keyword, Condition cond);
 
-    ExPickerOptionBO get(String id);
+    ExPickerOptionBO getSingle(String id);
+
+    List<ExPickerOptionBO> getList(List<String> ids);
 
 }

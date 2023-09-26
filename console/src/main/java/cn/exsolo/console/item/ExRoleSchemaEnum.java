@@ -5,7 +5,7 @@ import cn.exsolo.kit.item.stereotype.Item;
 
 /**
  * @author prestolive
- * @date 2023/5/17
+ * @date 2021/5/17
  **/
 
 @Item(tag = "EX_ROLE_SCHEMA",name="中台-系统角色类型", schema = ItemSchemaEnum.ENUM, codeField = "value", nameField = "name")

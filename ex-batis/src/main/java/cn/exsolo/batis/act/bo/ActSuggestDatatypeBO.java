@@ -5,7 +5,7 @@ import cn.exsolo.batis.act.utils.StandType;
 /**
  * 转换工具理解并提取的字段信息
  * @author prestolive
- * @date 2023/3/8
+ * @date 2021/3/8
  **/
 public class ActSuggestDatatypeBO {
 

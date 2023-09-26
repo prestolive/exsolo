@@ -5,7 +5,7 @@ import org.apache.shiro.authc.AuthenticationToken;
 /**
  * 账号密码登录用的shiro token
  * @author prestolive
- * @date 2023/5/25
+ * @date 2021/5/25
  **/
 public class LoginAuthenticationToken  implements AuthenticationToken {
 

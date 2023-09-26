@@ -2,7 +2,7 @@ package cn.exsolo.auth.vo;
 
 /**
  * @author prestolive
- * @date 2023/5/28
+ * @date 2021/5/28
  **/
 public class AuthResultVO {
 

@@ -2,7 +2,7 @@ package cn.exsolo.kit.picker.bo;
 
 /**
  * @author prestolive
- * @date 2023/8/14
+ * @date 2021/8/14
  **/
 public class ExPickerSchemaTableColumnBO {
 

@@ -4,7 +4,7 @@ import cn.exsolo.kit.item.stereotype.Item;
 
 /**
  * @author prestolive
- * @date 2023/3/21
+ * @date 2021/3/21
  **/
 @Item(tag = "ITEM_STATUS",name="对象管理-状态", schema = ItemSchemaEnum.ENUM, codeField = "value", nameField = "name")
 public enum ItemStatusEnum {

@@ -6,7 +6,7 @@ import org.apache.shiro.spring.security.interceptor.AopAllianceAnnotationsAuthor
 
 /**
  * @author prestolive
- * @date 2023/6/30
+ * @date 2021/6/30
  **/
 public class AccessAopMethodInterceptor extends AopAllianceAnnotationsAuthorizingMethodInterceptor {
 

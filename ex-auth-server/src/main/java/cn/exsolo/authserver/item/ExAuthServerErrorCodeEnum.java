@@ -5,7 +5,7 @@ import cn.exsolo.kit.item.stereotype.Item;
 
 /**
  * @author prestolive
- * @date 2023/3/28
+ * @date 2021/3/28
  **/
 @Item(tag = "AUTH_SERVER_ERROR_CODE",name="授权服务-错误码", schema = ItemSchemaEnum.ERROR_CODE, codeField = "value", nameField = "name")
 public enum ExAuthServerErrorCodeEnum {

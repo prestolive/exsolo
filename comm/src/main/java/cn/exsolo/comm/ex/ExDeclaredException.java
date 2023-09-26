@@ -2,7 +2,7 @@ package cn.exsolo.comm.ex;
 
 /**
  * @author prestolive
- * @date 2023/3/28
+ * @date 2021/3/28
  **/
 public class ExDeclaredException extends ExBizException{
 

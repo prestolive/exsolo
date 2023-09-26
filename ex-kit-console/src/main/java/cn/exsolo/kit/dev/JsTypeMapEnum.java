@@ -7,7 +7,7 @@ import java.util.Locale;
 
 /**
  * @author prestolive
- * @date 2023/3/25
+ * @date 2021/3/25
  **/
 public enum JsTypeMapEnum {
 

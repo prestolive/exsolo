@@ -12,7 +12,7 @@ import static cn.exsolo.batis.act.utils.StandType.*;
 
 /**
  * @author prestolive
- * @date 2023/3/8
+ * @date 2021/3/8
  **/
 public class DbFieldUtil {
 

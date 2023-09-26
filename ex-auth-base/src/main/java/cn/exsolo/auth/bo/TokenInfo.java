@@ -2,7 +2,7 @@ package cn.exsolo.auth.bo;
 
 /**
  * @author prestolive
- * @date 2023/5/24
+ * @date 2021/5/24
  **/
 public class TokenInfo {
 

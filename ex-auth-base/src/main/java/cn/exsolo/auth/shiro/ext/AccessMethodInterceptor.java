@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author prestolive
- * @date 2023/7/11
+ * @date 2021/7/11
  **/
 public class AccessMethodInterceptor extends AuthorizingAnnotationMethodInterceptor implements MethodInterceptor {
 

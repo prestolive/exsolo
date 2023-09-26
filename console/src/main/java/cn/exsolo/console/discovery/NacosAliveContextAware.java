@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author prestolive
- * @date 2023/3/1
+ * @date 2021/3/1
  **/
 @Component
 public class NacosAliveContextAware implements ApplicationContextAware {

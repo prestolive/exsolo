@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * @author prestolive
- * @date 2023/7/12
+ * @date 2021/7/12
  **/
 @Service
 public class PermissionAnnotationService {
@@ -23,7 +23,7 @@ public class PermissionAnnotationService {
 
     private List<PermissionVO> permissions;
 
-    public List<PermissionVO> getPermissions() {
+    public List<PermissionVO> permissionAll() {
         return permissions;
     }
 

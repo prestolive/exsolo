@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * @author prestolive
- * @date 2023/5/25
+ * @date 2021/5/25
  **/
 @Configuration
 public class ExSoloConfiguration {

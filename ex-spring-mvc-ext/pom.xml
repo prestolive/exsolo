@@ -36,6 +36,10 @@
             <artifactId>ex-batis</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>ex-kit</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

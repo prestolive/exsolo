@@ -11,10 +11,10 @@ import java.util.List;
 
 /**
  * @author prestolive
- * @date 2023/1/18
+ * @date 2021/1/18
  **/
 @Configuration
-public class SringMvcExtConfigure implements WebMvcConfigurer {
+public class SpringMvcExtConfigure implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {

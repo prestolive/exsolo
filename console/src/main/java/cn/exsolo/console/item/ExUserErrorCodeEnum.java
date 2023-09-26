@@ -5,9 +5,9 @@ import cn.exsolo.kit.item.stereotype.Item;
 
 /**
  * @author prestolive
- * @date 2023/4/1
+ * @date 2021/4/1
  **/
-@Item(tag = "EX_USER_SECURITY",name="中台-错误码", schema = ItemSchemaEnum.ERROR_CODE, codeField = "value", nameField = "name")
+@Item(tag = "EX_USER_SECURITY",name="中台-用户管理错误码", schema = ItemSchemaEnum.ERROR_CODE, codeField = "value", nameField = "name")
 public enum ExUserErrorCodeEnum {
 
     SAME_PASSWORD("密码无变更，请设置新的密码"),

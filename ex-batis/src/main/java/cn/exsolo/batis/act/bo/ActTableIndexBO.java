@@ -2,7 +2,7 @@ package cn.exsolo.batis.act.bo;
 
 /**
  * @author prestolive
- * @date 2023/3/8
+ * @date 2021/3/8
  **/
 public class ActTableIndexBO {
 

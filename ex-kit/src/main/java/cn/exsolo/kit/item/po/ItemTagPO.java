@@ -9,7 +9,7 @@ import cn.exsolo.kit.item.ItemSchemaEnum;
 /**
  * 对象类型表
  * @author prestolive
- * @date 2023/3/20
+ * @date 2021/3/20
  **/
 @Table("s_item_tag")
 @Index(name="uq_item_tag_name",unique = true,fields = "name")

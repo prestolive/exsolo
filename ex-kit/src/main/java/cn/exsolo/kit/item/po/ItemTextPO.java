@@ -6,7 +6,7 @@ import cn.exsolo.batis.core.stereotype.Table;
 
 /**
  * @author prestolive
- * @date 2023/3/15
+ * @date 2021/3/15
  **/
 @Table("s_item_text")
 public class ItemTextPO extends AbstractSanBatisPO {

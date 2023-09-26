@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 /**
  * FIXME 目前方案是粗暴的将前端转成condition，但是API生成器无法识别
  * @author prestolive
- * @date 2023/5/15
+ * @date 2021/5/15
  **/
 public class SpringMvcExtForBatis {
 

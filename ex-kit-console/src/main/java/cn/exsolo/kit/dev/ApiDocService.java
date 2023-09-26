@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * to generate front-end typescript code
  *
  * @author prestolive
- * @date 2023/3/24
+ * @date 2021/3/24
  **/
 @Service
 public class ApiDocService {

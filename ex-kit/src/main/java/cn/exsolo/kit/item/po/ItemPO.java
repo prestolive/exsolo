@@ -11,7 +11,7 @@ import cn.exsolo.kit.item.ItemStatusEnum;
 /**
  * 对象表
  * @author prestolive
- * @date 2023/3/14
+ * @date 2021/3/14
  **/
 @Table("s_item")
 @Index(name = "idx_s_item_tag",unique = false,fields = "tag")
