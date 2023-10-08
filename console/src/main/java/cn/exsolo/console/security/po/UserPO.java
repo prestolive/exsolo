@@ -4,8 +4,7 @@ import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Index;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.console.item.ExUserStatusEnum;
-import cn.exsolo.kit.item.stereotype.BaseData;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 
 /**
  * @author prestolive
@@ -13,7 +12,6 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  **/
 
 @Table("ex_user")
-@BaseData(name="系统用户表")
 @Index(name = "uq_ex_user_a",unique = true,fields = "loginCode")
 public class UserPO  extends AbstractSanBatisPO {
 
@@ -33,7 +31,7 @@ public class UserPO  extends AbstractSanBatisPO {
     private String phone;
 
     @Column(name = "status",nullable = false,maxLength = 16,datatype = "varchar(16)")
-    private ExUserStatusEnum status;
+    private ItemCommStatusEnum status;
 
     @Column(name = "activeTs",nullable = true,maxLength = 19,datatype = "char(19)")
     private String activeTs;
@@ -81,11 +79,11 @@ public class UserPO  extends AbstractSanBatisPO {
         this.phone = phone;
     }
 
-    public ExUserStatusEnum getStatus() {
+    public ItemCommStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(ExUserStatusEnum status) {
+    public void setStatus(ItemCommStatusEnum status) {
         this.status = status;
     }
 

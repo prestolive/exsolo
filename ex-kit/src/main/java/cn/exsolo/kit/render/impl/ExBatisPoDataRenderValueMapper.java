@@ -22,19 +22,19 @@ import java.util.stream.Collectors;
  **/
 public abstract class ExBatisPoDataRenderValueMapper implements DataRenderValueMapper {
 
-    abstract Class<? extends AbstractSanBatisPO> getPoClass();
+    public  abstract Class<? extends AbstractSanBatisPO> getPoClass();
 
-    abstract String getMappedKeyField();
+    public abstract String getMappedKeyField();
 
-    abstract Condition createCondition();
+    public abstract Condition createCondition();
 
-    abstract String[] getValueFields();
+    public abstract String[] getValueFields();
 
     @Autowired
     private BaseDAO baseDAO;
 
     @Override
-    public Map<String, JSONObject> getData(List<Pair<String, JSONObject>> pairList, String[] keyFields, MethodParameter methodParameter) {
+    public Map<String, JSONObject> getDataByKeys(List<Pair<String, JSONObject>> pairList, String[] keyFields, MethodParameter methodParameter) {
         if (keyFields.length > 1) {
             throw new ExDevException("ExBatisPoDataRender不支持1个以上的映射关键字");
         }

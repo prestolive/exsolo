@@ -1,17 +1,15 @@
-package cn.exsolo.kit.item.boot;
+package cn.exsolo.kit.item;
 
-import cn.exsolo.kit.item.po.ItemTagPO;
-import cn.exsolo.kit.item.stereotype.Item;
-import cn.exsolo.kit.item.ItemStatusEnum;
-import cn.hutool.core.util.EnumUtil;
 import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
-import cn.exsolo.kit.ex.EsBuilderException;
-import cn.exsolo.kit.item.ItemOriginEnum;
-import cn.exsolo.kit.item.ItemSchemaEnum;
-import cn.exsolo.kit.item.po.ItemPO;
-import cn.exsolo.kit.item.po.ItemTextPO;
 import cn.exsolo.comm.utils.ExAnnotationUtil;
+import cn.exsolo.kit.ex.EsBuilderException;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
+import cn.exsolo.kit.item.po.ItemPO;
+import cn.exsolo.kit.item.po.ItemTagPO;
+import cn.exsolo.kit.item.po.ItemTextPO;
+import cn.exsolo.kit.item.stereotype.ItemProvider;
+import cn.hutool.core.util.EnumUtil;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -47,14 +45,15 @@ public class ExItemBootAware implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         //从注解构建
-        List<Class<?>> list = ExAnnotationUtil.getAnnotationFromContext(applicationContext, Item.class);
+        List<Class<?>> list = ExAnnotationUtil.getAnnotationFromContext(applicationContext, ItemProvider.class);
         List<ItemTagPO> allItems = list.stream().map(clz -> {
-            Item itemAnna = clz.getAnnotation(Item.class);
+            ItemProvider itemProviderAnna = clz.getAnnotation(ItemProvider.class);
             ItemTagPO po = new ItemTagPO();
-            po.setName(itemAnna.name());
-            po.setId(itemAnna.tag());
-            po.setSchema(itemAnna.schema());
+            po.setName(itemProviderAnna.name());
+            po.setId(itemProviderAnna.tag());
+            po.setItemType(itemProviderAnna.type().name());
             po.setClz(clz.getName());
+            po.setCustomAble(itemProviderAnna.customAble());
             po.setModule(getModuleFromClz(po.getClz()));
 
             return po;
@@ -76,12 +75,12 @@ public class ExItemBootAware implements ApplicationContextAware {
                 baseDAO.insertOrUpdateValueObject(item);
             } else {
                 if (ObjectUtils.notEqual(item.getName(), exist.getName()) ||
-                        ObjectUtils.notEqual(item.getSchema(), exist.getSchema())||
+                        ObjectUtils.notEqual(item.getItemType(), exist.getItemType())||
                         ObjectUtils.notEqual(item.getClz(), exist.getClz())||
                         ObjectUtils.notEqual(item.getModule(), exist.getModule())
                 ) {
                     exist.setName(item.getName());
-                    exist.setSchema(item.getSchema());
+                    exist.setItemType(item.getItemType());
                     exist.setClz(item.getClz());
                     exist.setModule(item.getModule());
                     exist.setCustomAble(item.getCustomAble());
@@ -93,11 +92,11 @@ public class ExItemBootAware implements ApplicationContextAware {
 
     private void initTagEnumValues(List<ItemTagPO> allItems) {
         try {
-            List<ItemPO> exists = baseDAO.queryBeanByCond(ItemPO.class,new Condition().eq("origin",ItemOriginEnum.SOURCE.name()));
+            List<ItemPO> exists = baseDAO.queryBeanByCond(ItemPO.class,new Condition().eq("sys",true));
             for (ItemTagPO item : allItems) {
                 Class clz = null;
                 clz = Class.forName(item.getClz());
-                Map<String, Object> map =  EnumUtil.getNameFieldMap(clz, "name");
+                Map<String, Object> map =  EnumUtil.getNameFieldMap(clz, "label");
                 if(map==null){
                     continue;
                 }
@@ -106,9 +105,10 @@ public class ExItemBootAware implements ApplicationContextAware {
                     po.setTag(item.getId());
                     po.setCode(entry.getKey());
                     po.setName((String)entry.getValue());
-                    po.setOrigin(ItemOriginEnum.SOURCE);
-                    po.setSchema(ItemSchemaEnum.ENUM);
-                    po.setStatus(ItemStatusEnum.NORMAL);
+                    //来自于代码
+                    po.setSys(true);
+                    po.setItemType(item.getItemType());
+                    po.setStatus(ItemCommStatusEnum.NORMAL);
                     po.setText(false);
                     ItemPO exist = exists.stream().filter(row->(!ObjectUtils.notEqual(row.getTag(),po.getTag())&&!ObjectUtils.notEqual(row.getCode(),po.getCode()))).findFirst().orElse(null);
                     if(exist==null){

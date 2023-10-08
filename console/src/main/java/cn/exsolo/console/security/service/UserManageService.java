@@ -5,15 +5,15 @@ import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.batis.core.utils.GenerateID;
+import cn.exsolo.comm.ex.ExDeclaredException;
 import cn.exsolo.comm.utils.TsUtil;
 import cn.exsolo.console.item.ExUserErrorCodeEnum;
-import cn.exsolo.console.item.ExUserStatusEnum;
 import cn.exsolo.console.security.po.UserEncryptPO;
 import cn.exsolo.console.security.po.UserPO;
 import cn.exsolo.console.security.utils.PasswordCheckStrength;
 import cn.exsolo.console.security.utils.PasswordHelper;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.utils.ExAssert;
-import cn.exsolo.comm.ex.ExDeclaredException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class UserManageService {
     @Autowired
     private BaseDAO baseDAO;
 
-    public PageObject<UserPO> page(Condition fCond, List<ExUserStatusEnum> enumStatus, Pagination pagination) {
+    public PageObject<UserPO> page(Condition fCond, List<ItemCommStatusEnum> enumStatus, Pagination pagination) {
         Condition cond = new Condition();
         if(fCond!=null){
             cond.and(fCond);
@@ -83,7 +83,7 @@ public class UserManageService {
     private void saveUser(UserPO userPO) {
         ExAssert.isNull(userPO, userPO.getLoginCode(), userPO.getUserName());
         if (userPO.getStatus() == null) {
-            userPO.setStatus(ExUserStatusEnum.NORMAL);
+            userPO.setStatus(ItemCommStatusEnum.NORMAL);
         }
         if (StringUtils.isEmpty(userPO.getActiveTs())) {
             userPO.setActiveTs(TsUtil.getTimestamp());
@@ -184,7 +184,7 @@ public class UserManageService {
      * @param userId
      * @param status
      */
-    public void updateUserStatus(String userId, ExUserStatusEnum status) {
+    public void updateUserStatus(String userId, ItemCommStatusEnum status) {
         ExAssert.isNull(userId, status);
         UserPO userPO = baseDAO.queryBeanByID(UserPO.class, userId);
         ExAssert.isNull(userPO);

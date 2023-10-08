@@ -4,6 +4,8 @@ import cn.exsolo.batis.core.condition.ICompareBean;
 import cn.exsolo.batis.core.ex.BaseOrmException;
 import cn.exsolo.batis.core.ext.ExecuteAdapter;
 import cn.exsolo.batis.core.utils.GenerateID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Created by prestolive on 2018/7/25.
@@ -23,7 +24,7 @@ public class BaseDAO {
     @Autowired
     private ExecuteAdapter executeAdapter;
 
-    private static final Logger log = Logger.getLogger(BaseDAO.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(BaseDAO.class.getName());
     /**
      * 通用的插入更新操作
      *

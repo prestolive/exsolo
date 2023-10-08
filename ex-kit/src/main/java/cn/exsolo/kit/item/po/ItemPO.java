@@ -4,9 +4,7 @@ import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Index;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.kit.item.ItemOriginEnum;
-import cn.exsolo.kit.item.ItemSchemaEnum;
-import cn.exsolo.kit.item.ItemStatusEnum;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 
 /**
  * 对象表
@@ -24,11 +22,8 @@ public class ItemPO extends AbstractSanBatisPO {
     @Column(name = "tag",nullable = false,maxLength = 64,datatype = "varchar(64)")
     private String tag;
 
-    /**
-     * 对象类型 ITEM_SCHEMA 引用自 ItemSchemaEnum
-     */
-    @Column(name = "schema",nullable = false,maxLength = 32,datatype = "varchar(32)")
-    private ItemSchemaEnum schema;
+    @Column(name = "itemType",nullable = false,maxLength = 32,datatype = "varchar(32)")
+    private String itemType;
 
     @Column(name = "code",nullable = false,maxLength = 128,datatype = "varchar(128)")
     private String code;
@@ -36,20 +31,14 @@ public class ItemPO extends AbstractSanBatisPO {
     @Column(name = "name",nullable = false,maxLength = 128,datatype = "varchar(128)")
     private String name;
 
-    /**
-     *  来源
-     *  引用自 ItemOriginEnum
-     *  APPLICATION-*:解决方案 预留，理想是根据产品来设置，还没想好
-     *
-     */
-    @Column(name = "origin",nullable = false,maxLength = 32,datatype = "varchar(32)")
-    private ItemOriginEnum origin;
+    @Column(name = "sys",nullable = false,maxLength = 2,datatype = "boolean")
+    private Boolean sys;
 
     @Column(name = "text",nullable = false,maxLength = 2,datatype = "boolean")
     private Boolean text;
 
     @Column(name = "status",nullable = false,maxLength = 16,datatype = "varchar(16)")
-    private ItemStatusEnum status;
+    private ItemCommStatusEnum status;
 
     @Column(name = "pid",maxLength = 24,datatype = "char(24)")
     private String pid;
@@ -72,12 +61,12 @@ public class ItemPO extends AbstractSanBatisPO {
         this.tag = tag;
     }
 
-    public ItemSchemaEnum getSchema() {
-        return schema;
+    public String getItemType() {
+        return itemType;
     }
 
-    public void setSchema(ItemSchemaEnum schema) {
-        this.schema = schema;
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 
     public String getCode() {
@@ -96,12 +85,12 @@ public class ItemPO extends AbstractSanBatisPO {
         this.name = name;
     }
 
-    public ItemOriginEnum getOrigin() {
-        return origin;
+    public Boolean getSys() {
+        return sys;
     }
 
-    public void setOrigin(ItemOriginEnum origin) {
-        this.origin = origin;
+    public void setSys(Boolean sys) {
+        this.sys = sys;
     }
 
     public Boolean getText() {
@@ -112,11 +101,11 @@ public class ItemPO extends AbstractSanBatisPO {
         this.text = text;
     }
 
-    public ItemStatusEnum getStatus() {
+    public ItemCommStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(ItemStatusEnum status) {
+    public void setStatus(ItemCommStatusEnum status) {
         this.status = status;
     }
 

@@ -1,7 +1,7 @@
 package cn.exsolo.auth.shiro;
 
 import cn.exsolo.auth.shiro.service.RdbcViewService;
-import cn.exsolo.auth.utils.TokenUtil;
+import cn.exsolo.auth.utils.AccessTokenUtil;
 import cn.exsolo.kit.cache.CacheEnum;
 import cn.exsolo.kit.cache.IExCache;
 import org.apache.commons.lang3.StringUtils;
@@ -87,8 +87,8 @@ public class DefaultRealm extends AuthorizingRealm {
         if (authenticationToken instanceof DefaultAuthenticationToken) {
             DefaultAuthenticationToken defaultToken = (DefaultAuthenticationToken) authenticationToken;
             String token = defaultToken.getToken();
-            TokenUtil.verify(token, authPublicKey);
-            String userCode = TokenUtil.getUserCode(token);
+            AccessTokenUtil.verifyAccessToken(token, authPublicKey);
+            String userCode = AccessTokenUtil.getUserCode(token);
             return new SimpleAuthenticationInfo("0", "0", userCode);
         }
         throw new AuthenticationException("未定义的认证方式");

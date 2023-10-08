@@ -1,8 +1,9 @@
 package cn.exsolo.kit.item.stereotype;
 
-import cn.exsolo.kit.item.ItemSchemaEnum;
-
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 自动生成对象表
@@ -13,17 +14,17 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Item {
+public @interface ItemProvider {
+
+    enum Type{
+        NORMAL, ERROR_CODE
+    }
 
     String tag();
 
     String name();
 
-    ItemSchemaEnum schema();
-
-    String nameField();
-
-    String codeField();
+    Type type() default Type.NORMAL;
 
     boolean customAble() default false;
 }

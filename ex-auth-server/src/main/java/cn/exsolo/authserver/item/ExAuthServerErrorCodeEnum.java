@@ -1,13 +1,12 @@
 package cn.exsolo.authserver.item;
 
-import cn.exsolo.kit.item.ItemSchemaEnum;
-import cn.exsolo.kit.item.stereotype.Item;
+import cn.exsolo.kit.item.stereotype.ItemProvider;
 
 /**
  * @author prestolive
  * @date 2021/3/28
  **/
-@Item(tag = "AUTH_SERVER_ERROR_CODE",name="授权服务-错误码", schema = ItemSchemaEnum.ERROR_CODE, codeField = "value", nameField = "name")
+@ItemProvider(tag = "AUTH_SERVER_ERROR_CODE",name="授权服务-错误码",type= ItemProvider.Type.ERROR_CODE)
 public enum ExAuthServerErrorCodeEnum {
 
     AUTH_FAILED("用户名或密码错误"),
@@ -15,14 +14,13 @@ public enum ExAuthServerErrorCodeEnum {
     AUTH_CAPTCHA_REQUIRE("请输入验证码"),
     AUTH_CAPTCHA_CHECK_FAIL("验证码错误");
 
+    private String label;
 
-    private String name;
-
-    ExAuthServerErrorCodeEnum(String name) {
-        this.name = name;
+    ExAuthServerErrorCodeEnum(String label) {
+        this.label = label;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 }

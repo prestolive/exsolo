@@ -3,7 +3,6 @@ package cn.exsolo.console.security.po;
 import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.kit.item.stereotype.BaseData;
 
 /**
  * 一个用户最多保存5条记录
@@ -14,7 +13,6 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  **/
 
 @Table("ex_user_encrypt")
-@BaseData(name="系统用户密码表")
 public class UserEncryptPO extends AbstractSanBatisPO {
 
     @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")

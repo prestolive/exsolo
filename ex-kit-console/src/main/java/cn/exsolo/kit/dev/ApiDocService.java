@@ -67,22 +67,22 @@ public class ApiDocService {
             doc.setName(pathToName(doc.getPath()));
             doc.setNameLower(firstCharLower(doc.getName()));
             //解析返回参数
-            doc.setReturnType(getDocTypeBO( doc.getName(),null, method.getGenericReturnType()));
+            doc.setReturnType(getDocTypeBO(doc.getName(), null, method.getGenericReturnType(),false));
             //解析参数
             String[] paramNames = discoverer.getParameterNames(method);
             Type[] paramTypes = method.getGenericParameterTypes();
             if (paramTypes.length > 0) {
                 List<ApiDocTypeBO> paramTypeList = new ArrayList<>();
-                for (int i=0;i<paramTypes.length;i++) {
+                for (int i = 0; i < paramTypes.length; i++) {
                     Type type = paramTypes[i];
-                    if("javax.servlet.http.HttpServletRequest".equals(type.getTypeName())||
-                            "javax.servlet.http.HttpServletResponse".equals(type.getTypeName())||
-                            "javax.servlet.ServletRequest".equals(type.getTypeName())||
-                            "javax.servlet.ServletResponse".equals(type.getTypeName())){
+                    if ("javax.servlet.http.HttpServletRequest".equals(type.getTypeName()) ||
+                            "javax.servlet.http.HttpServletResponse".equals(type.getTypeName()) ||
+                            "javax.servlet.ServletRequest".equals(type.getTypeName()) ||
+                            "javax.servlet.ServletResponse".equals(type.getTypeName())) {
                         continue;
                     }
                     String paramName = paramNames[i];
-                    paramTypeList.add(getDocTypeBO(doc.getName(),paramName, type));
+                    paramTypeList.add(getDocTypeBO(doc.getName(), paramName, type,false));
                 }
                 doc.setParamTypes(paramTypeList);
             }
@@ -132,7 +132,7 @@ public class ApiDocService {
 
     private String classToName(String clz) {
         String[] arr = clz.split("\\.");
-        return arr[arr.length-1];
+        return arr[arr.length - 1];
     }
 
     private Class getClassByName(String className) {
@@ -152,15 +152,15 @@ public class ApiDocService {
         }
     }
 
-    private ApiDocTypeBO getDocTypeBO(String rootName,String name, Type type) {
-        if("void".equals(type.getTypeName())){
+    private ApiDocTypeBO getDocTypeBO(String rootName, String name, Type type,boolean isLoop) {
+        if ("void".equals(type.getTypeName())) {
             return null;
         }
-        boolean forceArray  = false;
+        boolean forceArray = false;
         String typeName = type.getTypeName();
-        if(typeName.endsWith("[]")){
+        if (typeName.endsWith("[]")) {
             forceArray = true;
-            typeName = typeName.replace("[]","");
+            typeName = typeName.replace("[]", "");
         }
         Class rawClz = null;
         Class realClz = null;
@@ -177,37 +177,39 @@ public class ApiDocService {
             realClz = rawClz;
         }
         ApiDocTypeBO bo = new ApiDocTypeBO();
-        bo.setListType(forceArray||isArray(rawClz));
+        bo.setListType(forceArray || isArray(rawClz));
         bo.setClz(rawClz.getName());
-        String returnName=classToName(rawClz.getName());
-        bo.setName(StringUtils.isEmpty(name)?returnName:name);
+        String returnName = classToName(rawClz.getName());
+        bo.setName(StringUtils.isEmpty(name) ? returnName : name);
         bo.setNullAble(true);
         String jsType = JsTypeMapEnum.getJavaScriptTypeName(realClz);
-        if ("object".equals(jsType)) {
-            Field[] fields = realClz.getDeclaredFields();
-            boolean loop = false;
-            List<ApiDocTypeBO> types = new ArrayList<>();
-            for (Field field : fields) {
-                Column col = field.getAnnotation(Column.class);
-                if(field.getGenericType().getTypeName().equals(type.getTypeName())){
-                    loop = true;
-                    break;
-                }
-                ApiDocTypeBO docType = getDocTypeBO(rootName, field.getName(), field.getGenericType());
-                if (col != null) {
-                    docType.setDatatype(docType.getDatatype());
-                    docType.setNullAble(col.nullable());
-                }
-                types.add(docType);
-            }
-            if(!loop){
-                bo.setFieldTypes(types);
-            }
+        if(isLoop){
             bo.setTsType(firstCharUpper(classToName(realClz.getName())));
             bo.setObject(true);
-        } else {
-            bo.setTsType(jsType);
-            bo.setObject(false);
+        }else{
+            if ("object".equals(jsType)&&!isLoop) {
+                Field[] fields = realClz.getDeclaredFields();
+                List<ApiDocTypeBO> types = new ArrayList<>();
+                for (Field field : fields) {
+                    Column col = field.getAnnotation(Column.class);
+                    boolean loop = false;
+                    if (field.getGenericType().getTypeName().equals(type.getTypeName())) {
+                        loop = true;
+                    }
+                    ApiDocTypeBO docType = getDocTypeBO(rootName, field.getName(), field.getGenericType(),loop);
+                    if (col != null) {
+                        docType.setDatatype(docType.getDatatype());
+                        docType.setNullAble(col.nullable());
+                    }
+                    types.add(docType);
+                }
+                bo.setFieldTypes(types);
+                bo.setTsType(firstCharUpper(classToName(realClz.getName())));
+                bo.setObject(true);
+            } else {
+                bo.setTsType(jsType);
+                bo.setObject(false);
+            }
         }
         return bo;
     }

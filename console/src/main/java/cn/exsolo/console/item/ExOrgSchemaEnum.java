@@ -7,14 +7,14 @@ import cn.exsolo.kit.item.stereotype.ItemProvider;
  * @date 2021/5/17
  **/
 
-@ItemProvider(tag = "EX_ROLE_SCHEMA",name="中台-系统角色类型")
-public enum ExRoleSchemaEnum {
+@ItemProvider(tag = "EX_ORG_SCHEMA",name="中台-组织管理类型",customAble = true)
+public enum ExOrgSchemaEnum {
 
-    NORMAL("一般用户"),ADMIN("系统管理");
+    DEFAULT("默认");
 
     private String label;
 
-    ExRoleSchemaEnum(String label) {
+    ExOrgSchemaEnum(String label) {
         this.label = label;
     }
 

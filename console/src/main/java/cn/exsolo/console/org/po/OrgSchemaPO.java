@@ -4,7 +4,6 @@ import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Index;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.kit.item.stereotype.BaseData;
 
 /**
  * TODO 将人员和部门的组合生成唯一的ID，只要搭配起来就可以做岗位
@@ -14,7 +13,6 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  * @date 2021/9/11
  **/
 @Table("ex_org_schema")
-@BaseData(name="组织类型表")
 @Index(name = "uq_ex_org_schema",unique = true,fields = "orgSchemaName")
 @Index(name = "uq_ex_org_schema_code",unique = true,fields = "orgSchemaCode")
 public class OrgSchemaPO extends AbstractSanBatisPO {
@@ -28,7 +26,7 @@ public class OrgSchemaPO extends AbstractSanBatisPO {
     @Column(name = "orgSchemaCode",nullable = false,maxLength = 128,datatype = "varchar(128)")
     private String orgSchemaCode;
 
-    @Column(name = "defaultSchema",nullable = false,maxLength = 2,datatype = "boolean")
+    @Column(name = "defaultSchema",maxLength = 2,datatype = "boolean")
     private Boolean defaultSchema;
 
     @Column(name = "orderNo",nullable = true,maxLength = 2,datatype = "smallint")

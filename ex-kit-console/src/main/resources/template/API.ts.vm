@@ -53,19 +53,22 @@ interface POST {
 
 export function get<URL extends keyof GET>(
   url: URL,
-  params?: GET[URL]['req']
+  data?: GET[URL]['req']
 ): Promise<GET[URL]['resp']> {
   return request.get<GET[URL]['resp']>({
     url,
-    params,
+    data,
   })
 }
 export function post<URL extends keyof POST>(
   url: URL,
-  params?: POST[URL]['req']
+  data?: POST[URL]['req']
 ): Promise<POST[URL]['resp']> {
   return request.post<POST[URL]['resp']>({
     url,
-    params,
+    data,
   })
+}
+export function download(url: string, data: object): Promise<null> {
+  return request.download({ url, data })
 }

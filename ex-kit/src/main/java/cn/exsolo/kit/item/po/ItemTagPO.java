@@ -4,7 +4,6 @@ import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Index;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.kit.item.ItemSchemaEnum;
 
 /**
  * 对象类型表
@@ -21,8 +20,8 @@ public class ItemTagPO extends AbstractSanBatisPO {
     /**
      * 对象类型 ITEM_SCHEMA 引用自 ItemSchemaEnum
      */
-    @Column(name = "schema",nullable = false,maxLength = 32,datatype = "varchar(32)")
-    private ItemSchemaEnum schema;
+    @Column(name = "itemType",nullable = false,maxLength = 32,datatype = "varchar(32)")
+    private String itemType;
 
     @Column(name = "name",nullable = false,maxLength = 128,datatype = "varchar(128)")
     private String name;
@@ -46,13 +45,6 @@ public class ItemTagPO extends AbstractSanBatisPO {
         this.id = id;
     }
 
-    public ItemSchemaEnum getSchema() {
-        return schema;
-    }
-
-    public void setSchema(ItemSchemaEnum schema) {
-        this.schema = schema;
-    }
 
     public String getName() {
         return name;
@@ -72,6 +64,14 @@ public class ItemTagPO extends AbstractSanBatisPO {
 
     public String getClz() {
         return clz;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 
     public void setClz(String clz) {

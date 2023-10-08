@@ -6,10 +6,10 @@ import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
-import cn.exsolo.console.item.ExUserStatusEnum;
 import cn.exsolo.console.render.UserStatusDataRenderValueMapper;
 import cn.exsolo.console.security.po.UserPO;
 import cn.exsolo.console.security.service.UserManageService;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.render.stereotype.DataRenderProvider;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +45,9 @@ public class UserManageController {
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
 
-        List<ExUserStatusEnum> enumStatus = null;
+        List<ItemCommStatusEnum> enumStatus = null;
         if (status != null) {
-            enumStatus = Arrays.stream(status).map(row -> Enum.valueOf(ExUserStatusEnum.class, row)).collect(Collectors.toList());
+            enumStatus = Arrays.stream(status).map(row -> Enum.valueOf(ItemCommStatusEnum.class, row)).collect(Collectors.toList());
         }
         return userManageService.page(cond, enumStatus, pagination);
     }
@@ -79,18 +79,18 @@ public class UserManageController {
     @AccessEdit
     @RequestMapping(path = "locked", method = RequestMethod.POST)
     public void userLocked(@RequestParam String userId) {
-        userManageService.updateUserStatus(userId, ExUserStatusEnum.LOCKED);
+        userManageService.updateUserStatus(userId, ItemCommStatusEnum.LOCKED);
     }
 
     @AccessEdit
     @RequestMapping(path = "deleted", method = RequestMethod.POST)
     public void userDeleted(@RequestParam String userId) {
-        userManageService.updateUserStatus(userId, ExUserStatusEnum.DELETED);
+        userManageService.updateUserStatus(userId, ItemCommStatusEnum.DELETED);
     }
 
     @AccessEdit
     @RequestMapping(path = "recover", method = RequestMethod.POST)
     public void userRecover(@RequestParam String userId) {
-        userManageService.updateUserStatus(userId, ExUserStatusEnum.NORMAL);
+        userManageService.updateUserStatus(userId, ItemCommStatusEnum.NORMAL);
     }
 }

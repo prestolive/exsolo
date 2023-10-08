@@ -175,6 +175,9 @@ public class Condition {
 
     public Condition and(Condition... conds){
         for(Condition cond:conds){
+            if(cond.getCompares().size()==0){
+                continue;
+            }
             this.compares.addAll(cond.getCompares());
         }
         return this;

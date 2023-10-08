@@ -1,7 +1,6 @@
 package cn.exsolo.console.render;
 
-import cn.exsolo.console.item.ExUserStatusEnum;
-import cn.exsolo.kit.ex.EsBuilderException;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.render.DataRenderValueMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.tuple.Pair;
@@ -27,13 +26,18 @@ public class UserStatusDataRenderValueMapper implements DataRenderValueMapper {
      * @return
      */
     @Override
-    public Map<String, JSONObject> getData(List<Pair<String, JSONObject>> pairList, String[] keyFields, MethodParameter methodParameter) {
+    public Map<String, JSONObject> getDataByKeys(List<Pair<String, JSONObject>> pairList, String[] keyFields, MethodParameter methodParameter) {
         Map<String,JSONObject> valueMapper= new HashMap<>();
-        for(ExUserStatusEnum item:ExUserStatusEnum.values()){
+        for(ItemCommStatusEnum item:ItemCommStatusEnum.values()){
             JSONObject target = new JSONObject();
-            target.put("label",item.getName());
+            target.put("label",item.getLabel());
             valueMapper.put(item.name(),target);
         }
         return valueMapper;
+    }
+
+    @Override
+    public void customRender(String keyValue, JSONObject row) {
+
     }
 }

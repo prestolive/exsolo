@@ -8,18 +8,20 @@ public class AuthResultVO {
 
     private Boolean success;
 
-    private String token;
+    private String accessToken;
+
+    private String refreshToken;
 
     private Boolean captchaRequire;
 
     private Long captchaExpireTime;
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public Boolean getSuccess() {
@@ -47,27 +49,36 @@ public class AuthResultVO {
         this.captchaExpireTime = captchaExpireTime;
     }
 
-    public AuthResultVO success(String token){
-        this.token =token;
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public AuthResultVO success(String accessToken,String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.success = true;
         this.captchaRequire = false;
         this.captchaExpireTime = System.currentTimeMillis();
         return this;
     }
 
-    public AuthResultVO fail(){
-        this.token = null;
+    public AuthResultVO fail() {
+        this.accessToken = null;
         this.success = false;
         this.captchaRequire = false;
         this.captchaExpireTime = System.currentTimeMillis();
         return this;
     }
 
-    public AuthResultVO failAndCaptchaRequire(long expireMillis){
-        this.token = null;
+    public AuthResultVO failAndCaptchaRequire(long expireMillis) {
+        this.accessToken = null;
         this.success = false;
         this.captchaRequire = true;
-        this.captchaExpireTime = System.currentTimeMillis()+expireMillis;
+        this.captchaExpireTime = System.currentTimeMillis() + expireMillis;
         return this;
     }
 }

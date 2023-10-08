@@ -4,7 +4,6 @@ import cn.exsolo.kit.render.DataRenderValueMapper;
 import cn.exsolo.kit.render.stereotype.DataRenderProvider;
 import cn.exsolo.kit.render.stereotype.DataRenderProviders;
 import cn.exsolo.springmvcext.SpringContext;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +64,7 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
         for (DataRenderProvider dataRenderProvider : dataRenderProviderList) {
             //处理类
             Class processClz = dataRenderProvider.dataRenderClass();
-            DataRenderValueMapper render = (DataRenderValueMapper) SpringContext.getContext().getBean(processClz);
+            DataRenderValueMapper renderProvider = (DataRenderValueMapper) SpringContext.getContext().getBean(processClz);
             //查出数据行
             List<JSONObject> requireRows = new ArrayList<>();
             String path = dataRenderProvider.path();
@@ -86,33 +85,33 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
                     pairList.add(pair);
                 }
                 //渲染查询
-                Map<String, JSONObject> valueMapper = render.getData(pairList, keyFields, methodParameter);
+                Map<String, JSONObject> valueMapper = renderProvider.getDataByKeys(pairList, keyFields, methodParameter);
                 for(Pair<String, JSONObject> pair:pairList){
-                    render(pair,valueMapper,dataRenderProvider);
+                    render(renderProvider,pair,valueMapper,dataRenderProvider);
                 }
             }
         }
         return obj;
     }
 
-    private void render(Pair<String, JSONObject> targetPair,Map<String, JSONObject> valueMapper,DataRenderProvider dataRenderProvider){
+    private void render(DataRenderValueMapper renderProvider,Pair<String, JSONObject> targetPair,Map<String, JSONObject> valueMapper,DataRenderProvider dataRenderProvider){
         String keyValue = targetPair.getLeft();
         JSONObject target = targetPair.getRight();
         JSONObject valueObj = valueMapper.get(keyValue);
-        if(valueObj==null){
-            return;
-        }
-        if(dataRenderProvider.wapperType()==DataRenderProvider.WapperType.alias){
-            String alias = dataRenderProvider.defineAlias();
-            if(StringUtils.isEmpty(alias)){
-                alias = "_"+StringUtils.join(dataRenderProvider.keyFields());
+        if(valueObj!=null){
+            if(dataRenderProvider.wapperType()==DataRenderProvider.WapperType.alias){
+                String alias = dataRenderProvider.defineAlias();
+                if(StringUtils.isEmpty(alias)){
+                    alias = "_"+StringUtils.join(dataRenderProvider.keyFields());
+                }
+                target.put(alias,valueObj.clone());
+            }else if(dataRenderProvider.wapperType()==DataRenderProvider.WapperType.flat){
+                for(String key:valueObj.keySet()){
+                    target.put(key,valueObj.get(key));
+                }
             }
-            target.put(alias,valueObj.clone());
-        }else if(dataRenderProvider.wapperType()==DataRenderProvider.WapperType.flat){
-            for(String key:valueObj.keySet()){
-                target.put(key,valueObj.get(key));
-            }
         }
+        renderProvider.customRender(keyValue,target);
     }
 
     private String getKeyValue(JSONObject row, String[] keyFields) {

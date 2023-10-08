@@ -1,18 +1,21 @@
-package cn.exsolo.kit.render.impl;
+package cn.exsolo.console.render;
 
 import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.Condition;
-import cn.exsolo.kit.item.po.ItemPO;
+import cn.exsolo.console.security.po.UserPO;
+import cn.exsolo.kit.render.impl.ExBatisPoDataRenderValueMapper;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Component;
 
 /**
  * @author prestolive
- * @date 2021/9/21
+ * @date 2023/9/27
  **/
-public class TestDataRenderValueMapper extends ExBatisPoDataRenderValueMapper {
+@Component
+public class UserInfoDataRenderValueMapper extends ExBatisPoDataRenderValueMapper {
     @Override
     public Class<? extends AbstractSanBatisPO> getPoClass() {
-        return ItemPO.class;
+        return UserPO.class;
     }
 
     @Override
@@ -27,7 +30,7 @@ public class TestDataRenderValueMapper extends ExBatisPoDataRenderValueMapper {
 
     @Override
     public String[] getValueFields() {
-        return new String[]{"schema,name,code"};
+        return new String[]{"loginCode", "userName", "status"};
     }
 
     @Override

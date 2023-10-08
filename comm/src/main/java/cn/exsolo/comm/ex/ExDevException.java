@@ -12,4 +12,8 @@ public class ExDevException extends RuntimeException{
     public ExDevException(String message) {
         super(message);
     }
+
+    public ExDevException(String message,Throwable e) {
+        super(message,e);
+    }
 }

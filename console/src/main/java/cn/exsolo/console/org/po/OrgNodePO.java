@@ -3,8 +3,7 @@ package cn.exsolo.console.org.po;
 import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.console.org.item.OrgNodeStatusEnum;
-import cn.exsolo.kit.item.stereotype.BaseData;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 
 /**
  * @author prestolive
@@ -12,7 +11,6 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  **/
 
 @Table("ex_org_node")
-@BaseData(name="组织节点表")
 public class OrgNodePO  extends AbstractSanBatisPO {
 
     @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
@@ -33,18 +31,23 @@ public class OrgNodePO  extends AbstractSanBatisPO {
     /**
      * 内码，每个节点2位16进制码，单个目录下最高支持256个节点，128长度支持64个层级
      */
-    @Column(name = "nodeInnerCode",nullable = false,maxLength = 128,datatype = "varchar(128)")
-    private String nodeInnerCode;
+    @Column(name = "innerCode",maxLength = 128,datatype = "varchar(128)")
+    private String innerCode;
 
     @Column(name = "parentId",maxLength = 24,datatype = "char(24)")
     private String parentId;
 
     @Column(name = "status",maxLength = 24,datatype = "varchar(24)")
-    private OrgNodeStatusEnum status;
+    private ItemCommStatusEnum status;
 
     @Column(name = "sortNo",datatype = "int(2)")
     private Integer sortNo;
 
+    @Column(name = "childCounts",datatype = "int(2)")
+    private Integer childCounts;
+
+    @Column(name = "modifiedBy",maxLength = 24,datatype = "char(24)")
+    private String modifiedBy;
 
     @Override
     public String getId() {
@@ -80,12 +83,12 @@ public class OrgNodePO  extends AbstractSanBatisPO {
         this.orgCode = orgCode;
     }
 
-    public String getNodeInnerCode() {
-        return nodeInnerCode;
+    public String getInnerCode() {
+        return innerCode;
     }
 
-    public void setNodeInnerCode(String nodeInnerCode) {
-        this.nodeInnerCode = nodeInnerCode;
+    public void setInnerCode(String innerCode) {
+        this.innerCode = innerCode;
     }
 
     public String getParentId() {
@@ -96,11 +99,11 @@ public class OrgNodePO  extends AbstractSanBatisPO {
         this.parentId = parentId;
     }
 
-    public OrgNodeStatusEnum getStatus() {
+    public ItemCommStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(OrgNodeStatusEnum status) {
+    public void setStatus(ItemCommStatusEnum status) {
         this.status = status;
     }
 
@@ -110,5 +113,21 @@ public class OrgNodePO  extends AbstractSanBatisPO {
 
     public void setSortNo(Integer sortNo) {
         this.sortNo = sortNo;
+    }
+
+    public Integer getChildCounts() {
+        return childCounts;
+    }
+
+    public void setChildCounts(Integer childCounts) {
+        this.childCounts = childCounts;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
     }
 }

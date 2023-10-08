@@ -1,5 +1,6 @@
 package cn.exsolo.auth.utils;
 
+import cn.hutool.core.lang.Pair;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentParser;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import java.net.InetAddress;
 
 /**
  * Created by wuby on 2018/8/21.
+ *
  * @author prestolive
  */
 public class AccessUtil {
@@ -50,11 +52,12 @@ public class AccessUtil {
 
     /**
      * APP和微信客户端 token 从http header中获取，PC需要从cookie获取
+     *
      * @param
      * @param req
      * @return
      */
-    public static String getToken(ServletRequest arg){
+    public static String getToken(ServletRequest arg) {
         HttpServletRequest req = (HttpServletRequest) arg;
         String token = null;
 
@@ -64,9 +67,9 @@ public class AccessUtil {
         }
         if (StringUtils.isEmpty(token)) {
             Cookie[] cookies = req.getCookies();
-            if(cookies!=null){
-                for(Cookie cookie : cookies){
-                    if(cookie.getName().equals(TOKEN_FIELD)){
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals(TOKEN_FIELD)) {
                         token = cookie.getValue();
                     }
                 }
@@ -75,13 +78,11 @@ public class AccessUtil {
         return token;
     }
 
-    public static String getClient(HttpServletRequest req){
-        String client = req.getParameter("_client");
-        if(StringUtils.isEmpty(client)){
-            UserAgent userAgent = UserAgentParser.parse(req.getHeader("User-Agent"));
-            client = userAgent.getOs().getName();
-        }
-        return client;
+    public static Pair<String, String> getUa(HttpServletRequest req) {
+        UserAgent userAgent = UserAgentParser.parse(req.getHeader("User-Agent"));
+        String platform = userAgent.getPlatform().getName();
+        String ua = userAgent.toString();
+        return Pair.of(platform, ua);
     }
 
 }

@@ -3,7 +3,6 @@ package cn.exsolo.console.security.po;
 import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.kit.item.stereotype.BaseData;
 
 /**
  * @author prestolive
@@ -11,7 +10,6 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  **/
 
 @Table("ex_user_flat_permission")
-@BaseData(name="用户权限总表")
 public class UserFlatPermissionPO extends AbstractSanBatisPO {
 
     @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")

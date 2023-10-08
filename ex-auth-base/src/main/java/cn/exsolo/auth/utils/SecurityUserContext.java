@@ -17,6 +17,6 @@ public class SecurityUserContext {
         if(token==null){
             return null;
         }
-        return TokenUtil.getUserID(token);
+        return AccessTokenUtil.getUserID(token);
     }
 }

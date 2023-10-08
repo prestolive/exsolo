@@ -4,7 +4,6 @@ import cn.exsolo.batis.core.AbstractSanBatisPO;
 import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.batis.core.stereotype.Index;
 import cn.exsolo.batis.core.stereotype.Table;
-import cn.exsolo.kit.item.stereotype.BaseData;
 
 /**
  * @author prestolive
@@ -12,7 +11,6 @@ import cn.exsolo.kit.item.stereotype.BaseData;
  **/
 
 @Table("ex_user_role")
-@BaseData(name="系统用户角色表")
 @Index(name = "uq_ex_user_role",unique = true,fields = "userId,roleId,orgId")
 public class UserRolePO extends AbstractSanBatisPO {
 
