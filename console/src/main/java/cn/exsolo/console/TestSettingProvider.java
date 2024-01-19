@@ -29,7 +29,7 @@ public class TestSettingProvider {
     public static BigDecimal decimal;
 
     @SettingProp(label = "测试picker", group = "group2", desc = "测试描述",
-            inputType = SettingProp.InputType.PICKER, pickerCode = "default_user_picker", isRequireInInit = false, defaultValue = "")
+            inputType = SettingProp.InputType.PICKER, dataRefCode = "DEFAULT_USER_PICKER", isRequireInInit = false, defaultValue = "")
     public static String pickeridxx;
 
     @SettingProp(label = "测试日期", group = "group2", desc = "测试描述",

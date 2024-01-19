@@ -1,7 +1,5 @@
 package cn.exsolo.springmvcext.in.out;
 
-import org.springframework.lang.NonNull;
-
 public class BaseResponse<T> {
 
     /**
@@ -11,6 +9,7 @@ public class BaseResponse<T> {
 
     private String errcode;
     private String errmsg;
+    private String stack;
 
     private T data;
 
@@ -61,5 +60,13 @@ public class BaseResponse<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public String getStack() {
+        return stack;
+    }
+
+    public void setStack(String stack) {
+        this.stack = stack;
     }
 }

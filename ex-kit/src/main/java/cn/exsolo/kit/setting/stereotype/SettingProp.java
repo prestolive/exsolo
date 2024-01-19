@@ -24,7 +24,8 @@ public @interface SettingProp {
         MONTH,
         YEAR,
         DATETIME,
-        PICKER
+        PICKER,
+        SELECTOR,
     }
 
     String label();
@@ -37,8 +38,8 @@ public @interface SettingProp {
 
     InputType inputType();
 
-    /* 如果是picker类型，设置picker的 code在此 */
-    String pickerCode() default "";
+    /* 如果是picker,select类型，设置注册的 code在此 */
+    String dataRefCode() default "";
 
     /* 词头 */
     String prefix() default "";

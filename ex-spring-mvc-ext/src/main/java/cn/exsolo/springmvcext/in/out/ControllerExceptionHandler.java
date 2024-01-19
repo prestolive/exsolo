@@ -1,6 +1,8 @@
 package cn.exsolo.springmvcext.in.out;
 
 import cn.exsolo.comm.ex.*;
+import cn.exsolo.kit.DevKitSettingProvider;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +15,7 @@ import java.lang.reflect.Method;
 
 /**
  * 全局异常处理类
+ *
  * @author prestolive
  */
 @ControllerAdvice
@@ -31,28 +34,28 @@ public class ControllerExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleGlobalException(Throwable e) {
         e.printStackTrace();
-        return new BaseResponse<>(-1,EX_UNKNOWN_EXCEPTION_ERROR_CODE,e.getMessage());
+        return new BaseResponse<>(-1, EX_UNKNOWN_EXCEPTION_ERROR_CODE, e.getMessage());
     }
 
     @ExceptionHandler(ExDevException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleDevException(Throwable e) {
         e.printStackTrace();
-        return new BaseResponse<>(-1,EX_DEV_EXCEPTION_ERROR_CODE,e.getMessage());
+        return new BaseResponse<>(-1, EX_DEV_EXCEPTION_ERROR_CODE, e.getMessage());
     }
 
     @ExceptionHandler(ExNeverException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleNeverException(Throwable e) {
         e.printStackTrace();
-        return new BaseResponse<>(-1,EX_NEVER_EXCEPTION_ERROR_CODE,e.getMessage());
+        return new BaseResponse<>(-1, EX_NEVER_EXCEPTION_ERROR_CODE, e.getMessage());
     }
 
     @ExceptionHandler(ExBizException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleBizException(Throwable e) {
         e.printStackTrace();
-        return new BaseResponse<>(-1,EX_BIZ_EXCEPTION_ERROR_CODE,e.getMessage());
+        return new BaseResponse<>(-1, EX_BIZ_EXCEPTION_ERROR_CODE, e.getMessage());
     }
 
     @ExceptionHandler(ExDeclaredException.class)
@@ -60,25 +63,35 @@ public class ControllerExceptionHandler {
     public BaseResponse<?> handleDeclaredException(Throwable e) {
         e.printStackTrace();
         ExDeclaredException exception = (ExDeclaredException) e;
-        String errcode= exception.getErrorItem().name();
+        String errcode = exception.getErrorItem().name();
         String errmsg = formatErrorMessage(exception);
-        return new BaseResponse<>(-1,errcode,errmsg,exception.getResponseData());
+        BaseResponse resp = new BaseResponse<>(-1, errcode, errmsg, exception.getResponseData());
+        if(DevKitSettingProvider.IS_ALLOW_WEB_ERROR_STACK){
+            fillStack(resp,e);
+        }
+        return resp;
     }
 
 
     /**
      * 从ExDeclaredException 的错误枚举中，默认提取name，用来输出套打后的错误消息。
+     *
      * @param exception
      * @return
      */
-    private String formatErrorMessage(ExDeclaredException exception){
+    private String formatErrorMessage(ExDeclaredException exception) {
         try {
-            Method method = exception.getErrorItem().getClass().getMethod("getName");
+            Method method = exception.getErrorItem().getClass().getMethod("getLabel");
             String messageFmt = (String) method.invoke(exception.getErrorItem());
-            String message = String.format(messageFmt,exception.getArgs());
+            String message = String.format(messageFmt, exception.getArgs());
             return message;
         } catch (Exception e) {
             return "unknown error, failed to pick error message.";
         }
+    }
+
+    private void fillStack(BaseResponse resp,Throwable e){
+        String errorStr = ExceptionUtils.getStackTrace(e);
+        resp.setStack(errorStr);
     }
 }

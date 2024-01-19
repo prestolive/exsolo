@@ -1,5 +1,7 @@
 package cn.exsolo.console.item;
 
+import cn.exsolo.batis.core.utils.GenerateID;
+
 /**
  * @author prestolive
  * @date 2021/6/26
@@ -7,7 +9,8 @@ package cn.exsolo.console.item;
 public class TestPermission {
 
      public static void main(String[] args) {
-          ExOrgSchemaEnum exOrgSchemaEnum = ExOrgSchemaEnum.valueOf("xxxxxx");
-          System.out.println(exOrgSchemaEnum);
+          for(int i=0;i<100;i++){
+               System.out.println(GenerateID.generateShortUuid());
+          }
      }
 }

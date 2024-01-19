@@ -12,6 +12,7 @@ import cn.exsolo.batis.core.stereotype.Table;
  * @author prestolive
  * @date 2021/9/11
  **/
+@Deprecated
 @Table("ex_org_schema")
 @Index(name = "uq_ex_org_schema",unique = true,fields = "orgSchemaName")
 @Index(name = "uq_ex_org_schema_code",unique = true,fields = "orgSchemaCode")

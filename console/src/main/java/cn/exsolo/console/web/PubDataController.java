@@ -4,6 +4,8 @@ import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.console.picker.PickerFactory;
+import cn.exsolo.console.pub.service.ItemQueryService;
+import cn.exsolo.console.pub.vo.CommItemVO;
 import cn.exsolo.kit.picker.IPicker;
 import cn.exsolo.kit.picker.bo.ExPickerOptionBO;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
@@ -24,10 +26,13 @@ import java.util.List;
 @Component
 @RequestMapping("api/console/")
 @RestController()
-public class PickerController {
+public class PubDataController {
 
     @Autowired
     private PickerFactory pickerFactory;
+
+    @Autowired
+    private ItemQueryService itemQueryService;
 
     @RequestMapping(path = "picker/find", method = RequestMethod.POST)
     public PageObject<ExPickerOptionBO> find(
@@ -46,6 +51,12 @@ public class PickerController {
         IPicker picker = pickerFactory.getPicker(code);
         List<ExPickerOptionBO> list = picker.getList(Arrays.asList(ids));
         return list;
+    }
+
+
+    @RequestMapping(path = "select/list", method = RequestMethod.POST)
+    public List<CommItemVO> selectList(@RequestJSON String tag) {
+        return itemQueryService.getSelectList(tag);
     }
 
 

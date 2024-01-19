@@ -2,8 +2,8 @@ package cn.exsolo.authserver.web;
 
 import cn.exsolo.auth.AuthBaseSettingProvider;
 import cn.exsolo.auth.shiro.LoginAuthenticationToken;
-import cn.exsolo.auth.utils.CaptchaUtil;
 import cn.exsolo.auth.utils.AccessTokenUtil;
+import cn.exsolo.auth.utils.CaptchaUtil;
 import cn.exsolo.auth.vo.AuthResultVO;
 import cn.exsolo.auth.vo.CaptchaCheckVO;
 import cn.exsolo.auth.vo.CaptchaVO;
@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Ref;
 import java.util.Locale;
 
 

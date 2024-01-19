@@ -31,7 +31,7 @@ public class ExSettingInstanceVO {
 
     /* 以下是界面相关的属性，并不持久化 */
 
-    private String pickerCode;
+    private String dataRefCode;
 
     private String desc;
 
@@ -63,12 +63,12 @@ public class ExSettingInstanceVO {
         this.desc = desc;
     }
 
-    public String getPickerCode() {
-        return pickerCode;
+    public String getDataRefCode() {
+        return dataRefCode;
     }
 
-    public void setPickerCode(String pickerCode) {
-        this.pickerCode = pickerCode;
+    public void setDataRefCode(String dataRefCode) {
+        this.dataRefCode = dataRefCode;
     }
 
     public Integer getSortNo() {

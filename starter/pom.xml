@@ -43,8 +43,23 @@
             <artifactId>ex-auth-server</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>ex-bpm</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.9</version>
         </dependency>
     </dependencies>
 

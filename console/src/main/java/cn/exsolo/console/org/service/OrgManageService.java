@@ -83,7 +83,7 @@ public class OrgManageService {
         checkNode(org, parentId);
         baseDAO.insertOrUpdateValueObject(org);
         //重置同级的的顺序号和内码
-        rebuildOrderAndInnerCode(org.getSchemaId(), org.getParentId());
+        rebuildOrderAndInnerCode(org.getSchemaCode(), org.getParentId());
     }
 
     public void modifyNode(OrgNodePO org) {
@@ -109,12 +109,12 @@ public class OrgManageService {
     /**
      * 获得下一代
      *
-     * @param schemaId
+     * @param schemaCode
      * @param parentId
      * @return
      */
-    public List<OrgNodePO> getNodeChildren(String schemaId, String parentId) {
-        ExAssert.isNull(schemaId);
+    public List<OrgNodePO> getNodeChildren(String schemaCode, String parentId) {
+        ExAssert.isNull(schemaCode);
         Condition cond = new Condition();
         if (StringUtils.isEmpty(parentId)) {
             cond.isNull(parentId);
@@ -127,10 +127,10 @@ public class OrgManageService {
     }
 
 
-    public PageObject<OrgNodePO> orgPage(String schemaId, String parentId, Condition fCond, Pagination pagination) {
-        ExAssert.isNull(schemaId);
+    public PageObject<OrgNodePO> orgPage(String schemaCode, String parentId, Condition fCond, Pagination pagination) {
+        ExAssert.isNull(schemaCode);
         Condition cond = new Condition();
-        cond.eq("schemaId", schemaId);
+        cond.eq("schemaCode", schemaCode);
         if (StringUtils.isNotEmpty(parentId)) {
             OrgNodePO parent = getOrg(parentId);
             cond.lkl("innerCode", parent.getInnerCode() + "__");
@@ -156,7 +156,7 @@ public class OrgManageService {
     public void deleteNode(OrgNodePO node) {
         ExAssert.isNull(node);
         //FIXME 删除所有子节点
-        List<OrgNodePO> children = getNodeChildren(node.getSchemaId(), node.getId());
+        List<OrgNodePO> children = getNodeChildren(node.getSchemaCode(), node.getId());
         if (children != null && children.size() > 0) {
             for (OrgNodePO child : children) {
                 deleteNode(child);
@@ -187,14 +187,14 @@ public class OrgManageService {
     /**
      * 获取树形节点
      *
-     * @param schemaId  组织类型ID
+     * @param schemaCode  组织类型ID
      * @param parentId  父级ID
      * @param deepLevel 往下加载几级数据
      * @return
      */
-    public List<OrgTreeNodeVO> getTreeNode(String schemaId, String parentId, Integer deepLevel) {
+    public List<OrgTreeNodeVO> getTreeNode(String schemaCode, String parentId, Integer deepLevel) {
         Condition cond = new Condition();
-        cond.eq("schemaId", schemaId);
+        cond.eq("schemaCode", schemaCode);
         if (StringUtils.isNotEmpty(parentId)) {
             cond.eq("parentId", parentId);
         }
@@ -242,8 +242,8 @@ public class OrgManageService {
     }
 
 
-    public void rebuildOrderAndInnerCode(String schemaId, String parentId) {
-        List<OrgNodePO> list = getNodeChildren(schemaId, parentId);
+    public void rebuildOrderAndInnerCode(String schemaCode, String parentId) {
+        List<OrgNodePO> list = getNodeChildren(schemaCode, parentId);
         if (list == null || list.size() == 0) {
             return;
         }
@@ -259,7 +259,7 @@ public class OrgManageService {
             row.setInnerCode(innerCodePath + code);
             row.setSortNo((i + 1) * 10);
             baseDAO.insertOrUpdateValueObject(row);
-            rebuildOrderAndInnerCode(schemaId, row.getId());
+            rebuildOrderAndInnerCode(schemaCode, row.getId());
         }
 
     }

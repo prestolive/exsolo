@@ -13,6 +13,7 @@
         <module>starter</module>
         <module>ex-auth-base</module>
         <module>ex-auth-server</module>
+        <module>ex-bpm</module>
     </modules>
     <!-- 父工程没东西，主要是控制子工程的版本 参考 https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E -->
     <parent>
@@ -110,6 +111,11 @@
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-server</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>ex-bpm</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>

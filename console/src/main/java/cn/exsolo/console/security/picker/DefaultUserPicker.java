@@ -24,7 +24,7 @@ public class DefaultUserPicker implements IPicker {
 
     @Override
     public String getCode() {
-        return "default_user_picker";
+        return "DEFAULT_USER_PICKER";
     }
 
     @Override

@@ -17,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "cn.exsolo.springmvcext",
         "cn.exsolo.auth",
         "cn.exsolo.authserver",
+        "cn.exsolo.bpm",
         "cn.exsolo.starter",
 })
 @ServletComponentScan(basePackages = "cn.exsolo")

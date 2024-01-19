@@ -83,6 +83,15 @@ public class SettingClzHelper {
                     field.set(clz, value);
                     break;
                 }
+                case SELECTOR:{
+                    if(field.getType().isEnum()){
+                        Class enumType= field.getType();
+                        field.set(clz,Enum.valueOf(enumType,valueStr));
+                    }else{
+                        field.set(clz, valueStr);
+                    }
+                    break;
+                }
                 case STRING:
                 case DATE:
                 case MONTH:

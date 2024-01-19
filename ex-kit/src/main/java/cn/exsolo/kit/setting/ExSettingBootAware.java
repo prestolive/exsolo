@@ -53,7 +53,7 @@ public class ExSettingBootAware implements ApplicationContextAware {
                     vo.setPropValue(settingProp.defaultValue());
                     vo.setInputType(settingProp.inputType());
                     //界面属性，不做持久化的部分
-                    vo.setPickerCode(settingProp.pickerCode());
+                    vo.setDataRefCode(settingProp.dataRefCode());
                     vo.setSortNo(i++);
                     vo.setDesc(settingProp.desc());
                     vo.setPrefix(settingProp.prefix());

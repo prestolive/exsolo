@@ -27,6 +27,12 @@ public class ExAnnotationUtil {
         public boolean check(Class<?> cls);
     }
 
+    /**
+     * 获取context下的注解实现类
+     * @param applicationContext
+     * @param annotation
+     * @return
+     */
     public static List<Class<?>> getAnnotationFromContext(ApplicationContext applicationContext, final Class<? extends Annotation> annotation) {
         List<Class<?>> list = new ArrayList<>();
         String[] packages = getBasePackages(applicationContext);
@@ -97,7 +103,7 @@ public class ExAnnotationUtil {
     }
 
 
-    public static List<Class<?>> finalClassByFilter(String packageName, ClassFilter filter) {
+    private static List<Class<?>> finalClassByFilter(String packageName, ClassFilter filter) {
 
         // 第一个class类的集合
         List<Class<?>> results = new ArrayList<Class<?>>();

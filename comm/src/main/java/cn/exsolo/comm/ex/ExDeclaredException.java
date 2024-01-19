@@ -13,7 +13,7 @@ public class ExDeclaredException extends ExBizException{
     private Object responseData;
 
     public ExDeclaredException(Enum errorItem, Object ...args) {
-        super();
+        super(errorItem.name());
         this.errorItem = errorItem;
         this.args = args;
     }

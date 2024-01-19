@@ -6,6 +6,8 @@ import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
+import cn.exsolo.comm.ex.ExBizException;
+import cn.exsolo.comm.ex.ExDevException;
 import cn.exsolo.console.org.po.OrgNodePO;
 import cn.exsolo.console.org.po.OrgSchemaPO;
 import cn.exsolo.console.org.service.OrgManageService;
@@ -63,8 +65,8 @@ public class OrgManageController {
 
     @AccessView
     @RequestMapping(path = "tree-node", method = RequestMethod.POST)
-    public List<OrgTreeNodeVO> treeNode(@RequestJSON() String schemaId,@RequestJSON() String parentId) {
-        List<OrgTreeNodeVO> trees = orgManageService.getTreeNode(schemaId,parentId,3);
+    public List<OrgTreeNodeVO> treeNode(@RequestJSON() String schemaCode,@RequestJSON() String parentId) {
+        List<OrgTreeNodeVO> trees = orgManageService.getTreeNode(schemaCode,parentId,3);
         return trees;
     }
     @AccessView
@@ -77,11 +79,11 @@ public class OrgManageController {
     @AccessView
     @RequestMapping(path = "children-page", method = RequestMethod.POST)
     public PageObject<OrgNodePO> page(
-            @RequestJSON String schemaId,
+            @RequestJSON String schemaCode,
             @RequestJSON String parentId,
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
-        return orgManageService.orgPage(schemaId,parentId,cond,pagination);
+        return orgManageService.orgPage(schemaCode,parentId,cond,pagination);
     }
 
     @AccessEdit

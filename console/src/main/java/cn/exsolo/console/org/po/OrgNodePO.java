@@ -16,8 +16,8 @@ public class OrgNodePO  extends AbstractSanBatisPO {
     @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
     private String id;
 
-    @Column(name = "schemaId",nullable = false,maxLength = 24,datatype = "char(24)")
-    private String schemaId;
+    @Column(name = "schemaCode",nullable = false,maxLength = 24,datatype = "varchar(64)")
+    private String schemaCode;
 
     @Column(name = "orgName",nullable = false,maxLength = 128,datatype = "varchar(128)")
     private String orgName;
@@ -59,12 +59,12 @@ public class OrgNodePO  extends AbstractSanBatisPO {
         this.id = id;
     }
 
-    public String getSchemaId() {
-        return schemaId;
+    public String getSchemaCode() {
+        return schemaCode;
     }
 
-    public void setSchemaId(String schemaId) {
-        this.schemaId = schemaId;
+    public void setSchemaCode(String schemaCode) {
+        this.schemaCode = schemaCode;
     }
 
     public String getOrgName() {
