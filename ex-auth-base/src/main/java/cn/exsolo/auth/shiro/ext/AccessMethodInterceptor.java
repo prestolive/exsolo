@@ -44,7 +44,7 @@ public class AccessMethodInterceptor extends AuthorizingAnnotationMethodIntercep
         }
         String[] keys = getAnnotationKeys(accessProvider.module(),accessProvider.node(),mi);
         //FIXME 关闭权限校验
-//        subject.checkPermissions(keys);
+        subject.checkPermissions(keys);
     }
 
     private String[] getAnnotationKeys(String module, String node, MethodInvocation mi){

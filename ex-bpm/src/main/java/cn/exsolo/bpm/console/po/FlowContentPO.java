@@ -1,22 +1,24 @@
 package cn.exsolo.bpm.console.po;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Index;
-import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.batis.core.AbstractPO;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * @author prestolive
- * @date 2023/10/25
+ * @date 2021/10/25
  **/
 
-@Table("ex_bpm_flow_content")
-public class FlowContentPO extends AbstractSanBatisPO {
+@Table(name="ex_bpm_flow_content")
+public class FlowContentPO extends AbstractPO {
 
-    @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "varchar(64)")
+    @Id
+    @Column(name = "id",nullable = false,length = 24,columnDefinition = "varchar(64)")
     private String id;
 
-    @Column(name = "content",datatype = "text")
+    @Column(name = "content",columnDefinition = "text")
     private String content;
 
     @Override

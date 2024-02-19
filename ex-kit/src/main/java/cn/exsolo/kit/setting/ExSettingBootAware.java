@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * FIXME 执行顺序
  * @author prestolive
- * @date 2023/10/4
+ * @date 2021/10/4
  **/
 @Component
 public class ExSettingBootAware implements ApplicationContextAware {

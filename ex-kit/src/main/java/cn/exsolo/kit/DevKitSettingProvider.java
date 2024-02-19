@@ -5,7 +5,7 @@ import cn.exsolo.kit.setting.stereotype.SettingProvider;
 
 /**
  * @author prestolive
- * @date 2023/10/10
+ * @date 2021/10/10
  **/
 @SettingProvider("开发套件")
 public class DevKitSettingProvider {

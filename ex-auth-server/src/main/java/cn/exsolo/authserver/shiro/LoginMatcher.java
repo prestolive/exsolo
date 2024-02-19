@@ -1,16 +1,14 @@
 package cn.exsolo.authserver.shiro;
 
+import cn.exsolo.auth.passwd.utils.PasswordHelper;
 import cn.exsolo.auth.shiro.LoginAuthenticationToken;
 import cn.exsolo.authserver.service.AuthCacheService;
-import cn.exsolo.authserver.utils.PasswordHelper;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * @author prestolive
@@ -34,7 +32,7 @@ public class LoginMatcher extends SimpleCredentialsMatcher {
         LoginAuthenticationInfo loginInfo = (LoginAuthenticationInfo) info;
         LoginAuthenticationToken loginToken = (LoginAuthenticationToken) token;
         String salt = loginInfo.getSlat();
-        String encryptStr = PasswordHelper.encryptPassword(loginToken.getPassword(), salt);
+        String encryptStr = PasswordHelper.defaultPasswordEncrypt(loginToken.getPassword(), salt);
         loginToken.setCredentials(encryptStr);
         boolean check =  super.doCredentialsMatch(token, info);
         if(check){

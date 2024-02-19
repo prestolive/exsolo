@@ -46,7 +46,7 @@
         </dependency>
         <dependency>
             <groupId>cn.exsolo</groupId>
-            <artifactId>console</artifactId>
+            <artifactId>ex-basic</artifactId>
         </dependency>
     </dependencies>
 

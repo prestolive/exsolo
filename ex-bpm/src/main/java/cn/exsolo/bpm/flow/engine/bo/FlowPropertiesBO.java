@@ -2,7 +2,7 @@ package cn.exsolo.bpm.flow.engine.bo;
 
 /**
  * @author prestolive
- * @date 2023/10/24
+ * @date 2021/10/24
  **/
 public class FlowPropertiesBO {
 

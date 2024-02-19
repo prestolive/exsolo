@@ -89,7 +89,8 @@ public class DefaultRealm extends AuthorizingRealm {
             String token = defaultToken.getToken();
             AccessTokenUtil.verifyAccessToken(token, authPublicKey);
             String userCode = AccessTokenUtil.getUserCode(token);
-            return new SimpleAuthenticationInfo("0", "0", userCode);
+            String userId = AccessTokenUtil.getUserID(token);
+            return new SimpleAuthenticationInfo("0", "0", userId);
         }
         throw new AuthenticationException("未定义的认证方式");
 //        String token = (String) authenticationToken.getPrincipal()

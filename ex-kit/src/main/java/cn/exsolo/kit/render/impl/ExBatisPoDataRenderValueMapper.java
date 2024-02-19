@@ -1,6 +1,6 @@
 package cn.exsolo.kit.render.impl;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
+import cn.exsolo.batis.core.AbstractPO;
 import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.comm.ex.ExDevException;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  **/
 public abstract class ExBatisPoDataRenderValueMapper implements DataRenderValueMapper {
 
-    public  abstract Class<? extends AbstractSanBatisPO> getPoClass();
+    public  abstract Class<? extends AbstractPO> getPoClass();
 
     public abstract String getMappedKeyField();
 

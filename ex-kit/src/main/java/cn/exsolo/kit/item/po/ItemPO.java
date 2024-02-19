@@ -1,46 +1,47 @@
 package cn.exsolo.kit.item.po;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Index;
-import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.batis.core.AbstractPO;
 import cn.exsolo.kit.item.ItemCommStatusEnum;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 /**
  * 对象表
  * @author prestolive
  * @date 2021/3/14
  **/
-@Table("s_item")
-@Index(name = "idx_s_item_tag",unique = false,fields = "tag")
-@Index(name = "uq_s_item_a",unique = true,fields = "tag,code")
-public class ItemPO extends AbstractSanBatisPO {
+@Table(name="s_item",indexes = {@Index(columnList = "tag"),@Index(columnList = "tag,code",unique = true)})
+public class ItemPO extends AbstractPO {
 
-    @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
+    @Id
+    @Column(name = "id",nullable = false,length = 24,columnDefinition = "char(24)")
     private String id;
 
-    @Column(name = "tag",nullable = false,maxLength = 64,datatype = "varchar(64)")
+    @Column(name = "tag",nullable = false,length = 64,columnDefinition = "varchar(64)")
     private String tag;
 
-    @Column(name = "itemType",nullable = false,maxLength = 32,datatype = "varchar(32)")
+    @Column(name = "itemType",nullable = false,length = 32,columnDefinition = "varchar(32)")
     private String itemType;
 
-    @Column(name = "code",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "code",nullable = false,length = 128,columnDefinition = "varchar(128)")
     private String code;
 
-    @Column(name = "name",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "name",nullable = false,length = 128,columnDefinition = "varchar(128)")
     private String name;
 
-    @Column(name = "sys",nullable = false,maxLength = 2,datatype = "boolean")
+    @Column(name = "sys",nullable = false,length = 2,columnDefinition = "boolean")
     private Boolean sys;
 
-    @Column(name = "text",nullable = false,maxLength = 2,datatype = "boolean")
+    @Column(name = "text",nullable = false,length = 2,columnDefinition = "boolean")
     private Boolean text;
 
-    @Column(name = "status",nullable = false,maxLength = 16,datatype = "varchar(16)")
+    @Column(name = "status",nullable = false,length = 16,columnDefinition = "varchar(16)")
     private ItemCommStatusEnum status;
 
-    @Column(name = "pid",maxLength = 24,datatype = "char(24)")
+    @Column(name = "pid",length = 24,columnDefinition = "char(24)")
     private String pid;
 
     @Override

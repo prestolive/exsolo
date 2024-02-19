@@ -28,11 +28,15 @@
         </dependency>
         <dependency>
             <groupId>cn.exsolo</groupId>
-            <artifactId>console</artifactId>
+            <artifactId>ex-basic</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.exsolo</groupId>
             <artifactId>ex-kit-console</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>console</artifactId>
         </dependency>
         <dependency>
             <groupId>cn.exsolo</groupId>

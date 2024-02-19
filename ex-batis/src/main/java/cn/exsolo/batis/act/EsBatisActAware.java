@@ -10,7 +10,6 @@ import cn.exsolo.batis.act.utils.ActAnnotationUtil;
 import cn.exsolo.batis.act.utils.DatabaseType;
 import cn.exsolo.batis.act.bo.ActTableBO;
 import cn.exsolo.batis.act.utils.DbFieldUtil;
-import cn.exsolo.batis.core.stereotype.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Table;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,51 +1,54 @@
 package cn.exsolo.authserver.po;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.batis.core.AbstractPO;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * 用于记录refresh token 的表，该表的id就是refresh token中的ticketId
  * @author prestolive
- * @date 2023/10/5
+ * @date 2021/10/5
  **/
-@Table("s_alive")
-public class AliveInstancePO extends AbstractSanBatisPO {
+@Table(name="s_alive")
+public class AliveInstancePO extends AbstractPO {
 
-    @Column(name = "id", primary = true, nullable = false, maxLength = 24, datatype = "char(24)")
+    @Id
+    @Column(name = "id",  nullable = false, length = 24, columnDefinition = "char(24)")
     private String id;
 
-    @Column(name = "loginCode",maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "loginCode",length = 128,columnDefinition = "varchar(128)")
     private String loginCode;
 
     /**
      * 平台 pc app h5 微信小程序 支付宝小程序等，一般用于约束同一个平台允许在线一个账号
      */
-    @Column(name = "platform",maxLength = 32,datatype = "varchar(32)")
+    @Column(name = "platform",length = 32,columnDefinition = "varchar(32)")
     private String platform;
     /**
      * 登录ip
      */
-    @Column(name = "ip",maxLength = 64,datatype = "varchar(64)")
+    @Column(name = "ip",length = 64,columnDefinition = "varchar(64)")
     private String ip;
 
-    @Column(name = "ua",maxLength = 256,datatype = "varchar(256)")
+    @Column(name = "ua",length = 256,columnDefinition = "varchar(256)")
     private String ua;
 
     /**
      * 登录日期和过期日期，也没什么用，纯记录而已
      */
-    @Column(name = "activeTs",maxLength = 19,datatype = "char(19)")
+    @Column(name = "activeTs",length = 19,columnDefinition = "char(19)")
     private String activeTs;
 
-    @Column(name = "expireTs",maxLength = 19,datatype = "char(19)")
+    @Column(name = "expireTs",length = 19,columnDefinition = "char(19)")
     private String expireTs;
 
     /**
      * 状态 0 是normal，1 已经过期通过定时任务定期更新，非0都是要下线的。-1 挤下线 -2 手动强制掉线
      * 只有 -1 -2 会在使用refresh token请求新access token时候直接给予拒绝，其它的状态只是为了查询
      */
-    @Column(name = "status",maxLength = 2,datatype = "int(2)")
+    @Column(name = "status",length = 2,columnDefinition = "int(2)")
     private Integer status;
 
     @Override

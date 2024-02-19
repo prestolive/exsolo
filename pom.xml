@@ -5,15 +5,17 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>comm</module>
-        <module>console</module>
+        <module>ex-basic</module>
         <module>ex-batis</module>
         <module>ex-spring-mvc-ext</module>
         <module>ex-kit-console</module>
         <module>ex-kit</module>
         <module>starter</module>
+        <module>ex-auth-passwd</module>
         <module>ex-auth-base</module>
         <module>ex-auth-server</module>
         <module>ex-bpm</module>
+        <module>console</module>
     </modules>
     <!-- 父工程没东西，主要是控制子工程的版本 参考 https://github.com/alibaba/spring-cloud-alibaba/wiki/%E7%89%88%E6%9C%AC%E8%AF%B4%E6%98%8E -->
     <parent>
@@ -78,6 +80,12 @@
                 <artifactId>comm</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
+
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>console</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-batis</artifactId>
@@ -95,12 +103,17 @@
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
-                <artifactId>console</artifactId>
+                <artifactId>ex-basic</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-spring-mvc-ext</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.exsolo</groupId>
+                <artifactId>ex-auth-passwd</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>

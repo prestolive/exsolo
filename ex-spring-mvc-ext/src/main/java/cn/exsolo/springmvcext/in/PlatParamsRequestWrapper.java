@@ -65,6 +65,8 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
 //            JSONObject parameter = JSONUtil.parseFromXml(this.getBodyMessage()).getJSONObject("request");
 //            this.addAllParameters(parameter);
         } else {
+            //解析数据流数据
+            saveInputStreamData(request);
             Enumeration<String> headerNames = request.getParameterNames();
             while (headerNames.hasMoreElements()) {
                 String key = headerNames.nextElement();
@@ -91,27 +93,32 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
      */
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(this.body);
-        return new ServletInputStream() {
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
+        if(this.body!=null){
+            final ByteArrayInputStream inputStream = new ByteArrayInputStream(this.body);
+            return new ServletInputStream() {
+                @Override
+                public boolean isFinished() {
+                    return false;
+                }
 
-            @Override
-            public boolean isReady() {
-                return false;
-            }
+                @Override
+                public boolean isReady() {
+                    return false;
+                }
 
-            @Override
-            public void setReadListener(ReadListener readListener) {
-            }
+                @Override
+                public void setReadListener(ReadListener readListener) {
+                }
 
-            @Override
-            public int read() throws IOException {
-                return inputStream.read();
-            }
-        };
+                @Override
+                public int read() throws IOException {
+                    return inputStream.read();
+                }
+            };
+        }else{
+            return getRequest().getInputStream();
+        }
+
     }
 
     @Override

@@ -5,7 +5,7 @@ import cn.exsolo.kit.setting.stereotype.SettingProp;
 /**
  * 用于内存实例和界面显示的vo
  * @author prestolive
- * @date 2023/10/4
+ * @date 2021/10/4
  **/
 public class ExSettingInstanceVO {
 

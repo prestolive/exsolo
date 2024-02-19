@@ -3,7 +3,7 @@ package cn.exsolo.console.pub.vo;
 /**
  * 通用的item vo
  * @author prestolive
- * @date 2023/10/8
+ * @date 2021/10/8
  **/
 public class CommItemVO {
 

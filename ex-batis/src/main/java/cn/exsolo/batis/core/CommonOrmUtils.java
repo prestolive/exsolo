@@ -2,11 +2,10 @@ package cn.exsolo.batis.core;
 
 import cn.exsolo.batis.core.condition.*;
 import cn.exsolo.batis.core.ex.BaseOrmException;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Table;
 import cn.exsolo.comm.utils.TsUtil;
-import cn.hutool.core.util.ReflectUtil;
 
+import javax.persistence.Column;
+import javax.persistence.Table;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -20,16 +19,16 @@ public class CommonOrmUtils {
 
     private static final SimpleDateFormat TIME_STAMP_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static <T extends AbstractSanBatisPO> String getTableFromClz(Class<T> clz){
+    public static <T extends AbstractPO> String getTableFromClz(Class<T> clz){
         Table table = (Table)clz.getAnnotation(Table.class);
         if (table != null){
-            return table.value();
+            return table.name();
         }
         throw new BaseOrmException("该类没有实现Table注解"+clz.getName());
     }
 
 
-    public static <T extends AbstractSanBatisPO> List<String> getTableColumnFromClz(Class<T> clz){
+    public static <T extends AbstractPO> List<String> getTableColumnFromClz(Class<T> clz){
         String[] columns;
         /*临时代码*/
         List<String> columnList=new ArrayList<String>();
@@ -252,7 +251,7 @@ public class CommonOrmUtils {
     }
 
 
-    public static <T extends AbstractSanBatisPO> void generateInsertSql(StringBuilder sql, Map<String,Object> values, T vo){
+    public static <T extends AbstractPO> void generateInsertSql(StringBuilder sql, Map<String,Object> values, T vo){
         String tableName = CommonOrmUtils.getTableFromClz(vo.getClass());
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(vo.getClass());
         String fieldStr = "";
@@ -292,8 +291,8 @@ public class CommonOrmUtils {
 
     }
 
-    public static <T extends AbstractSanBatisPO> void generateInsertSqlBatch(StringBuilder head, StringBuilder body, List<Map<String,Object>> list, List<T> vos){
-        AbstractSanBatisPO target = vos.get(0);
+    public static <T extends AbstractPO> void generateInsertSqlBatch(StringBuilder head, StringBuilder body, List<Map<String,Object>> list, List<T> vos){
+        AbstractPO target = vos.get(0);
         String tableName = CommonOrmUtils.getTableFromClz(target.getClass());
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(target.getClass());
         Map<String,String> fieldSqlMap = null;
@@ -342,7 +341,7 @@ public class CommonOrmUtils {
 
     }
 
-    public static <T extends AbstractSanBatisPO> void generateUpdateSql(StringBuilder sql, Map<String,Object> values, Condition cond, T vo){
+    public static <T extends AbstractPO> void generateUpdateSql(StringBuilder sql, Map<String,Object> values, Condition cond, T vo){
         if(cond.getExistFilters()!=null&&cond.getExistFilters().size()>0){
             //其实是可以，但是这么玩太危险、应用场景也不多，暂时不予支持
             throw new BaseOrmException("更新模式不支持过滤器");
@@ -388,7 +387,7 @@ public class CommonOrmUtils {
 
     }
 
-    public static <T extends AbstractSanBatisPO> void generateRemoveSql(StringBuilder sql, Map<String,Object> values, Condition cond, Class<T> clz){
+    public static <T extends AbstractPO> void generateRemoveSql(StringBuilder sql, Map<String,Object> values, Condition cond, Class<T> clz){
         if(cond.getExistFilters()!=null&&cond.getExistFilters().size()>0){
             //其实是可以，但是这么玩太危险、应用场景也不多，暂时不予支持
             throw new BaseOrmException("更新模式不支持过滤器");
@@ -415,7 +414,7 @@ public class CommonOrmUtils {
 
     }
 
-    public static <T extends AbstractSanBatisPO> void generateDeleteSql(StringBuilder sql, Map<String,Object> values, Condition cond, Class<T> clz){
+    public static <T extends AbstractPO> void generateDeleteSql(StringBuilder sql, Map<String,Object> values, Condition cond, Class<T> clz){
         if(cond.getExistFilters()!=null&&cond.getExistFilters().size()>0){
             //其实是可以，但是这么玩太危险、应用场景也不多，暂时不予支持
             throw new BaseOrmException("更新模式不支持过滤器");
@@ -489,7 +488,7 @@ public class CommonOrmUtils {
 //        return executor;
 //    }
 
-    private static Object getBeanValueToDB(AbstractSanBatisPO vo, String field) throws BaseOrmException {
+    private static Object getBeanValueToDB(AbstractPO vo, String field) throws BaseOrmException {
         try {
             Object value=null;
             PropertyDescriptor pd = new PropertyDescriptor(field, vo.getClass());

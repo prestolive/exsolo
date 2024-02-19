@@ -1,38 +1,40 @@
 package cn.exsolo.batis.act.bo;
 
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Index;
-import cn.exsolo.batis.core.stereotype.Table;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 /**
  * @author prestolive
  * @date 2021/3/8
  **/
-@Table("test_db_create")
-@Index(name="dddd",unique = true,fields = "code,name")
+@Table(name="test_db_create",indexes = @Index(unique = true,columnList = "code,name"))
+
 public class TestDBCreateBO {
 
-    @Column(name="id",primary = true,maxLength = 24,datatype = "char(24)")
+    @Id
+    @Column(name="id",length = 24,columnDefinition = "char(24)")
     private String id;
 
-    @Column(name="name",maxLength = 64,datatype = "varchar(64)")
+    @Column(name="name",length = 64,columnDefinition = "varchar(64)")
     private String name;
 
-    @Column(name="code",maxLength = 64,datatype = "varchar(64)")
+    @Column(name="code",length = 64,columnDefinition = "varchar(64)")
     private String code;
 
-    @Column(name="status",maxLength = 2,datatype = "smallint")
+    @Column(name="status",length = 2,columnDefinition = "smallint")
     private Integer status;
 
-    @Column(name="status2",maxLength = 2,datatype = "smallint")
+    @Column(name="status2",length = 2,columnDefinition = "smallint")
     private Integer status2;
 
-    @Column(name="amount",maxLength = 20,scale = 2,datatype = "decimal(20,2)")
+    @Column(name="amount",length = 20,scale = 2,columnDefinition = "decimal(20,2)")
     private BigDecimal amount;
 
-    @Column(name="nam2e",maxLength = 64,nullable = false,datatype = "varchar(128)")
+    @Column(name="nam2e",length = 64,nullable = false,columnDefinition = "varchar(128)")
     private String name2;
 
 

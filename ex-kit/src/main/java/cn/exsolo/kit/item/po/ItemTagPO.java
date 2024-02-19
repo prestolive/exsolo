@@ -1,38 +1,40 @@
 package cn.exsolo.kit.item.po;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Index;
-import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.batis.core.AbstractPO;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 /**
  * 对象类型表
  * @author prestolive
  * @date 2021/3/20
  **/
-@Table("s_item_tag")
-@Index(name="uq_item_tag_name",unique = true,fields = "name")
-public class ItemTagPO extends AbstractSanBatisPO {
+@Table(name="s_item_tag",indexes = @Index(columnList = "name",unique = true))
+public class ItemTagPO extends AbstractPO {
 
-    @Column(name = "id",primary = true,nullable = false,maxLength = 64,datatype = "varchar(24)")
+    @Id
+    @Column(name = "id",nullable = false,length = 64,columnDefinition = "varchar(24)")
     private String id;
 
     /**
      * 对象类型 ITEM_SCHEMA 引用自 ItemSchemaEnum
      */
-    @Column(name = "itemType",nullable = false,maxLength = 32,datatype = "varchar(32)")
+    @Column(name = "itemType",nullable = false,length = 32,columnDefinition = "varchar(32)")
     private String itemType;
 
-    @Column(name = "name",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "name",nullable = false,length = 128,columnDefinition = "varchar(128)")
     private String name;
 
-    @Column(name = "module",maxLength = 256,datatype = "varchar(64)")
+    @Column(name = "module",length = 256,columnDefinition = "varchar(64)")
     private String module;
 
-    @Column(name = "clz",maxLength = 256,datatype = "varchar(256)")
+    @Column(name = "clz",length = 256,columnDefinition = "varchar(256)")
     private String clz;
 
-    @Column(name = "customAble",maxLength = 2,datatype = "boolean")
+    @Column(name = "customAble",length = 2,columnDefinition = "boolean")
     private Boolean customAble;
 
     @Override

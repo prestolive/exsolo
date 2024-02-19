@@ -1,44 +1,46 @@
-
 package cn.exsolo.kit.setting.po;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Index;
-import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.batis.core.AbstractPO;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
-* 用于系统设置的持久化po
+ * 用于系统设置的持久化po
+ *
  * @author prestolive
-**/
-@Table("s_setting_prop")
-@Index(name = "idx_s_setting_prop",unique = true,fields = "clzName,fieldName")
-public class ExSettingPropPO extends AbstractSanBatisPO {
+ **/
+@Table(name = "s_setting_prop", uniqueConstraints = @UniqueConstraint(columnNames = "clzName,fieldName"))
+public class ExSettingPropPO extends AbstractPO {
 
-    @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
+    @Id
+    @Column(name = "id", nullable = false, length = 24, columnDefinition = "char(24)")
     private String id;
 
-    @Column(name = "moduleName",nullable = false,maxLength = 64,datatype = "varchar(64)")
+    @Column(name = "moduleName", nullable = false, length = 64, columnDefinition = "varchar(64)")
     private String moduleName;
 
-    @Column(name = "propName",nullable = false,maxLength = 64,datatype = "varchar(64)")
+    @Column(name = "propName", nullable = false, length = 64, columnDefinition = "varchar(64)")
     private String propName;
 
-    @Column(name = "clzName",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "clzName", nullable = false, length = 128, columnDefinition = "varchar(128)")
     private String clzName;
 
-    @Column(name = "fieldName",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "fieldName", nullable = false, length = 128, columnDefinition = "varchar(128)")
     private String fieldName;
 
-    @Column(name = "inputType",maxLength = 64,datatype = "varchar(64)")
+    @Column(name = "inputType", length = 64, columnDefinition = "varchar(64)")
     private String inputType;
 
-    @Column(name = "propValue",maxLength = 128,datatype = "varchar(256)")
+    @Column(name = "propValue", length = 128, columnDefinition = "varchar(256)")
     private String propValue;
 
-    @Column(name = "lastModifyBy",maxLength = 24,datatype = "char(24)")
+    @Column(name = "lastModifyBy", length = 24, columnDefinition = "char(24)")
     private String lastModifyBy;
 
-    @Column(name = "lstModifyTs",maxLength = 24,datatype = "char(19)")
+    @Column(name = "lstModifyTs", length = 24, columnDefinition = "char(19)")
     private String lstModifyTs;
 
     @Override

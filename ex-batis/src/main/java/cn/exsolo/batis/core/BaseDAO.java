@@ -32,7 +32,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public String insertOrUpdateValueObject(AbstractSanBatisPO vo) throws BaseOrmException {
+    public String insertOrUpdateValueObject(AbstractPO vo) throws BaseOrmException {
         if (vo.getState() == 0) {
             vo.setState(1);
         }
@@ -40,13 +40,6 @@ public class BaseDAO {
             case 1: {
                 if (vo.getId() == null || vo.getId().trim().length() == 0) {
                     vo.setId(GenerateID.next());
-                    try {
-                        Field file = vo.getClass().getDeclaredField("id");
-                        vo.setId(GenerateID.next());
-                    } catch (NoSuchFieldException e) {
-                        throw new BaseOrmException("ORM错误，试图获取ID的注解报错" + e.getMessage(), e);
-                    }
-
                 }
                 StringBuilder sql = new StringBuilder();
                 Map<String, Object> values = new HashMap<>();
@@ -61,7 +54,7 @@ public class BaseDAO {
                 StringBuilder sql = new StringBuilder();
                 Condition cond = new Condition();
                 cond.eq("ID", vo.getId());
-//                cond.eq("TS", vo.getTs());
+                cond.eq("TS", vo.getTs());
                 Map<String, Object> values = new HashMap<>();
                 CommonOrmUtils.generateUpdateSql(sql, values, cond, vo);
                 int updates = executeAdapter.executeUpdate(sql.toString(), values);
@@ -84,10 +77,10 @@ public class BaseDAO {
      * @param list
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> void insertOrUpdateValueObjectBatch(List<T> list) throws BaseOrmException {
-        List<AbstractSanBatisPO> inserts = new ArrayList<>();
-        List<AbstractSanBatisPO> updates = new ArrayList<>();
-        for (AbstractSanBatisPO vo : list) {
+    public <T extends AbstractPO> void insertOrUpdateValueObjectBatch(List<T> list) throws BaseOrmException {
+        List<AbstractPO> inserts = new ArrayList<>();
+        List<AbstractPO> updates = new ArrayList<>();
+        for (AbstractPO vo : list) {
             if (vo.getState() == 0) {
                 vo.setState(1);
             }
@@ -98,7 +91,7 @@ public class BaseDAO {
                 updates.add(vo);
             }
         }
-        for (AbstractSanBatisPO vo : updates) {
+        for (AbstractPO vo : updates) {
             StringBuilder sql = new StringBuilder();
             Condition cond = new Condition();
             cond.eq("ID", vo.getId());
@@ -109,7 +102,7 @@ public class BaseDAO {
                 throw new BaseOrmException("更新失败：可能是该数据已过期！");
             }
         }
-        for (AbstractSanBatisPO vo : inserts) {
+        for (AbstractPO vo : inserts) {
             if (vo.getId() == null || vo.getId().trim().length() == 0) {
                 vo.setId(GenerateID.next());
                 try {
@@ -140,7 +133,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> int removeByID(Class<T> clz, String id) throws BaseOrmException {
+    public <T extends AbstractPO> int removeByID(Class<T> clz, String id) throws BaseOrmException {
         StringBuilder sql = new StringBuilder();
         Condition cond = new Condition();
         cond.eq("ID", id);
@@ -162,7 +155,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> int removeByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> int removeByCond(Class<T> clz, Condition cond) throws BaseOrmException {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> values = new HashMap<>();
         CommonOrmUtils.generateRemoveSql(sql, values, cond, clz);
@@ -181,7 +174,7 @@ public class BaseDAO {
      * @param <T>
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> int deleteByID(Class<T> clz, String id) throws BaseOrmException {
+    public <T extends AbstractPO> int deleteByID(Class<T> clz, String id) throws BaseOrmException {
         Condition cond = new Condition();
         cond.eq("ID", id);
         int updates = deleteByCond(clz, cond);
@@ -199,7 +192,7 @@ public class BaseDAO {
      * @param cond
      * @return
      */
-    public <T extends AbstractSanBatisPO> int deleteByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> int deleteByCond(Class<T> clz, Condition cond) throws BaseOrmException {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> values = new HashMap<>();
         CommonOrmUtils.generateDeleteSql(sql, values, cond, clz);
@@ -221,7 +214,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> T queryBeanByID(Class<T> clz, String id) throws BaseOrmException {
+    public <T extends AbstractPO> T queryBeanByID(Class<T> clz, String id) throws BaseOrmException {
         Condition cond = new Condition();
         cond.eq("ID", id);
         List<T> result = this.queryBeanByCond(clz, cond);
@@ -241,7 +234,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> List<T> queryBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> List<T> queryBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
         String tableName = CommonOrmUtils.getTableFromClz(clz);
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(clz);
         fieldList.add("createTs");
@@ -265,7 +258,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> T queryOneBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> T queryOneBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
         List<T> list = queryBeanByCond(clz, cond);
         if (list != null && list.size() > 1) {
             List<ICompareBean> compires = cond.getCompares();
@@ -279,7 +272,7 @@ public class BaseDAO {
         return list.get(0);
     }
 
-    public <T extends AbstractSanBatisPO> boolean existsByCond(Class<T> clz, Condition cond) {
+    public <T extends AbstractPO> boolean existsByCond(Class<T> clz, Condition cond) {
         List<T> list = queryBeanByCond(clz, cond);
         return list != null && list.size() > 0;
 
@@ -295,7 +288,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractSanBatisPO> PageObject<T> queryBeanPageByCond(Class<T> clz, Condition cond, Integer currIdx) throws BaseOrmException {
+    public <T extends AbstractPO> PageObject<T> queryBeanPageByCond(Class<T> clz, Condition cond, Integer currIdx) throws BaseOrmException {
         Pagination pagination = new Pagination(currIdx, 10);
         return queryBeanPageByCond(clz, cond, pagination);
     }
@@ -309,7 +302,7 @@ public class BaseDAO {
      * @param <T>
      * @return
      */
-    public <T extends AbstractSanBatisPO> PageObject<T> queryBeanPageByCond(Class<T> clz, Condition cond, Pagination pagination) {
+    public <T extends AbstractPO> PageObject<T> queryBeanPageByCond(Class<T> clz, Condition cond, Pagination pagination) {
         String tableName = CommonOrmUtils.getTableFromClz(clz);
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(clz);
         //通用部分

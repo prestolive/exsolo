@@ -4,7 +4,7 @@ import cn.exsolo.kit.item.stereotype.ItemProvider;
 
 /**
  * @author prestolive
- * @date 2023/9/28
+ * @date 2021/9/28
  **/
 @ItemProvider(tag = "COMM_STATUS",name="开发套件-通用状态")
 public enum ItemCommStatusEnum {

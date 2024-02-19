@@ -1,7 +1,8 @@
 package cn.exsolo.batis.core;
 
 import cn.exsolo.batis.core.ex.BaseOrmException;
-import cn.exsolo.batis.core.stereotype.Table;
+
+import javax.persistence.Table;
 
 /**
  * Created by prestolive on 2018/2/1.
@@ -17,11 +18,11 @@ public class ConditionFilter extends Condition {
     private String joinKey;
 
 
-    public <T extends AbstractSanBatisPO> ConditionFilter(String key, Class<T> tableJoinClz, String joinKey) {
+    public <T extends AbstractPO> ConditionFilter(String key, Class<T> tableJoinClz, String joinKey) {
         Table table = (Table) tableJoinClz.getAnnotation(Table.class);
         this.key = key;
-        this.table = table.value();
-        this.tableAlias = table.value() +"_";
+        this.table = table.name();
+        this.tableAlias = table.name() +"_";
         this.joinKey = joinKey;
     }
 

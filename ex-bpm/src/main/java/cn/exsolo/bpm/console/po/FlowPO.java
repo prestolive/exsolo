@@ -1,44 +1,46 @@
 package cn.exsolo.bpm.console.po;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
-import cn.exsolo.batis.core.stereotype.Column;
-import cn.exsolo.batis.core.stereotype.Index;
-import cn.exsolo.batis.core.stereotype.Table;
+import cn.exsolo.batis.core.AbstractPO;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 /**
  * @author prestolive
- * @date 2023/10/25
+ * @date 2021/10/25
  **/
 
-@Table("ex_bpm_flow")
-@Index(name = "uq_ex_bpm_flow_a",unique = true,fields = "code")
-public class FlowPO extends AbstractSanBatisPO {
+@Table(name="ex_bpm_flow",indexes = @Index(columnList = "code",unique = true))
+public class FlowPO extends AbstractPO {
 
-    @Column(name = "id",primary = true,nullable = false,maxLength = 24,datatype = "char(24)")
+    @Id
+    @Column(name = "id",nullable = false,length = 24,columnDefinition = "char(24)")
     private String id;
 
-    @Column(name = "code",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "code",nullable = false,length = 128,columnDefinition = "varchar(128)")
     private String code;
 
-    @Column(name = "label",nullable = false,maxLength = 128,datatype = "varchar(128)")
+    @Column(name = "label",nullable = false,length = 128,columnDefinition = "varchar(128)")
     private String label;
 
     /**
      * 当前正在编辑的版本，不一定激活中、必须比已激活的版本高
      */
-    @Column(name = "currVersion",maxLength = 2,datatype = "smallint")
+    @Column(name = "currVersion",length = 2,columnDefinition = "smallint")
     private Integer currVersion;
 
     /**
      * 当前激活的版本
      */
-    @Column(name = "version",maxLength = 2,datatype = "smallint")
+    @Column(name = "version",length = 2,columnDefinition = "smallint")
     private Integer version;
 
-    @Column(name = "hash",maxLength = 2,datatype = "char(32)")
+    @Column(name = "hash",length = 2,columnDefinition = "char(32)")
     private String hash;
 
-    @Column(name = "modifiedBy",maxLength = 24,datatype = "char(24)")
+    @Column(name = "modifiedBy",length = 24,columnDefinition = "char(24)")
     private String modifiedBy;
 
 

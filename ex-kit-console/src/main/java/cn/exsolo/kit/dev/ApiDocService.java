@@ -1,6 +1,5 @@
 package cn.exsolo.kit.dev;
 
-import cn.exsolo.batis.core.stereotype.Column;
 import cn.exsolo.comm.utils.ExAnnotationUtil;
 import cn.exsolo.kit.console.api.ApiDocController;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.persistence.Column;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

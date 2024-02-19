@@ -5,7 +5,7 @@ import cn.exsolo.kit.setting.stereotype.SettingProvider;
 
 /**
  * @author prestolive
- * @date 2023/10/4
+ * @date 2021/10/4
  **/
 @SettingProvider("登录模块")
 public class AuthBaseSettingProvider {

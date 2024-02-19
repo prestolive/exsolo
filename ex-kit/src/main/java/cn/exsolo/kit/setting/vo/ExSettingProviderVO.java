@@ -3,7 +3,7 @@ package cn.exsolo.kit.setting.vo;
 /**
  * 配置模块类
  * @author prestolive
- * @date 2023/10/4
+ * @date 2021/10/4
  **/
 public class ExSettingProviderVO {
 

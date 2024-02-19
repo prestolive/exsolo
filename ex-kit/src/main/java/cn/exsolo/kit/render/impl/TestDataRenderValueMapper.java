@@ -1,6 +1,6 @@
 package cn.exsolo.kit.render.impl;
 
-import cn.exsolo.batis.core.AbstractSanBatisPO;
+import cn.exsolo.batis.core.AbstractPO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.kit.item.po.ItemPO;
 import com.alibaba.fastjson.JSONObject;
@@ -11,7 +11,7 @@ import com.alibaba.fastjson.JSONObject;
  **/
 public class TestDataRenderValueMapper extends ExBatisPoDataRenderValueMapper {
     @Override
-    public Class<? extends AbstractSanBatisPO> getPoClass() {
+    public Class<? extends AbstractPO> getPoClass() {
         return ItemPO.class;
     }
 
