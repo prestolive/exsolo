@@ -75,6 +75,9 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
                 List<Pair<Object, Map>> pairList = new ArrayList<>();
                 for (Map row : targetRows) {
                     Object keyValue = getKeyValue(row, keyField);
+                    if(keyValue==null){
+                        continue;
+                    }
                     Pair pair = Pair.of(keyValue, row);
                     pairList.add(pair);
                 }
