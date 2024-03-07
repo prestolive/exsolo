@@ -54,7 +54,7 @@ public class AccessUtil {
      * APP和微信客户端 token 从http header中获取，PC需要从cookie获取
      *
      * @param
-     * @param req
+     * @param arg
      * @return
      */
     public static String getToken(ServletRequest arg) {
@@ -81,7 +81,11 @@ public class AccessUtil {
     public static Pair<String, String> getUa(HttpServletRequest req) {
         UserAgent userAgent = UserAgentParser.parse(req.getHeader("User-Agent"));
         String platform = userAgent.getPlatform().getName();
-        String ua = userAgent.toString();
+        String ua = String.format("%s %s,%s,%s",
+                userAgent.getPlatform().getName(),
+                userAgent.getOsVersion(),
+                userAgent.getBrowser().getName(),
+                userAgent.getEngine().getName());
         return Pair.of(platform, ua);
     }
 

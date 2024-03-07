@@ -34,7 +34,6 @@ public class DefaultAuthFilter extends BasicHttpAuthenticationFilter {
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         String token = AccessUtil.getToken(request);
-        System.out.println("##########token:"+token);
         if(StringUtils.isEmpty(token)){
             return false;
         }else{

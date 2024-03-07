@@ -15,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +37,7 @@ public class OrgManageService {
         org.setParentId(parentId);
         org.setStatus(ItemCommStatusEnum.NORMAL);
         org.setSortNo(999);
+        org.setChildCounts(0);
         org.setModifiedBy(SecurityUserContext.getUserID());
         checkNode(org, parentId);
         baseDAO.insertOrUpdateValueObject(org);
@@ -107,6 +105,8 @@ public class OrgManageService {
     public void deleteNode(String id) {
         OrgNodePO node = getOrg(id);
         deleteNode(node);
+        //重置同级的的顺序号和内码
+        rebuildOrderAndInnerCode(node.getSchemaCode(), node.getParentId());
     }
 
     /**
@@ -150,19 +150,27 @@ public class OrgManageService {
      *
      * @param schemaCode 组织类型ID
      * @param parentId   父级ID
-     * @param deepLevel  往下加载几级数据
+     * @param deep  往下加载几级数据
      * @return
      */
-    public List<OrgTreeNodeVO> getTreeNode(String schemaCode, String parentId, Integer deepLevel) {
+    public List<OrgTreeNodeVO> getTreeNode(String schemaCode, String parentId, Integer deep) {
         Condition cond = new Condition();
         cond.eq("schemaCode", schemaCode);
         if (StringUtils.isNotEmpty(parentId)) {
+            OrgNodePO parent = getOrg(parentId);
             cond.eq("parentId", parentId);
+            cond.le("deep", parent.getDeep() + deep);
+        }else{
+            cond.le("deep",deep);
         }
         cond.orderBy("innerCode");
         List<OrgNodePO> list = baseDAO.queryBeanByCond(OrgNodePO.class, cond);
-        //将第一级作为种子
-        List<OrgTreeNodeVO> trees = list.stream().filter(row -> StringUtils.isEmpty(row.getParentId())).map(row -> treePO2VO(row)).collect(Collectors.toList());
+        if (list.size() == 0) {
+            return new ArrayList<>();
+        }
+        //将第一级作为种子，判断方式为同一批中innerCode最短的
+        Integer minLen = list.stream().map(item -> item.getInnerCode().length()).min((x, y) -> x - y).get();
+        List<OrgTreeNodeVO> trees = list.stream().filter(row -> row.getInnerCode().length() == minLen).map(row -> treePO2VO(row)).collect(Collectors.toList());
         for (OrgTreeNodeVO item : trees) {
             deepFetch(item, list);
         }
@@ -211,6 +219,8 @@ public class OrgManageService {
         String innerCodePath = "";
         if (StringUtils.isNotEmpty(parentId)) {
             OrgNodePO parent = getOrg(parentId);
+            parent.setChildCounts(list.size());
+            baseDAO.insertOrUpdateValueObject(parent);
             innerCodePath += (parent.getInnerCode() == null ? "" : parent.getInnerCode());
         }
         for (int i = 0; i < list.size(); i++) {
@@ -218,6 +228,7 @@ public class OrgManageService {
             String code = String.format("%02x", index);
             OrgNodePO row = list.get(i);
             row.setInnerCode(innerCodePath + code);
+            row.setDeep(row.getInnerCode().length() / 2);
             row.setSortNo((i + 1) * 10);
             baseDAO.insertOrUpdateValueObject(row);
             rebuildOrderAndInnerCode(schemaCode, row.getId());

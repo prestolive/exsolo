@@ -1,9 +1,10 @@
 package cn.exsolo.springmvcext.in.out;
 
-import cn.exsolo.kit.render.DataRenderValueMapper;
+import cn.exsolo.kit.render.DataRender;
 import cn.exsolo.kit.render.stereotype.DataRenderProvider;
 import cn.exsolo.kit.render.stereotype.DataRenderProviders;
 import cn.exsolo.springmvcext.SpringContext;
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -15,10 +16,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -35,12 +33,7 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
     }
 
     @Override
-    public Object beforeBodyWrite(Object body,
-                                  MethodParameter methodParameter,
-                                  MediaType mediaType,
-                                  Class aClass,
-                                  ServerHttpRequest serverHttpRequest,
-                                  ServerHttpResponse serverHttpResponse) {
+    public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
         if (body != null && body instanceof BaseResponse) {
             return body;
         }
@@ -60,93 +53,105 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
             return baseResponse;
         }
         //数据渲染器，先转成对象
-        JSONObject obj = (JSONObject) JSONObject.toJSON(baseResponse);
+        Map respMap = BeanUtil.beanToMap(baseResponse);
         for (DataRenderProvider dataRenderProvider : dataRenderProviderList) {
             //处理类
             Class processClz = dataRenderProvider.dataRenderClass();
-            DataRenderValueMapper renderProvider = (DataRenderValueMapper) SpringContext.getContext().getBean(processClz);
+            DataRender render = (DataRender) SpringContext.getContext().getBean(processClz);
             //查出数据行
-            List<JSONObject> requireRows = new ArrayList<>();
-            String path = dataRenderProvider.path();
-            String[] strs = path.split("\\.");
+            List<Map> targetRows = new ArrayList<>();
+            //路径栈
             Stack<String> stack = new Stack<>();
-            for (int i = strs.length - 1; i >= 0; i--) {
-                stack.push(strs[i]);
-            }
-            stack.push("data");
-            loopPickRow(stack, obj, requireRows);
+            stack.add("data");
+            stack.addAll(Arrays.stream(dataRenderProvider.path().split("\\.")).filter(str->StringUtils.isNotEmpty(str)).collect(Collectors.toList()));
+            Collections.reverse(stack);
+            fetchRows(stack, respMap, targetRows);
             //开始处理
-            if (requireRows.size() > 0) {
-                String[] keyFields = dataRenderProvider.keyFields();
-                List<Pair<String, JSONObject>> pairList = new ArrayList<>();
-                for (JSONObject row : requireRows) {
-                    String keyValue = getKeyValue(row, keyFields);
+            if (targetRows.size() > 0) {
+                String keyField = dataRenderProvider.keyField();
+                //初始化
+                render.initRender(keyField, methodParameter);
+                //提取key
+                List<Pair<Object, Map>> pairList = new ArrayList<>();
+                for (Map row : targetRows) {
+                    Object keyValue = getKeyValue(row, keyField);
                     Pair pair = Pair.of(keyValue, row);
                     pairList.add(pair);
                 }
+                render.preRender(pairList);
                 //渲染查询
-                Map<String, JSONObject> valueMapper = renderProvider.getDataByKeys(pairList, keyFields, methodParameter);
-                for(Pair<String, JSONObject> pair:pairList){
-                    render(renderProvider,pair,valueMapper,dataRenderProvider);
+                for (Pair<Object, Map> pair : pairList) {
+                    Map<String, Object> rowFrame = render.getRenderFrame(pair.getLeft(), pair.getRight());
+                    rowDataRender(pair.getRight(), rowFrame, dataRenderProvider);
                 }
             }
         }
+        return JSONObject.toJSON(respMap);
+    }
+
+    private void rowDataRender(Map row, Map<String, Object> renderFrame, DataRenderProvider dataRenderProvider) {
+        if (renderFrame != null) {
+            if (dataRenderProvider.wapperType() == DataRenderProvider.WapperType.alias) {
+                String alias = dataRenderProvider.defineAlias();
+                if (StringUtils.isEmpty(alias)) {
+                    alias = "_" + dataRenderProvider.keyField();
+                }
+                row.put(alias, renderFrame);
+            } else if (dataRenderProvider.wapperType() == DataRenderProvider.WapperType.flat) {
+                for (String key : renderFrame.keySet()) {
+                    row.put(key, renderFrame.get(key));
+                }
+            }
+        }
+    }
+
+
+    private Object getKeyValue(Map row, String keyField) {
+        Object obj = row.get(keyField);
         return obj;
     }
 
-    private void render(DataRenderValueMapper renderProvider,Pair<String, JSONObject> targetPair,Map<String, JSONObject> valueMapper,DataRenderProvider dataRenderProvider){
-        String keyValue = targetPair.getLeft();
-        JSONObject target = targetPair.getRight();
-        JSONObject valueObj = valueMapper.get(keyValue);
-        if(valueObj!=null){
-            if(dataRenderProvider.wapperType()==DataRenderProvider.WapperType.alias){
-                String alias = dataRenderProvider.defineAlias();
-                if(StringUtils.isEmpty(alias)){
-                    alias = "_"+StringUtils.join(dataRenderProvider.keyFields());
-                }
-                target.put(alias,valueObj.clone());
-            }else if(dataRenderProvider.wapperType()==DataRenderProvider.WapperType.flat){
-                for(String key:valueObj.keySet()){
-                    target.put(key,valueObj.get(key));
-                }
-            }
-        }
-        renderProvider.customRender(keyValue,target);
-    }
-
-    private String getKeyValue(JSONObject row, String[] keyFields) {
-        String str = "";
-        for (String keyField : keyFields) {
-            String val = row.getString(keyField);
-            str += val;
-        }
-        return str;
-    }
-
-
-    private void loopPickRow(Stack<String> paths, JSONObject targetObject, List<JSONObject> requireRows) {
+    /**
+     * 找到目标行，目标行必须是对象或map，找到目标行后默认都转成map，保留属性的原始类型
+     *
+     * @param paths
+     * @param targetObj
+     * @param targetRows
+     */
+    private void fetchRows(Stack<String> paths, Map targetObj, List<Map> targetRows) {
         String key = paths.pop();
         boolean end = paths.size() == 0;
-        Object obj = targetObject.get(key);
-        if (obj instanceof JSONObject) {
-            JSONObject jsonObject = (JSONObject) obj;
-            if (end) {
-                requireRows.add(jsonObject);
-            } else {
-                loopPickRow(paths, jsonObject, requireRows);
-            }
-        } else if (obj instanceof JSONArray) {
-            JSONArray jsonArray = (JSONArray) obj;
-            if (end) {
-                requireRows.addAll(jsonArray.stream().map(item -> (JSONObject) item).collect(Collectors.toList()));
-            } else {
-                jsonArray.forEach(item -> {
-                    JSONObject jsonObject = (JSONObject) item;
-                    loopPickRow(paths, jsonObject, requireRows);
-                });
-            }
+        Object obj = targetObj.get(key);
+        if (obj == null) {
+            return;
         }
-        paths.add(key);
+        if (obj.getClass().isArray()) {
+           //FIXME
+        } else if (obj instanceof Collection) {
+            Iterator it = ((Collection) obj).iterator();
+                List list = new ArrayList();
+                while (it.hasNext()) {
+                    Map rowMap = BeanUtil.beanToMap(it.next());
+                    list.add(rowMap);
+                    if(end){
+                        targetRows.add(rowMap);
+                    }else{
+                        fetchRows(paths, rowMap, targetRows);
+                    }
+                }
+                //替换原对象
+                targetObj.put(key,list);
+        } else {
+            Map rowMap = BeanUtil.beanToMap(obj);
+            if (end) {
+                targetRows.add(rowMap);
+            } else {
+                fetchRows(paths, rowMap, targetRows);
+            }
+            //替换原对象
+            targetObj.put(key,rowMap);
+        }
     }
+
 
 }

@@ -16,6 +16,7 @@ import java.util.Map;
  * @date 2021/9/20
  **/
 @Component
+@Deprecated
 public class UserStatusDataRenderValueMapper implements DataRenderValueMapper {
 
     /**

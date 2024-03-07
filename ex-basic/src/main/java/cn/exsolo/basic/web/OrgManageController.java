@@ -3,6 +3,7 @@ package cn.exsolo.basic.web;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
+import cn.exsolo.basic.render.UserInfoDataRender;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
@@ -37,8 +38,8 @@ public class OrgManageController {
 
     @AccessView
     @RequestMapping(path = "tree-node", method = RequestMethod.POST)
-    public List<OrgTreeNodeVO> treeNode(@RequestJSON() String schemaCode,@RequestJSON() String parentId) {
-        List<OrgTreeNodeVO> trees = orgManageService.getTreeNode(schemaCode,parentId,3);
+    public List<OrgTreeNodeVO> treeNode(@RequestJSON() String schemaCode,@RequestJSON() String parentId,@RequestJSON() Integer deep) {
+        List<OrgTreeNodeVO> trees = orgManageService.getTreeNode(schemaCode,parentId,deep);
         return trees;
     }
     @AccessView
@@ -47,7 +48,7 @@ public class OrgManageController {
         return orgManageService.getOrg(id);
     }
 
-    @DataRenderProvider(path = "values", keyFields = {"modifiedBy"}, dataRenderClass = UserInfoDataRenderValueMapper.class)
+    @DataRenderProvider(path = "values", keyField = "modifiedBy", dataRenderClass = UserInfoDataRender.class)
     @AccessView
     @RequestMapping(path = "children-page", method = RequestMethod.POST)
     public PageObject<OrgNodePO> page(

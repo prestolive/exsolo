@@ -37,6 +37,9 @@ public class OrgNodePO  extends AbstractPO {
     @Column(name = "innerCode",length = 128,columnDefinition = "varchar(128)")
     private String innerCode;
 
+    @Column(name = "deep",length = 2,columnDefinition = "int2")
+    private Integer deep;
+
     @Column(name = "parentId",length = 24,columnDefinition = "char(24)")
     private String parentId;
 
@@ -132,5 +135,13 @@ public class OrgNodePO  extends AbstractPO {
 
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
+    }
+
+    public Integer getDeep() {
+        return deep;
+    }
+
+    public void setDeep(Integer deep) {
+        this.deep = deep;
     }
 }

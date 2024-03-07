@@ -1,5 +1,7 @@
 package cn.exsolo.kit.cache;
 
+import java.util.Map;
+
 /**
  * @author prestolive
  * @date 2021/5/30
@@ -23,5 +25,9 @@ public interface IExCacheStorage {
     boolean isTrue(String key);
 
     void remove(String key);
+
+    void pubMap(String key, Map map);
+
+    Map getMap(String key);
 
 }

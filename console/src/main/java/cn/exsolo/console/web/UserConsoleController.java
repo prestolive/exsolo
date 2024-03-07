@@ -56,4 +56,11 @@ public class UserConsoleController {
         }
     }
 
+    /**
+     * 什么事都不用干的心跳检测，前端调用这个请求，如果检测到accesstoken过期前端自动发起重启获取新accesstoken 的请求
+     */
+    @RequestMapping(path = "echo", method = RequestMethod.POST)
+    public void echo() {
+       //do nothing
+    }
 }

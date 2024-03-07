@@ -3,13 +3,13 @@ package cn.exsolo.basic.web;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
+import cn.exsolo.basic.security.po.UserPO;
+import cn.exsolo.basic.security.service.UserManageService;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
-import cn.exsolo.basic.render.UserStatusDataRenderValueMapper;
-import cn.exsolo.basic.security.po.UserPO;
-import cn.exsolo.basic.security.service.UserManageService;
 import cn.exsolo.kit.item.ItemCommStatusEnum;
+import cn.exsolo.kit.render.impl.AnyEnumItemDataRender;
 import cn.exsolo.kit.render.stereotype.DataRenderProvider;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class UserManageController {
     private UserManageService userManageService;
 
     @AccessView
-    @DataRenderProvider(path = "values", keyFields = {"status"}, dataRenderClass = UserStatusDataRenderValueMapper.class)
+    @DataRenderProvider(path = "values", keyField = "status", dataRenderClass = AnyEnumItemDataRender.class)
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<UserPO> page(
             @RequestJSON() String[] status,
@@ -53,6 +53,7 @@ public class UserManageController {
     }
 
     @AccessView
+    @DataRenderProvider(path = "", keyField = "status", dataRenderClass = AnyEnumItemDataRender.class)
     @RequestMapping(path = "info", method = RequestMethod.POST)
     public UserPO userInfo(@RequestParam() String userId) {
         return userManageService.get(userId);

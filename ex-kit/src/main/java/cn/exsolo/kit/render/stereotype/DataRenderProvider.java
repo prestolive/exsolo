@@ -16,12 +16,12 @@ public  @interface DataRenderProvider{
         //代称
         alias,
         //展开
-        flat
+        flat,
     }
 
     String path();
 
-    String[] keyFields();
+    String keyField();
 
     /**
      * extends IDataRender

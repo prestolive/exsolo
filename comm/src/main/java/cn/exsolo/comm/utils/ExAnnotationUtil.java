@@ -1,6 +1,7 @@
 package cn.exsolo.comm.utils;
 
 import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -34,14 +35,14 @@ public class ExAnnotationUtil {
      * @return
      */
     public static List<Class<?>> getAnnotationFromContext(ApplicationContext applicationContext, final Class<? extends Annotation> annotation) {
-        List<Class<?>> list = new ArrayList<>();
+        Set<Class<?>> allSet = new HashSet<>();
         String[] packages = getBasePackages(applicationContext);
         for (String path : packages) {
-            Reflections ref = new Reflections(path);
+            Reflections ref = new Reflections(new ConfigurationBuilder().forPackage(path));
             Set<Class<?>> set = ref.getTypesAnnotatedWith(annotation);
-            list.addAll(set);
+            allSet.addAll(set);
         }
-        return list;
+        return new ArrayList<>(allSet);
     }
 
     public static String[] getBasePackages(ApplicationContext context) {

@@ -4,6 +4,8 @@ import cn.exsolo.kit.cache.IExCacheStorage;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
+import java.util.Map;
+
 /**
  * @author prestolive
  * @date 2021/5/30
@@ -79,5 +81,20 @@ public class ExCacheEhCacheStorageCacheImpl implements IExCacheStorage {
     @Override
     public void remove(String key){
         this.cache.remove(key);
+    }
+
+    @Override
+    public void pubMap(String key, Map map) {
+        Element element = new Element(key,map);
+        this.cache.put(element);
+    }
+
+    @Override
+    public Map getMap(String key) {
+        Element element = this.cache.get(key);
+        if(element!=null){
+            return (Map) element.getObjectValue();
+        }
+        return null;
     }
 }
