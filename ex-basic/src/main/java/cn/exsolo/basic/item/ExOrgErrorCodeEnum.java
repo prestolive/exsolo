@@ -5,6 +5,7 @@ package cn.exsolo.basic.item;
  * @author prestolive
  * @date 2021/4/1
  **/
+@Deprecated
 public enum ExOrgErrorCodeEnum {
 
     SCHEMA_NAME_ALREADY_EXISTS("组织类型名称 %s 已存在"),

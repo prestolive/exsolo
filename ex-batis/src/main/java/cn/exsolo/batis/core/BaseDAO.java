@@ -4,6 +4,7 @@ import cn.exsolo.batis.core.condition.ICompareBean;
 import cn.exsolo.batis.core.ex.BaseOrmException;
 import cn.exsolo.batis.core.ext.ExecuteAdapter;
 import cn.exsolo.batis.core.utils.GenerateID;
+import com.google.common.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +134,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> int removeByID(Class<T> clz, String id) throws BaseOrmException {
+    public <T extends AbstractPO> int removeByID(Class clz, String id) throws BaseOrmException {
         StringBuilder sql = new StringBuilder();
         Condition cond = new Condition();
         cond.eq("ID", id);
@@ -155,7 +156,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> int removeByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> int removeByCond(Class clz, Condition cond) throws BaseOrmException {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> values = new HashMap<>();
         CommonOrmUtils.generateRemoveSql(sql, values, cond, clz);
@@ -174,7 +175,7 @@ public class BaseDAO {
      * @param <T>
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> int deleteByID(Class<T> clz, String id) throws BaseOrmException {
+    public <T extends AbstractPO> int deleteByID(Class clz, String id) throws BaseOrmException {
         Condition cond = new Condition();
         cond.eq("ID", id);
         int updates = deleteByCond(clz, cond);
@@ -192,7 +193,7 @@ public class BaseDAO {
      * @param cond
      * @return
      */
-    public <T extends AbstractPO> int deleteByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> int deleteByCond(Class clz, Condition cond) throws BaseOrmException {
         StringBuilder sql = new StringBuilder();
         Map<String, Object> values = new HashMap<>();
         CommonOrmUtils.generateDeleteSql(sql, values, cond, clz);
@@ -205,6 +206,17 @@ public class BaseDAO {
         return updates;
     }
 
+    public <T extends AbstractPO> T queryBeanByID2(TypeToken<T> type, String id) throws BaseOrmException {
+        Class clz = type.getRawType();
+        Condition cond = new Condition();
+        cond.eq("ID", id);
+        List<T> result = this.queryBeanByCond(clz, cond);
+        if (result != null && result.size() > 0) {
+            return result.get(0);
+        }
+        return null;
+    }
+
     /**
      * 根据ID 返回单个结果
      *
@@ -214,7 +226,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> T queryBeanByID(Class<T> clz, String id) throws BaseOrmException {
+    public <T extends AbstractPO> T queryBeanByID(Class clz, String id) throws BaseOrmException {
         Condition cond = new Condition();
         cond.eq("ID", id);
         List<T> result = this.queryBeanByCond(clz, cond);
@@ -234,7 +246,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> List<T> queryBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> List<T> queryBeanByCond(Class clz, Condition cond) throws BaseOrmException {
         String tableName = CommonOrmUtils.getTableFromClz(clz);
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(clz);
         fieldList.add("createTs");
@@ -258,7 +270,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> T queryOneBeanByCond(Class<T> clz, Condition cond) throws BaseOrmException {
+    public <T extends AbstractPO> T queryOneBeanByCond(Class clz, Condition cond) throws BaseOrmException {
         List<T> list = queryBeanByCond(clz, cond);
         if (list != null && list.size() > 1) {
             List<ICompareBean> compires = cond.getCompares();
@@ -272,7 +284,7 @@ public class BaseDAO {
         return list.get(0);
     }
 
-    public <T extends AbstractPO> boolean existsByCond(Class<T> clz, Condition cond) {
+    public <T extends AbstractPO> boolean existsByCond(Class clz, Condition cond) {
         List<T> list = queryBeanByCond(clz, cond);
         return list != null && list.size() > 0;
 
@@ -288,7 +300,7 @@ public class BaseDAO {
      * @return
      * @throws BaseOrmException
      */
-    public <T extends AbstractPO> PageObject<T> queryBeanPageByCond(Class<T> clz, Condition cond, Integer currIdx) throws BaseOrmException {
+    public <T extends AbstractPO> PageObject<T> queryBeanPageByCond(Class clz, Condition cond, Integer currIdx) throws BaseOrmException {
         Pagination pagination = new Pagination(currIdx, 10);
         return queryBeanPageByCond(clz, cond, pagination);
     }
@@ -302,7 +314,7 @@ public class BaseDAO {
      * @param <T>
      * @return
      */
-    public <T extends AbstractPO> PageObject<T> queryBeanPageByCond(Class<T> clz, Condition cond, Pagination pagination) {
+    public <T extends AbstractPO> PageObject<T> queryBeanPageByCond(Class clz, Condition cond, Pagination pagination) {
         String tableName = CommonOrmUtils.getTableFromClz(clz);
         List<String> fieldList = CommonOrmUtils.getTableColumnFromClz(clz);
         fieldList.add("createTs");
@@ -318,11 +330,11 @@ public class BaseDAO {
         return page;
     }
 
-    public <T> List<T> queryForList(String sql, Map<String, Object> values, Class<T> resultType) {
+    public <T> List<T> queryForList(String sql, Map<String, Object> values, Class resultType) {
         return executeAdapter.executeQuery(sql, values, resultType);
     }
 
-    public <T> T queryForOneObject(String sql, Map<String, Object> values, Class<T> resultType) {
+    public <T> T queryForOneObject(String sql, Map<String, Object> values, Class resultType) {
         List<T> list = executeAdapter.executeQuery(sql, values, resultType);
         if (list != null && list.size() > 1) {
             throw new BaseOrmException("预期返回条数不大于1，实际返回条数" + list.size());
@@ -332,11 +344,11 @@ public class BaseDAO {
         return list.get(0);
     }
 
-    public <T> PageObject<T> queryForPage(String sql, Map<String, Object> values, Class<T> resultType, Integer pageRows, Integer currIdx) {
+    public <T> PageObject<T> queryForPage(String sql, Map<String, Object> values, Class resultType, Integer pageRows, Integer currIdx) {
         return executeAdapter.executeQueryPage(sql, values, resultType, pageRows, currIdx);
     }
 
-    public <T> PageObject<T> queryForPage(String sql, Map<String, Object> values, Class<T> resultType, Pagination pagination) {
+    public <T> PageObject<T> queryForPage(String sql, Map<String, Object> values, Class resultType, Pagination pagination) {
         PageObject result = executeAdapter.executeQueryPage(sql, values, resultType, pagination.getPageSize(), pagination.getCurrent());
         return result;
     }

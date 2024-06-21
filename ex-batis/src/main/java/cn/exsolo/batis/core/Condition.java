@@ -207,4 +207,9 @@ public class Condition {
         this.compares.add(new CompareIsNullBean(field));
         return this;
     }
+
+    public Condition isEmpty(String field){
+        this.compares.add(new CompareIsEmptyBean(field));
+        return this;
+    }
 }

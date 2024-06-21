@@ -2,7 +2,7 @@ package cn.exsolo.basic.security.service;
 
 import cn.exsolo.auth.shiro.ext.stereotype.*;
 import cn.exsolo.comm.utils.ExAnnotationUtil;
-import cn.exsolo.basic.security.vo.PermissionVO;
+import cn.exsolo.basic.security.utils.vo.PermissionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;

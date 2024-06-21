@@ -1,4 +1,4 @@
-package cn.exsolo.basic.security.vo;
+package cn.exsolo.basic.security.utils.vo;
 
 /**
  * 所有注解权限

@@ -1,7 +1,6 @@
 package cn.exsolo.basic.init;
 
 import cn.exsolo.auth.passwd.utils.PasswordHelper;
-import cn.exsolo.auth.utils.SecurityUserContext;
 import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.utils.GenerateID;
@@ -11,7 +10,7 @@ import cn.exsolo.basic.security.po.UserPO;
 import cn.exsolo.basic.security.service.PermissionAnnotationService;
 import cn.exsolo.basic.security.service.RoleManageService;
 import cn.exsolo.basic.security.service.UserManageService;
-import cn.exsolo.basic.security.vo.PermissionVO;
+import cn.exsolo.basic.security.utils.vo.PermissionVO;
 import cn.exsolo.kit.item.ItemCommStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

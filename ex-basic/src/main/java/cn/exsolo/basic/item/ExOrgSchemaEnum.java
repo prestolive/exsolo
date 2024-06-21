@@ -10,7 +10,7 @@ import cn.exsolo.kit.item.stereotype.ItemProvider;
 @ItemProvider(tag = "EX_ORG_SCHEMA",name="中台-组织管理类型",customAble = true)
 public enum ExOrgSchemaEnum {
 
-    DEFAULT("默认");
+    DEFAULT("默认"),HR("人事架构"),MANAGE("管理架构");
 
     private String label;
 

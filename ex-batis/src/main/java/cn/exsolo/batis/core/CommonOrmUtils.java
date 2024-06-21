@@ -3,6 +3,8 @@ package cn.exsolo.batis.core;
 import cn.exsolo.batis.core.condition.*;
 import cn.exsolo.batis.core.ex.BaseOrmException;
 import cn.exsolo.comm.utils.TsUtil;
+import cn.hutool.core.util.ReflectUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
@@ -32,8 +34,8 @@ public class CommonOrmUtils {
         String[] columns;
         /*临时代码*/
         List<String> columnList=new ArrayList<String>();
-        Field[] fields  = clz.getDeclaredFields();
-//        Field[] fields = ReflectUtil.getFields(clz);
+//        Field[] fields  = clz.getDeclaredFields();
+        Field[] fields = ReflectUtil.getFields(clz);
         for (Field f:fields) {
             Column col = f.getAnnotation(Column.class);
             if(col==null){
@@ -150,7 +152,7 @@ public class CommonOrmUtils {
         Integer paramIdx = values.size()+1;
         if (item instanceof CompareBaseBean) {
             CompareBaseBean bean = (CompareBaseBean) item;
-            String field = tableAlias+"."+bean.getField();
+            String field = StringUtils.isNotEmpty(tableAlias)?tableAlias+"."+bean.getField():bean.getField();
             if(bean.isLower()){
                 field = "lower("+field+")";
             }
@@ -236,7 +238,8 @@ public class CommonOrmUtils {
             sb.append(")");
 
         } else if (item instanceof CompareIsEmptyBean) {
-
+            CompareIsEmptyBean bean = (CompareIsEmptyBean) item;
+            sb.append(" and coalesce(").append(bean.getField()).append(",'') = ''");
         } else if (item instanceof CompareIsNullBean){
             CompareIsNullBean bean = (CompareIsNullBean) item;
             sb.append(" and ").append(bean.getField()).append(" is null");
@@ -259,7 +262,7 @@ public class CommonOrmUtils {
         Integer currPrarmIdx = 1;
         for (int i=0;i<fieldList.size();i++){
             String field = fieldList.get(i);
-            if("ts".equals(field)){
+            if("ts".equals(field)||"createTs".equals(field)){
                 continue;
             }
             if(fieldStr.length()>0){

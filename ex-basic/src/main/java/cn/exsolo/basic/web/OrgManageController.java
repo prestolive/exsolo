@@ -3,15 +3,24 @@ package cn.exsolo.basic.web;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
+import cn.exsolo.auth.utils.SecurityUserContext;
 import cn.exsolo.basic.org.po.OrgNodePO;
 import cn.exsolo.basic.org.service.OrgManageService;
 import cn.exsolo.basic.org.vo.OrgTreeNodeVO;
 import cn.exsolo.basic.render.UserInfoDataRender;
+import cn.exsolo.basic.security.po.UserPO;
+import cn.exsolo.basic.tree.CommonTreeNodePO;
+import cn.exsolo.basic.tree.CommonTreeService;
+import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
+import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.render.stereotype.DataRenderProvider;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
+import com.google.common.reflect.TypeToken;
+import org.apache.commons.lang3.StringUtils;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,45 +44,52 @@ public class OrgManageController {
     @Autowired
     private OrgManageService orgManageService;
 
-    @AccessView
-    @RequestMapping(path = "tree-node", method = RequestMethod.POST)
-    public List<OrgTreeNodeVO> treeNode(@RequestJSON() String schemaCode,@RequestJSON() String parentId,@RequestJSON() Integer deep) {
-        List<OrgTreeNodeVO> trees = orgManageService.getTreeNode(schemaCode,parentId,deep);
-        return trees;
-    }
-    @AccessView
-    @RequestMapping(path = "get", method = RequestMethod.POST)
-    public OrgNodePO getOrg(@RequestParam String id) {
-        return orgManageService.getOrg(id);
-    }
-
     @DataRenderProvider(path = "values", keyField = "modifiedBy", dataRenderClass = UserInfoDataRender.class)
     @AccessView
     @RequestMapping(path = "children-page", method = RequestMethod.POST)
     public PageObject<OrgNodePO> page(
-            @RequestJSON String schemaCode,
+            @RequestJSON String schema,
             @RequestJSON String parentId,
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
-        return orgManageService.orgPage(schemaCode,parentId,cond,pagination);
+        return orgManageService.orgPage(schema,parentId,cond,pagination);
+    }
+
+    @AccessView
+    @RequestMapping(path = "get", method = RequestMethod.POST)
+    public OrgNodePO getOrg(@RequestParam String id) {
+        OrgNodePO nodeQueryTemplate=  new OrgNodePO();
+        nodeQueryTemplate.setId(id);
+        return orgManageService.getNode(nodeQueryTemplate);
+    }
+
+    @AccessView
+    @RequestMapping(path = "nodes", method = RequestMethod.POST)
+    public List<OrgNodePO> nodes(@RequestParam() String schema,@RequestParam(required = false) String parentId) {
+        OrgNodePO nodeQueryTemplate=  new OrgNodePO();
+        nodeQueryTemplate.setId(parentId);
+        nodeQueryTemplate.setSchema(schema);
+        return orgManageService.getNodeChildren(nodeQueryTemplate);
     }
 
     @AccessEdit
     @RequestMapping(path = "create-node", method = RequestMethod.POST)
-    public void createNOde(@RequestJSON OrgNodePO orgNode,@RequestJSON String parentId) {
-        orgManageService.createNode(orgNode,parentId);
+    public OrgNodePO createNOde(@RequestJSON OrgNodePO orgNode,@RequestJSON String parentId) {
+        return orgManageService.createNode(orgNode,parentId);
     }
 
     @AccessEdit
     @RequestMapping(path = "delete-node", method = RequestMethod.POST)
     public void deleteNode(@RequestParam() String id) {
-        orgManageService.deleteNode(id);
+        OrgNodePO nodeQueryTemplate=  new OrgNodePO();
+        nodeQueryTemplate.setId(id);
+        orgManageService.deleteNode(nodeQueryTemplate);
     }
 
     @AccessEdit
     @RequestMapping(path = "modify-node", method = RequestMethod.POST)
-    public void modifyNode(@RequestJSON OrgNodePO orgNode) {
-        orgManageService.modifyNode(orgNode);
+    public OrgNodePO modifyNode(@RequestJSON OrgNodePO orgNode) {
+        return orgManageService.modifyNode(orgNode);
     }
 
 }

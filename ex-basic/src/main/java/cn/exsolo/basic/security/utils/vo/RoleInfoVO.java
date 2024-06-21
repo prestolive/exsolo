@@ -1,4 +1,4 @@
-package cn.exsolo.basic.security.vo;
+package cn.exsolo.basic.security.utils.vo;
 
 import cn.exsolo.basic.security.po.RolePO;
 import cn.exsolo.basic.security.po.RolePermissionPO;
