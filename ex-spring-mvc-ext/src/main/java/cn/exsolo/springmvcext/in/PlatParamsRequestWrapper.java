@@ -4,6 +4,7 @@ import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
@@ -14,10 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * @author prestolive
@@ -51,10 +49,20 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
         //参数保存
         this.params = new HashMap<>();
         //初始化参数
+        String method = request.getMethod().toLowerCase(Locale.ROOT);
         String contentType = request.getContentType();
-        contentType=contentType==null?ContentType.JSON.toString():contentType.toLowerCase();
-        //如果是application/json
-        if (contentType.startsWith(ContentType.JSON.toString())) {
+        if(StringUtils.isEmpty(contentType)&&!"get".equals(method)){
+            contentType = ContentType.JSON.name();
+        }
+        if(StringUtils.isEmpty(contentType)){
+            //解析数据流数据
+            saveInputStreamData(request);
+            Enumeration<String> headerNames = request.getParameterNames();
+            while (headerNames.hasMoreElements()) {
+                String key = headerNames.nextElement();
+                this.addParameter(key, request.getParameter(key));
+            }
+        }else if (contentType.startsWith(ContentType.JSON.toString())) {
             //解析数据流数据
             saveInputStreamData(request);
             JSONObject parameter = JSON.parseObject(this.getBodyMessage());
@@ -64,14 +72,6 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
 //            saveInputStreamData(request);
 //            JSONObject parameter = JSONUtil.parseFromXml(this.getBodyMessage()).getJSONObject("request");
 //            this.addAllParameters(parameter);
-        } else {
-            //解析数据流数据
-            saveInputStreamData(request);
-            Enumeration<String> headerNames = request.getParameterNames();
-            while (headerNames.hasMoreElements()) {
-                String key = headerNames.nextElement();
-                this.addParameter(key, request.getParameter(key));
-            }
         }
     }
 
