@@ -78,60 +78,65 @@
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>comm</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>console</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-batis</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-kit</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-kit-console</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-basic</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-spring-mvc-ext</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-passwd</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-base</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-server</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-bpm</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <distributionManagement>
+        <snapshotRepository>
+            <id>gfjgglb-snapshot</id>
+            <url>http://devops-api.xiangyu.com/rdupm/v1/nexus/proxy/266658292846170112/repository/gfjgglb-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
