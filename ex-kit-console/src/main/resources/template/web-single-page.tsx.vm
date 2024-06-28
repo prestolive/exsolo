@@ -1,0 +1,231 @@
+import { defineComponent, ref, createVNode, watchEffect } from 'vue'
+import {
+  Space as TSpace,
+  Button as TButton,
+  Dropdown as TDropdown,
+  Tree as TTree,
+  Icon as TIcon,
+  Form as TForm,
+  FormItem as TFormItem,
+  Input as TInput,
+  Select as TSelect,
+  Option as TOption,
+  FormInstanceFunctions,
+  SubmitContext,
+  MessagePlugin,
+} from 'tdesign-vue-next'
+import {
+  BaseTableCol,
+  Pagination,
+  BaseConditionCol,
+  ExPlugin,
+  ExTable,
+  useExTable,
+} from '@/console/index.d'
+
+import { post, ${objectName} } from './API'
+const FORM_RULES = {
+  #foreach ($field in $fields)
+  #if(${field.required})
+  ${field.code}: [{ required: true, message: '名称必填' }],
+  #end
+  #end
+}
+const AddForm = defineComponent({
+  name: 'AddForm',
+  emits: ['finish', 'change'],
+  setup(props, { emit }) {
+
+    const formData = ref<${objectName}>({})
+    // const form = ref<FormInstanceFunctions>()
+    const handleReset = () => {
+      formData.value = {}
+    }
+    const handleSubmit = (context: SubmitContext) => {
+      const { validateResult, firstError } = context
+      if (validateResult === true) {
+        post('api/ex-bpm/org/duty/add', {
+          po: formData.value,
+        }).then(() => {
+          MessagePlugin.success('提交成功')
+          handleReset()
+          //先change再finish，先finish界面会被干掉
+          emit('change')
+          emit('finish')
+        })
+      } else {
+        console.log('Validate Errors: ', firstError, validateResult)
+        MessagePlugin.warning(firstError || '')
+      }
+    }
+    return () => (
+      <TForm
+        ref="form"
+        rules={FORM_RULES}
+        data={formData}
+        onReset={handleReset}
+        onSubmit={handleSubmit}
+      >
+        #foreach ($field in $fields)
+        #if($field.inForm)
+<TFormItem label="${field.name}" name="${field.code}">
+          <TInput v-model={formData.value.${field.code}} placeholder="${field.name}"></TInput>
+        </TFormItem>
+        #end
+        #end
+          <TSpace size="small">
+            <TButton theme="primary" type="submit">
+              提交
+            </TButton>
+            <TButton theme="default" variant="base" type="reset">
+              重置
+            </TButton>
+          </TSpace>
+      </TForm>
+    )
+  },
+})
+const EditForm = defineComponent({
+  name: 'EditForm',
+  emits: ['finish', 'change'],
+  props: {
+    id: {
+      type: String,
+      default: null,
+    },
+  },
+  setup(props, { emit }) {
+    const targetId = ref(props.id)
+    const formData = ref<${objectName}>({})
+
+    watchEffect(() => {
+      if (targetId.value) {
+        post('api/ex-bpm/org/duty/info', {
+          id: targetId.value,
+        }).then((po) => {
+          formData.value = { ...po }
+        })
+      }
+    })
+
+    // const form = ref<FormInstanceFunctions>()
+    const handleReset = () => {
+      formData.value = {}
+    }
+    const handleSubmit = (context: SubmitContext) => {
+      const { validateResult, firstError } = context
+      if (validateResult === true) {
+        post('api/ex-bpm/org/duty/update', {
+          po: formData.value,
+        }).then(() => {
+          MessagePlugin.success('提交成功')
+          handleReset()
+          //先change再finish，先finish界面会被干掉
+          emit('change')
+          emit('finish')
+        })
+      } else {
+        console.log('Validate Errors: ', firstError, validateResult)
+        MessagePlugin.warning(firstError || '')
+      }
+    }
+    return () => (
+      <TForm
+        ref="form"
+        rules={FORM_RULES}
+        data={formData}
+        onReset={handleReset}
+        onSubmit={handleSubmit}
+      >
+        #foreach ($field in $fields)
+        #if($field.inForm)
+<TFormItem label="${field.name}" name="${field.code}">
+          <TInput v-model={formData.value.${field.code}} placeholder="${field.name}"></TInput>
+        </TFormItem>
+        #end
+        #end
+        <TFormItem>
+          <TSpace size="small">
+            <TButton theme="primary" type="submit">
+              提交
+            </TButton>
+            <TButton theme="default" variant="base" type="reset">
+              重置
+            </TButton>
+          </TSpace>
+        </TFormItem>
+      </TForm>
+    )
+  },
+})
+const ListPage = defineComponent({
+  name: 'DutyList',
+  setup() {
+    const columns: BaseTableCol[] = [{ colKey: 'name', title: '职责名称' }]
+    const conditions: BaseConditionCol[] = [
+      {
+        key: 'name',
+        title: '职责名称',
+        schema: 'text',
+        compare: 'lk',
+      },
+    ]
+    const pageBind = useExTable<${objectName}>({
+      columns: columns,
+      conditions: conditions,
+      loadData: (param: object, pagination: Pagination) => {
+        return post('api/ex-bpm/org/duty/page', {
+          ...param,
+          pagination: pagination,
+        })
+      },
+    })
+    const handleAdd = () => {
+      ExPlugin.dialog(
+        { title: '创建职责', width: '520px' },
+        createVNode(AddForm, {
+          onChange: () => {
+            pageBind.handleRefresh && pageBind.handleRefresh()
+          },
+        })
+      )
+    }
+    const handleEdit = (id: string) => {
+      ExPlugin.dialog(
+        { title: '修改职责', width: '520px' },
+        createVNode(EditForm, {
+          id: id,
+          onChange: () => {
+            pageBind.handleRefresh && pageBind.handleRefresh()
+          },
+        })
+      )
+    }
+    return () => (
+      <div class="main" style="padding: 24px;max-width:768px;">
+        <h1>组织职责档案</h1>
+        <ExTable {...pageBind}>
+          {{
+            tableBar: () => (
+              <TButton theme="primary" onClick={handleAdd}>
+                创建职责
+              </TButton>
+            ),
+            action: ({ row }) => (
+              <TSpace>
+                <TButton
+                  theme="default"
+                  variant="text"
+                  size="small"
+                  icon={() => <TIcon name="jump" />}
+                  onClick={() => handleEdit(row.id)}
+                ></TButton>
+              </TSpace>
+            ),
+          }}
+        </ExTable>
+      </div>
+    )
+  },
+})
+export { ListPage, AddForm, EditForm }

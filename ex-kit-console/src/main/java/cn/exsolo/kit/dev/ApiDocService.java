@@ -3,7 +3,7 @@ package cn.exsolo.kit.dev;
 import cn.exsolo.comm.utils.ExAnnotationUtil;
 import cn.exsolo.kit.console.api.ApiDocController;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
-import cn.exsolo.kit.dev.bo.ApiDocClzBO;
+import cn.exsolo.kit.dev.bo.DevClzBO;
 import cn.exsolo.kit.dev.bo.ApiDocTypeBO;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -40,10 +40,10 @@ public class ApiDocService {
 
     private static DefaultParameterNameDiscoverer discoverer = new DefaultParameterNameDiscoverer();
 
-    public List<ApiDocClzBO> getAllController() {
+    public List<DevClzBO> getAllController() {
         List<Class<?>> list = ExAnnotationUtil.getAnnotationFromContext(applicationContext, RequestMapping.class);
         return list.stream().map(row -> {
-            ApiDocClzBO bo = new ApiDocClzBO();
+            DevClzBO bo = new DevClzBO();
             bo.setModule(getModuleFromClz(row.getName()));
             bo.setClz(row.getName());
             return bo;

@@ -6,7 +6,7 @@ package cn.exsolo.kit.cache;
  **/
 public enum CacheEnum {
     //权限缓存
-    PERMISSION(3*60),
+    PERMISSION(1*60),
     //账户锁定时间
     AUTH_ACCOUNT_LOCK(10*60),
     //当密码错误后记录错误次数缓存时间

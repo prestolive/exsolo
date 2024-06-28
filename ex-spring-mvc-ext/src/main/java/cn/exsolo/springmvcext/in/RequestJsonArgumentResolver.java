@@ -4,6 +4,7 @@ import cn.exsolo.batis.core.Condition;
 import cn.exsolo.springmvcext.plugins.SpringMvcExtForBatis;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import com.alibaba.fastjson.JSON;
+import com.google.gson.Gson;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -59,7 +60,9 @@ public class RequestJsonArgumentResolver implements HandlerMethodArgumentResolve
         } else {
             Object obj ;
             if(!clz.getName().equals(Condition.class.getName())){
-                obj = JSON.parseObject(inputContent.toString(),clz);
+                Gson gson = new Gson();
+                obj = gson.fromJson(inputContent.toString(),clz);
+//                obj = JSON.parseObject(inputContent.toString(),clz);
                 return obj;
             }else{
                 return SpringMvcExtForBatis.json2Condition(inputContent.toString());

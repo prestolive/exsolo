@@ -12,7 +12,7 @@ import cn.exsolo.kit.console.ExKitConsoleErrorCodeEnum;
 import cn.exsolo.kit.dev.ApiDocGenerateCodeService;
 import cn.exsolo.kit.dev.ApiDocService;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
-import cn.exsolo.kit.dev.bo.ApiDocClzBO;
+import cn.exsolo.kit.dev.bo.DevClzBO;
 import cn.exsolo.kit.dev.utils.FileUtil;
 import cn.exsolo.comm.ex.ExDeclaredException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ import java.util.List;
 @AccessProvider(module = "kit",node = "api",label = "开发套件-API管理")
 public class ApiDocController {
 
-    private List<ApiDocClzBO> list;
+    private List<DevClzBO> list;
 
     @Autowired
     private ApiDocService apiDocService;
@@ -47,7 +47,7 @@ public class ApiDocController {
 
     @AccessView
     @RequestMapping(value = "api-previews",method = RequestMethod.POST)
-    public List<ApiDocClzBO> allController() {
+    public List<DevClzBO> allController() {
         if(list==null){
             list = apiDocService.getAllController();
         }

@@ -2,7 +2,7 @@ package cn.exsolo.kit.dev;
 
 import cn.exsolo.kit.console.ExKitConsoleErrorCodeEnum;
 import cn.exsolo.kit.dev.bo.ApiDocBO;
-import cn.exsolo.kit.dev.bo.ApiDocClzBO;
+import cn.exsolo.kit.dev.bo.DevClzBO;
 import cn.exsolo.kit.dev.bo.ApiDocTypeBO;
 import cn.exsolo.comm.ex.ExDeclaredException;
 import org.apache.velocity.Template;
@@ -33,7 +33,7 @@ public class ApiDocGenerateCodeService {
 
 
     public String generateModule(String module){
-        List<ApiDocClzBO> all = apiDocService.getAllController();
+        List<DevClzBO> all = apiDocService.getAllController();
         List<String> classNames = all.stream().filter(row->row.getModule().equals(module)).map(row->row.getClz()).collect(Collectors.toList());
         return generate(classNames);
     }
