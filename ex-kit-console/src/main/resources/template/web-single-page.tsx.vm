@@ -44,7 +44,7 @@ const AddForm = defineComponent({
     const handleSubmit = (context: SubmitContext) => {
       const { validateResult, firstError } = context
       if (validateResult === true) {
-        post('api/ex-bpm/org/duty/add', {
+        post('api/ex-bpm/org/job/add', {
           po: formData.value,
         }).then(() => {
           MessagePlugin.success('提交成功')
@@ -100,7 +100,7 @@ const EditForm = defineComponent({
 
     watchEffect(() => {
       if (targetId.value) {
-        post('api/ex-bpm/org/duty/info', {
+        post('api/ex-bpm/org/job/info', {
           id: targetId.value,
         }).then((po) => {
           formData.value = { ...po }
@@ -115,7 +115,7 @@ const EditForm = defineComponent({
     const handleSubmit = (context: SubmitContext) => {
       const { validateResult, firstError } = context
       if (validateResult === true) {
-        post('api/ex-bpm/org/duty/update', {
+        post('api/ex-bpm/org/job/update', {
           po: formData.value,
         }).then(() => {
           MessagePlugin.success('提交成功')
@@ -159,7 +159,7 @@ const EditForm = defineComponent({
   },
 })
 const ListPage = defineComponent({
-  name: 'DutyList',
+  name: 'JobList',
   setup() {
     const columns: BaseTableCol[] = [{ colKey: 'name', title: '职责名称' }]
     const conditions: BaseConditionCol[] = [
@@ -174,7 +174,7 @@ const ListPage = defineComponent({
       columns: columns,
       conditions: conditions,
       loadData: (param: object, pagination: Pagination) => {
-        return post('api/ex-bpm/org/duty/page', {
+        return post('api/ex-bpm/org/job/page', {
           ...param,
           pagination: pagination,
         })

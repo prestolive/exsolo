@@ -12,8 +12,8 @@ import javax.persistence.Table;
  * @author prestolive
  * @date 2024/6/26
  **/
-@Table(name="ex_bpm_org_duty",indexes = @Index(columnList = "name",unique = true))
-public class OrgDutyPO extends AbstractPO {
+@Table(name="ex_bpm_org_job",indexes = @Index(columnList = "name",unique = true))
+public class OrgJobPO extends AbstractPO {
 
     @Id
     @Column(name = "id",nullable = false,length = 24,columnDefinition = "char(24)")

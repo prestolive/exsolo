@@ -12,8 +12,8 @@ import javax.persistence.Table;
  * @author prestolive
  * @date 2024/6/26
  **/
-@Table(name="ex_bpm_org_duty_user_rela",indexes = @Index(columnList = "orgUserId,orgDutyId",unique = true))
-public class OrgDutyUserRelaPO extends AbstractPO {
+@Table(name="ex_bpm_org_job_user_rela",indexes = @Index(columnList = "orgUserId,orgJobId",unique = true))
+public class OrgJobUserRelaPO extends AbstractPO {
 
     @Id
     @Column(name = "id",nullable = false,length = 24,columnDefinition = "char(24)")
@@ -34,8 +34,8 @@ public class OrgDutyUserRelaPO extends AbstractPO {
     @Column(name = "userId",nullable = false,length = 24,columnDefinition = "char(24)")
     private String userId;
 
-    @Column(name = "orgDutyId",nullable = false,length = 24,columnDefinition = "char(24)")
-    private String orgDutyId;
+    @Column(name = "orgJobId",nullable = false,length = 24,columnDefinition = "char(24)")
+    private String orgJobId;
 
     @Column(name = "modifiedBy",length = 24,columnDefinition = "char(24)")
     private String modifiedBy;
@@ -75,12 +75,12 @@ public class OrgDutyUserRelaPO extends AbstractPO {
         this.userId = userId;
     }
 
-    public String getOrgDutyId() {
-        return orgDutyId;
+    public String getOrgJobId() {
+        return orgJobId;
     }
 
-    public void setOrgDutyId(String orgDutyId) {
-        this.orgDutyId = orgDutyId;
+    public void setOrgJobId(String orgJobId) {
+        this.orgJobId = orgJobId;
     }
 
     public String getModifiedBy() {

@@ -66,7 +66,7 @@ public class ControllerExceptionHandler {
         String traceId = GenerateID.next();
         ExDeclaredException exception = (ExDeclaredException) e;
         String errcode = exception.getErrorItem().name();
-        String errmsg = String.format("traceId:%s,message:%s",traceId,formatErrorMessage(exception));
+        String errmsg = formatErrorMessage(exception);
         log.error(errmsg,e);
         BaseResponse resp = new BaseResponse<>(-1, errcode, errmsg, exception.getResponseData());
         if(DevKitSettingProvider.IS_ALLOW_WEB_ERROR_STACK){

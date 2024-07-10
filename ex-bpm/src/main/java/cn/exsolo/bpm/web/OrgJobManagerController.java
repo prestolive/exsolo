@@ -6,11 +6,8 @@ import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
-import cn.exsolo.bpm.console.bo.FlowInfoBO;
-import cn.exsolo.bpm.console.po.FlowPO;
-import cn.exsolo.bpm.console.service.FlowManageService;
-import cn.exsolo.bpm.org.po.OrgDutyPO;
-import cn.exsolo.bpm.org.service.OrgDutyService;
+import cn.exsolo.bpm.org.po.OrgJobPO;
+import cn.exsolo.bpm.org.service.OrgJobService;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,39 +22,45 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 
 @Component
-@RequestMapping("api/ex-bpm/org/duty/")
+@RequestMapping("api/ex-bpm/org/job/")
 @RestController()
 @AccessProvider(module = "bpm", node = "org", label = "BPM-组织")
-public class OrgDutyManagerController {
+public class OrgJobManagerController {
 
     @Autowired
-    private OrgDutyService orgDutyService;
+    private OrgJobService orgJobService;
 
     @AccessView
     @RequestMapping(path = "page", method = RequestMethod.POST)
-    public PageObject<OrgDutyPO> page(
+    public PageObject<OrgJobPO> page(
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
-        return orgDutyService.page(cond, pagination);
+        return orgJobService.page(cond, pagination);
     }
 
     @AccessView
     @RequestMapping(path = "info", method = RequestMethod.POST)
-    public OrgDutyPO get(@RequestParam() String id) {
-        OrgDutyPO info = orgDutyService.get(id);
+    public OrgJobPO get(@RequestParam() String id) {
+        OrgJobPO info = orgJobService.get(id);
         return info;
     }
 
     @AccessEdit
     @RequestMapping(path = "add", method = RequestMethod.POST)
-    public void add(@RequestJSON() OrgDutyPO po) {
-        orgDutyService.add(po);
+    public void add(@RequestJSON() OrgJobPO po) {
+        orgJobService.add(po);
     }
 
     @AccessEdit
     @RequestMapping(path = "update", method = RequestMethod.POST)
-    public void update(@RequestJSON() OrgDutyPO po) {
-        orgDutyService.update(po);
+    public void update(@RequestJSON() OrgJobPO po) {
+        orgJobService.update(po);
     }
+    @AccessEdit
+    @RequestMapping(path = "delete", method = RequestMethod.POST)
+    public void delete(@RequestParam() String id) {
+        orgJobService.delete(id);
+    }
+
 
 }
