@@ -6,7 +6,7 @@ import javax.persistence.Column;
 
 /**
  * @author prestolive
- * @date 2024/5/28
+ * @date 2021/5/28
  **/
 public abstract class CommonTreeNodePO extends AbstractPO {
 

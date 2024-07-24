@@ -1,0 +1,79 @@
+import { request } from '@/utils/request'
+export interface PageObject<T> {
+  values?: T[]
+  pagination: Pagination
+}
+export interface ${ObjectName} {
+  #foreach ($field in $fields)
+  ${field.code}?: ${field.jsType},
+  #end
+}
+export interface Condition {
+  ASC?: string
+  DESC?: string
+  existFilters?: ConditionFilter[]
+  unExistFilters?: ConditionFilter[]
+  orders?: OrderBaseBean[]
+}
+export interface ConditionFilter {
+  key?: string
+  table?: string
+  tableAlias?: string
+  joinKey?: string
+}
+export interface OrderBaseBean {
+  type?: string
+  field?: string
+}
+export interface Pagination {
+  total?: number
+  pages?: number
+  current?: number
+  pageSize?: number
+}
+interface POST {
+ 'api/${sysName}/${moduleName}/${bizName}/add': {
+    req: {
+      po?: ${objectName}
+    }
+    resp: null
+  }
+  'api/${sysName}/${moduleName}/${bizName}/info': {
+    req: {
+      id?: string
+    }
+    resp: ${ObjectName}
+  }
+  'api/${sysName}/${moduleName}/${bizName}/update': {
+    req: {
+      po?: ${ObjectName}
+    }
+    resp: null
+  }
+  'api/${sysName}/${moduleName}/${bizName}/delete': {
+    req: {
+      id?: string
+    }
+    resp: null
+  }
+  'api/${sysName}/${moduleName}/${bizName}/page': {
+    req: {
+      cond?: Condition
+      pagination?: Pagination
+    }
+    resp: PageObject<${ObjectName}>
+  }
+}
+
+export function post<URL extends keyof POST>(
+  url: URL,
+  data?: POST[URL]['req']
+): Promise<POST[URL]['resp']> {
+  return request.post<POST[URL]['resp']>({
+    url,
+    data,
+  })
+}
+export function download(url: string, data: object): Promise<null> {
+  return request.download({ url, data })
+}

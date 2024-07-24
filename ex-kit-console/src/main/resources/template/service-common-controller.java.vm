@@ -1,4 +1,4 @@
-package cn.exsolo.bpm.web;
+package ${packageName}.web
 
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
@@ -6,8 +6,8 @@ import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
-import cn.exsolo.bpm.org.po.OrgJobPO;
-import cn.exsolo.bpm.org.service.OrgJobService;
+import ${modelClassName};
+import cn.exsolo.${moduleName}.service.${BizName}Service;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,49 +17,49 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author prestolive
- * @date 2021/6/27
+ * //TODO 注释
+ * @author ExSoloGen
+ * @date ${date}
  **/
-
 @Component
-@RequestMapping("api/ex-bpm/org/job/")
+@RequestMapping("api/${moduleName}/${bizName}/")
 @RestController()
-@AccessProvider(module = "bpm", node = "org", label = "BPM-组织")
-public class OrgJobManagerController {
+@AccessProvider(module = "${moduleName}", node = "${bizName}", label = "功能名称")
+public class ${BizName}Controller {
 
     @Autowired
-    private OrgJobService orgJobService;
+    private ${BizName}Service ${bizName}Service;
 
     @AccessView
     @RequestMapping(path = "page", method = RequestMethod.POST)
-    public PageObject<OrgJobPO> page(
+    public PageObject<${ObjectName}> page(
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
-        return orgJobService.page(cond, pagination);
+        return ${bizName}Service.page(cond, pagination);
     }
 
     @AccessView
     @RequestMapping(path = "info", method = RequestMethod.POST)
-    public OrgJobPO get(@RequestParam() String id) {
-        OrgJobPO info = orgJobService.get(id);
+    public ${ObjectName} get(@RequestParam() String id) {
+        ${ObjectName} info = ${bizName}Service.get(id);
         return info;
     }
 
     @AccessEdit
     @RequestMapping(path = "add", method = RequestMethod.POST)
-    public void add(@RequestJSON() OrgJobPO po) {
-        orgJobService.add(po);
+    public void add(@RequestJSON() ${ObjectName} po) {
+        ${bizName}Service.add(po);
     }
 
     @AccessEdit
     @RequestMapping(path = "update", method = RequestMethod.POST)
-    public void update(@RequestJSON() OrgJobPO po) {
-        orgJobService.update(po);
+    public void update(@RequestJSON() ${ObjectName} po) {
+        ${bizName}Service.update(po);
     }
     @AccessEdit
     @RequestMapping(path = "delete", method = RequestMethod.POST)
     public void delete(@RequestParam() String id) {
-        orgJobService.delete(id);
+        ${bizName}Service.delete(id);
     }
 
 }

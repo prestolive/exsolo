@@ -10,7 +10,7 @@ import javax.persistence.Table;
 /**
  * 组织和职责分配关系表
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 
 @Table(name="ex_bpm_org_job_rela",indexes = @Index(columnList = "orgId,orgJobId",unique = true))

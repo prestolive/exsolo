@@ -1,0 +1,132 @@
+<template>
+  <div class="main" style="padding: 24px;">
+    <h1>功能名称</h1>
+    <ExTable
+      ref="exTableRef"
+      :columns="columns"
+      :conditions="conditions"
+      :load="handleLoad"
+    >
+      <template #action>
+        <TButton theme="primary" @click="handleAdd"> 创建 </TButton>
+      </template>
+      <template #rowAction="{ row }">
+        <TSpace>
+          <TButton
+            theme="default"
+            variant="text"
+            size="small"
+            @click="() => handleEdit(row.id)"
+          >
+            <template #icon>
+              <TIcon name="jump" />
+            </template>
+          </TButton>
+          <TButton
+            theme="default"
+            variant="text"
+            size="small"
+            @click="() => handleDelete(row.id)"
+          >
+            <template #icon>
+              <TIcon name="delete" />
+            </template>
+          </TButton>
+        </TSpace>
+      </template>
+    </ExTable>
+  </div>
+</template>
+<script setup lang="ts">
+import { defineComponent, ref, createVNode, watchEffect } from 'vue'
+import {
+  Space as TSpace,
+  Button as TButton,
+  Dropdown as TDropdown,
+  Tree as TTree,
+  Icon as TIcon,
+  Form as TForm,
+  FormItem as TFormItem,
+  Input as TInput,
+  Select as TSelect,
+  Option as TOption,
+  FormInstanceFunctions,
+  SubmitContext,
+  MessagePlugin,
+  DialogPlugin,
+} from 'tdesign-vue-next'
+import {
+  BaseTableCol,
+  Pagination,
+  BaseConditionCol,
+  ExPlugin,
+  ExTable,
+} from '@/console/index.d'
+import { post, ${ObjectName} } from './API'
+import AddForm from './${BizName}ManageAddForm.vue'
+import EditForm from './${BizName}ManageEditForm.vue'
+
+const columns: BaseTableCol[] = [
+  #foreach ($field in $fields)
+  #if($field.inTable)
+  { colKey: '${field.code}', title: '${field.name}' }
+  #end
+  #end
+
+]
+const conditions: BaseConditionCol[] = [
+  #foreach ($field in $fields)
+  #if($field.inCondition)
+    {
+      key: '${field.code}',
+      title: '${field.name}',
+      schema: '${field.inputType}',
+      compare: '${field.compareType}',
+      #if($field.inputArg)
+      arg: '${field.inputArg}',
+      #end
+    },
+  #end
+  #end
+
+]
+const exTableRef = ref()
+const handleLoad = (param: object, pagination: Pagination) => {
+  return post('api/${sysName}/${moduleName}/${bizName}/page', {
+    ...param,
+    pagination: pagination,
+  })
+}
+const handleAdd = () => {
+  ExPlugin.dialog(
+    { title: '创建', width: '520px' },
+    createVNode(AddForm, {
+      onChange: () => {
+        exTableRef.value.refresh()
+      },
+    })
+  )
+}
+const handleEdit = (id: string) => {
+  ExPlugin.dialog(
+    { title: '修改', width: '520px' },
+    createVNode(EditForm, {
+      id: id,
+      onChange: () => {
+        exTableRef.value.refresh()
+      },
+    })
+  )
+}
+const handleDelete = (id: string) => {
+  const confirmDialog = DialogPlugin.confirm({
+    header: '确认删除？',
+    onConfirm: () => {
+      post('api/${sysName}/${moduleName}/${bizName}/delete', { id: id }).then(() => {
+        MessagePlugin.success('删除成功')
+      })
+      confirmDialog.destroy()
+    },
+  })
+}
+</script>

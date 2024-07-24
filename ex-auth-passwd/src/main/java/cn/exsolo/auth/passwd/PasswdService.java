@@ -21,7 +21,7 @@ import java.util.List;
  * 密码修改服务，所有密码参数在入参前，要求在前端默认加盐#@=yxy=@#，并做5次md5
  *
  * @author prestolive
- * @date 2024/2/19
+ * @date 2021/2/19
  **/
 @Service
 public class PasswdService {

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 /**
  * Model管理配置的持久化
  * @author prestolive
- * @date 2024/6/27
+ * @date 2021/6/27
  **/
 @Table(name="ex_kit_model_meta")
 public class ModelMetaDevPO extends AbstractPO {

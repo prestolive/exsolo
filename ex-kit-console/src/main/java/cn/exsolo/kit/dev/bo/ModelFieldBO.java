@@ -3,7 +3,7 @@ package cn.exsolo.kit.dev.bo;
 /**
  * @Table 注解反向得到的字段信息
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 public class ModelFieldBO {
 
@@ -19,7 +19,7 @@ public class ModelFieldBO {
 
     private String jsType;
 
-    private String inputType;
+    private String inputType="text";
 
     private String inputArg;
 
@@ -32,6 +32,17 @@ public class ModelFieldBO {
     private Boolean editAble = true;
 
     private Boolean required = false;
+
+    private String compareType = "eq";
+
+
+    public String getCompareType() {
+        return compareType;
+    }
+
+    public void setCompareType(String compareType) {
+        this.compareType = compareType;
+    }
 
     public Boolean getRequired() {
         return required;

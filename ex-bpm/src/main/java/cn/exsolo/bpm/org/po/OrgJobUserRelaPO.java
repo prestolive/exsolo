@@ -10,7 +10,7 @@ import javax.persistence.Table;
 /**
  * 组织用户和组织职责关系表
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 @Table(name="ex_bpm_org_job_user_rela",indexes = @Index(columnList = "orgUserId,orgJobId",unique = true))
 public class OrgJobUserRelaPO extends AbstractPO {

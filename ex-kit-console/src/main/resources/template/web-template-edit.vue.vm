@@ -1,0 +1,85 @@
+<template>
+  <TForm
+    :rules="FORM_RULES"
+    :data="formData"
+    @reset="handleReset"
+    @submit="handleSubmit"
+  >
+    #foreach ($field in $fields)
+    #if($field.editAble)
+<TFormItem label="${field.name}" name="${field.code}">
+      <TInput v-model="formData.${field.code}" placeholder="${field.name}"></TInput>
+    </TFormItem>
+    #end
+    #end
+    <TFormItem>
+      <TSpace size="small">
+        <TButton theme="primary" type="submit"> 提交 </TButton>
+        <TButton theme="default" variant="base" type="reset"> 重置 </TButton>
+      </TSpace>
+    </TFormItem>
+  </TForm>
+</template>
+<script setup lang="ts">
+import { ref, watchEffect } from 'vue'
+import {
+  Space as TSpace,
+  Button as TButton,
+  Form as TForm,
+  FormItem as TFormItem,
+  Input as TInput,
+  SubmitContext,
+  MessagePlugin,
+} from 'tdesign-vue-next'
+
+import { post, ${ObjectName} } from './API'
+const props = defineProps<{
+  id: string
+}>()
+
+const emit = defineEmits<{
+  (e: 'finish'): void
+  (e: 'change'): void
+}>()
+const FORM_RULES = {
+  #foreach ($field in $fields)
+  #if(${field.required})
+  ${field.code}: [{ required: true, message: '${field.name}必填' }],
+  #end
+  #end
+}
+const targetId = ref(props.id)
+const formData = ref<${ObjectName}>({})
+// const form = ref<FormInstanceFunctions>()
+const handleReset = () => {
+  formData.value = {}
+}
+
+watchEffect(() => {
+  if (targetId.value) {
+    post('api/${sysName}/${moduleName}/${bizName}/info', {
+      id: targetId.value,
+    }).then((po) => {
+      formData.value = { ...po }
+    })
+  }
+})
+
+const handleSubmit = (context: SubmitContext) => {
+  const { validateResult, firstError } = context
+  if (validateResult === true) {
+    post('api/${sysName}/${moduleName}/${bizName}/add', {
+      po: formData.value,
+    }).then(() => {
+      MessagePlugin.success('提交成功')
+      handleReset()
+      //先change再finish，先finish界面会被干掉
+      emit('change')
+      emit('finish')
+    })
+  } else {
+    console.log('Validate Errors: ', firstError, validateResult)
+    MessagePlugin.warning(firstError || '')
+  }
+}
+</script>

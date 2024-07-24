@@ -6,6 +6,7 @@ import cn.exsolo.kit.dev.bo.DevClzBO;
 import cn.exsolo.kit.dev.bo.ModelFieldBO;
 import cn.exsolo.kit.dev.bo.ModelMetaBO;
 import cn.exsolo.kit.dev.po.ModelMetaDevPO;
+import cn.exsolo.kit.item.stereotype.ItemProvider;
 import cn.hutool.core.util.ReflectUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * 不想写英文了，这个类用来扫@Table注解，根据模型生成代码
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 
 @Service
@@ -83,7 +84,7 @@ public class ModelDocService {
             }
             ModelFieldBO row = new ModelFieldBO();
             row.setCode(col.name());
-            row.setName(col.name());
+            row.setName(col.name()+"释义");
             row.setDbType(col.columnDefinition());
             row.setJavaType(field.getType().getName());
             row.setInTable(true);
@@ -93,6 +94,18 @@ public class ModelDocService {
             row.setRequired(!col.nullable());
             String jsType = JsTypeMapEnum.getJavaScriptTypeName(field.getType());
             row.setJsType(jsType);
+            //compareType
+            if("string".equals(row.getJsType())){
+                if(col.columnDefinition().contains("varchar")){
+                    row.setCompareType("lk");
+                }
+            }
+            ItemProvider itemProvider = field.getType().getAnnotation(ItemProvider.class);
+            if(itemProvider!=null){
+                row.setInputArg(itemProvider.tag());
+                row.setInputType("selector");
+                row.setCompareType("eq");
+            }
             list.add(row);
         }
         if(meta==null){

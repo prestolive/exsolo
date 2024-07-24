@@ -1,0 +1,6 @@
+{
+path: '/${sysName}/${moduleName}/${bizName}-manage',
+name: '${sysName}-${moduleName}-${bizName}-manage',
+component: () => import('@/pages/${sysName}/${moduleName}/${BizName}Manage.vue'),
+meta: { title: '功能名称' },
+},

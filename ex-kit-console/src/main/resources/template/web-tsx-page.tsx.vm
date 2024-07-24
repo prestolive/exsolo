@@ -20,14 +20,13 @@ import {
   BaseConditionCol,
   ExPlugin,
   ExTable,
-  useExTable,
 } from '@/console/index.d'
 
-import { post, ${objectName} } from './API'
+import { post, ${ObjectName} } from './API'
 const FORM_RULES = {
   #foreach ($field in $fields)
   #if(${field.required})
-  ${field.code}: [{ required: true, message: '名称必填' }],
+  ${field.code}: [{ required: true, message: '${field.name}必填' }],
   #end
   #end
 }
@@ -36,7 +35,7 @@ const AddForm = defineComponent({
   emits: ['finish', 'change'],
   setup(props, { emit }) {
 
-    const formData = ref<${objectName}>({})
+    const formData = ref<${ObjectName}>({})
     // const form = ref<FormInstanceFunctions>()
     const handleReset = () => {
       formData.value = {}
@@ -44,7 +43,7 @@ const AddForm = defineComponent({
     const handleSubmit = (context: SubmitContext) => {
       const { validateResult, firstError } = context
       if (validateResult === true) {
-        post('api/ex-bpm/org/job/add', {
+        post('api/${sysName}/${moduleName}/${bizName}/add', {
           po: formData.value,
         }).then(() => {
           MessagePlugin.success('提交成功')
@@ -96,11 +95,11 @@ const EditForm = defineComponent({
   },
   setup(props, { emit }) {
     const targetId = ref(props.id)
-    const formData = ref<${objectName}>({})
+    const formData = ref<${ObjectName}>({})
 
     watchEffect(() => {
       if (targetId.value) {
-        post('api/ex-bpm/org/job/info', {
+        post('api/${sysName}/${moduleName}/${bizName}/info', {
           id: targetId.value,
         }).then((po) => {
           formData.value = { ...po }
@@ -115,7 +114,7 @@ const EditForm = defineComponent({
     const handleSubmit = (context: SubmitContext) => {
       const { validateResult, firstError } = context
       if (validateResult === true) {
-        post('api/ex-bpm/org/job/update', {
+        post('api/${sysName}/${moduleName}/${bizName}/update', {
           po: formData.value,
         }).then(() => {
           MessagePlugin.success('提交成功')
@@ -159,59 +158,74 @@ const EditForm = defineComponent({
   },
 })
 const ListPage = defineComponent({
-  name: 'JobList',
+  name: '${BizName}List',
   setup() {
-    const columns: BaseTableCol[] = [{ colKey: 'name', title: '职责名称' }]
-    const conditions: BaseConditionCol[] = [
-      {
-        key: 'name',
-        title: '职责名称',
-        schema: 'text',
-        compare: 'lk',
-      },
+    const columns: BaseTableCol[] = [
+  #foreach ($field in $fields)
+  #if($field.inTable)
+  { colKey: '${field.code}', title: '${field.name}' },
+  #end
+  #end
     ]
-    const pageBind = useExTable<${objectName}>({
-      columns: columns,
-      conditions: conditions,
-      loadData: (param: object, pagination: Pagination) => {
-        return post('api/ex-bpm/org/job/page', {
-          ...param,
-          pagination: pagination,
-        })
-      },
-    })
+    const conditions: BaseConditionCol[] = [
+  #foreach ($field in $fields)
+  #if($field.inCondition)
+    {
+    key: '${field.code}',
+    title: '${field.name}',
+    schema: '${field.inputType}',
+    compare: '${field.compareType}',
+    #if($field.inputArg)
+    arg: '${field.inputArg}',
+    #end
+    },
+  #end
+  #end
+    ]
+    const exTableRef = ref()
+    const handleLoad = (param: object, pagination: Pagination) => {
+      return post('api/${sysName}/${moduleName}/${bizName}/page', {
+        ...param,
+        pagination: pagination,
+      })
+    }
     const handleAdd = () => {
       ExPlugin.dialog(
-        { title: '创建职责', width: '520px' },
+        { title: '创建', width: '520px' },
         createVNode(AddForm, {
           onChange: () => {
-            pageBind.handleRefresh && pageBind.handleRefresh()
+            exTableRef.value.refresh()
           },
         })
       )
     }
     const handleEdit = (id: string) => {
       ExPlugin.dialog(
-        { title: '修改职责', width: '520px' },
+        { title: '修改', width: '520px' },
         createVNode(EditForm, {
           id: id,
           onChange: () => {
-            pageBind.handleRefresh && pageBind.handleRefresh()
+            exTableRef.value.refresh()
           },
         })
       )
     }
     return () => (
-      <div class="main" style="padding: 24px;max-width:768px;">
-        <h1>组织职责档案</h1>
-        <ExTable {...pageBind}>
+      <div class="main" style="padding: 24px;">
+        <h1>功能名称</h1>
+        <ExTable
+          ref={exTableRef}
+          columns={columns}
+          conditions={conditions}
+          load={handleLoad}
+        >
           {{
             tableBar: () => (
               <TButton theme="primary" onClick={handleAdd}>
-                创建职责
+                创建
               </TButton>
             ),
-            action: ({ row }) => (
+            rowAction: ({ row }) => (
               <TSpace>
                 <TButton
                   theme="default"

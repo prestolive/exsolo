@@ -3,7 +3,7 @@ package cn.exsolo.kit.dev.bo;
 /**
  * 用于保存生成代码的对象
  * @author prestolive
- * @date 2024/6/27
+ * @date 2021/6/27
  **/
 public class GenCodeBO {
 

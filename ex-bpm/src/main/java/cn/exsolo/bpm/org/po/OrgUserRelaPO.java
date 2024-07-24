@@ -10,7 +10,7 @@ import javax.persistence.Table;
 /**
  * 组织和用户关系表
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 
 @Table(name="ex_bpm_org_user",indexes = @Index(columnList = "orgId,userId",unique = true))
@@ -26,6 +26,11 @@ public class OrgUserRelaPO extends AbstractPO {
     @Column(name = "userId",nullable = false,length = 24,columnDefinition = "char(24)")
     private String userId;
 
+    /**
+     * 人员和部门的关系可能来自于 组织岗位人员关系表 ，这里记录关系ID，人员与组织的关系由他们来来联动
+     */
+    @Column(name = "orgJobUserRelaId",nullable = true,length = 24,columnDefinition = "char(24)")
+    private String orgJobUserRelaId;
 
     @Override
     public String getId() {
@@ -35,6 +40,14 @@ public class OrgUserRelaPO extends AbstractPO {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOrgJobUserRelaId() {
+        return orgJobUserRelaId;
+    }
+
+    public void setOrgJobUserRelaId(String orgJobUserRelaId) {
+        this.orgJobUserRelaId = orgJobUserRelaId;
     }
 
     public String getOrgId() {

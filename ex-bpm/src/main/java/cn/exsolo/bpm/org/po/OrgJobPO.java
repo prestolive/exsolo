@@ -10,7 +10,7 @@ import javax.persistence.Table;
 /**
  * 组织职责表
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 @Table(name="ex_bpm_org_job",indexes = @Index(columnList = "name",unique = true))
 public class OrgJobPO extends AbstractPO {

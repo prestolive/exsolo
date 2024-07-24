@@ -14,7 +14,7 @@ import java.util.Locale;
 /**
  * 通用树形数据模型
  * @author prestolive
- * @date 2024/5/28
+ * @date 2021/5/28
  **/
 public abstract class CommonTreeService<T extends CommonTreeNodePO> {
 
@@ -59,9 +59,18 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
         checkNode(node);
         baseDAO.insertOrUpdateValueObject(node);
         //重置同级的的顺序号和内码
-        rebuildOrderAndInnerCode(node);
+        rebuildTree(node);
 
         return node;
+    }
+
+    private void rebuildTree(T node){
+        if(StringUtils.isNotEmpty(node.getParentId())){
+            T parent = getParent(node);
+            rebuildOrderAndInnerCode(parent);
+        }else{
+            rebuildOrderAndInnerCode(node);
+        }
     }
 
     /**
@@ -131,44 +140,53 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
      * @param nodeQueryTemplate
      */
     public void deleteNode(T nodeQueryTemplate) {
+        T node = getNode(nodeQueryTemplate);
+        processDelete(node);
+        //重置同级的的顺序号和内码
+        if(StringUtils.isNotEmpty(node.getParentId())){
+            T parent = getParent(node);
+            rebuildOrderAndInnerCode(parent);
+        }
+    }
+
+    public void processDelete(T nodeQueryTemplate){
         ExAssert.isNull(nodeQueryTemplate.getId());
         T node = getNode(nodeQueryTemplate);
         List<T> children = getNodeChildren(node);
         if (children != null && children.size() > 0) {
             for (T child : children) {
-                deleteNode(child);
+                processDelete(child);
             }
         }
         baseDAO.deleteByID(nodeQueryTemplate.getClass(), nodeQueryTemplate.getId());
-        //重置同级的的顺序号和内码
-        rebuildOrderAndInnerCode(node);
     }
 
     /**
-     * 重置 node 当前层级的兄弟和自己的内码
+     * 重置 node 当前层级
      * @param node
      */
     public void rebuildOrderAndInnerCode(T node) {
-//        List<T> list = getNodeBrothers(node);
-//        String innerCodePath = "";
+        List<T> children = getNodeChildren(node);
+        String innerCodePath = (node.getInnerCode() == null ? "" : node.getInnerCode());
+        node.setChildCounts(children.size());
+        baseDAO.insertOrUpdateValueObject(node);
 //        String parentId = node.getParentId();
 //        if (StringUtils.isNotEmpty(parentId)) {
 //            T parent = getParent(node);
-//            parent.setChildCounts(list.size());
+//            parent.setChildCounts(children.size());
 //            baseDAO.insertOrUpdateValueObject(parent);
 //            innerCodePath += (parent.getInnerCode() == null ? "" : parent.getInnerCode());
 //        }
-//        for (int i = 0; i < list.size(); i++) {
-//            int index = i % 256;
-//            String code = String.format("%02x", index).toUpperCase(Locale.ROOT);
-//            T row = list.get(i);
-//            row.setInnerCode(innerCodePath + code);
-//            row.setDeep(row.getInnerCode().length() / 2);
-//            row.setSortNo((i + 1) * 10);
-//            baseDAO.insertOrUpdateValueObject(row);
-//            rebuildOrderAndInnerCode(row);
-//        }
-
+        for (int i = 0; i < children.size(); i++) {
+            int index = i % 256;
+            String code = String.format("%02x", index).toUpperCase(Locale.ROOT);
+            T row = children.get(i);
+            row.setInnerCode(innerCodePath + code);
+            row.setDeep(row.getInnerCode().length() / 2);
+            row.setSortNo((i + 1) * 10);
+            baseDAO.insertOrUpdateValueObject(row);
+            rebuildOrderAndInnerCode(row);
+        }
     }
 
 }

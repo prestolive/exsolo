@@ -6,7 +6,7 @@ import cn.exsolo.kit.setting.stereotype.SettingProvider;
 
 /**
  * @author prestolive
- * @date 2024/7/10
+ * @date 2021/7/10
  **/
 @SettingProvider("流程引擎")
 public class BpmSettingProvider {

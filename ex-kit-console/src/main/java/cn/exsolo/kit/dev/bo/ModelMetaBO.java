@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * @Table注解用于生成代码的参数
  * @author prestolive
- * @date 2024/6/26
+ * @date 2021/6/26
  **/
 public class ModelMetaBO {
 
@@ -13,11 +13,31 @@ public class ModelMetaBO {
 
     private String packageName;
 
+    private String sysName;
+
+    private String moduleName;
+
     private String bizName;
 
     private String dbTableName;
 
     private List<ModelFieldBO> fields;
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName;
+    }
+
+    public String getSysName() {
+        return sysName;
+    }
+
+    public void setSysName(String sysName) {
+        this.sysName = sysName;
+    }
 
     public String getPackageName() {
         return packageName;

@@ -17,11 +17,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author prestolive
- * @date 2024/7/10
+ * @date 2021/7/10
  **/
 @Component
 @RequestMapping("api/ex-bpm/org/job-setting/")
@@ -32,14 +35,13 @@ public class OrgJobSettingController {
     @Autowired
     private OrgManageService orgManageService;
 
-    @DataRenderProvider(path = "values", keyField = "modifiedBy", dataRenderClass = UserInfoDataRender.class)
     @AccessView
-    @RequestMapping(path = "org-children-page", method = RequestMethod.POST)
-    public PageObject<OrgNodePO> page(
-            @RequestJSON String parentId,
-            @RequestJSON Condition cond,
-            @RequestJSON Pagination pagination) {
-        ExOrgSchemaEnum defaultScheme = BpmSettingProvider.BPM_DEFAULT_SCHEMA;
-        return orgManageService.orgPage(defaultScheme.name(),parentId,cond,pagination);
+    @RequestMapping(path = "org-nodes", method = RequestMethod.POST)
+    public List<OrgNodePO> nodes(@RequestParam(required = false) String parentId) {
+        OrgNodePO nodeQueryTemplate=  new OrgNodePO();
+        nodeQueryTemplate.setId(parentId);
+        nodeQueryTemplate.setSchema(BpmSettingProvider.BPM_DEFAULT_SCHEMA.name());
+        return orgManageService.getNodeChildren(nodeQueryTemplate);
     }
+
 }
