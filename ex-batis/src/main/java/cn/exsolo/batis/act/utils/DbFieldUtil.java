@@ -98,29 +98,36 @@ public class DbFieldUtil {
                 switch (databaseType) {
                     case POSTGRESQL:
                         return "character(#maxLength)";
+                    case MYSQL:
+                        return "CHAR(#maxLength)";
                 }
             }
             case VARCHAR: {
                 switch (databaseType) {
                     case POSTGRESQL:
                         return "character varying(#maxLength)";
+                    case MYSQL:
+                        return "VARCHAR(#maxLength)";
                 }
             }
             case NUMERIC: {
                 switch (databaseType) {
                     case POSTGRESQL:
+                    case MYSQL:
                         return "numeric(#maxLength,#scale)";
                 }
             }
             case SMALLINT: {
                 switch (databaseType) {
                     case POSTGRESQL:
+                    case MYSQL:
                         return "smallint";
                 }
             }
             case BIGINT: {
                 switch (databaseType) {
                     case POSTGRESQL:
+                    case MYSQL:
                         return "bigint";
                 }
             }
@@ -128,11 +135,14 @@ public class DbFieldUtil {
                 switch (databaseType) {
                     case POSTGRESQL:
                         return "boolean";
+                    case MYSQL:
+                        return "TINYINT(1)";
                 }
             }
             case TEXT: {
                 switch (databaseType) {
                     case POSTGRESQL:
+                    case MYSQL:
                         return "text";
                 }
             }

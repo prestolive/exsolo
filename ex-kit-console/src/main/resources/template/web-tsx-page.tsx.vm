@@ -13,6 +13,7 @@ import {
   FormInstanceFunctions,
   SubmitContext,
   MessagePlugin,
+  DialogPlugin,
 } from 'tdesign-vue-next'
 import {
   BaseTableCol,
@@ -210,6 +211,21 @@ const ListPage = defineComponent({
         })
       )
     }
+    const handleDelete = (id: string) => {
+      const confirmDialog = DialogPlugin.confirm({
+        header: '确认删除？',
+        onConfirm: () => {
+          post('api/${sysName}/${moduleName}/${bizName}/delete', { id: id })
+            .then(() => {
+              MessagePlugin.success('删除成功')
+            })
+            .then(() => {
+              exTableRef.value.refresh()
+            })
+          confirmDialog.destroy()
+        },
+      })
+    }
     return () => (
       <div class="main" style="padding: 24px;">
         <h1>功能名称</h1>
@@ -233,6 +249,13 @@ const ListPage = defineComponent({
                   size="small"
                   icon={() => <TIcon name="jump" />}
                   onClick={() => handleEdit(row.id)}
+                ></TButton>
+                <TButton
+                  theme="default"
+                  variant="text"
+                  size="small"
+                  icon={() => <TIcon name="delete" />}
+                  onClick={() => handleDelete(row.id)}
                 ></TButton>
               </TSpace>
             ),

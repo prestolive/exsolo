@@ -103,9 +103,9 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
      * @return
      */
     public List<T> getNodeBrothers(T nodeQueryTemplate) {
-        ExAssert.isNull(nodeQueryTemplate.getSchema());
+        ExAssert.isNull(nodeQueryTemplate.getGenus());
         Condition cond = new Condition();
-        cond.eq("schema", nodeQueryTemplate.getSchema());
+        cond.eq("genus", nodeQueryTemplate.getGenus());
         if (StringUtils.isEmpty(nodeQueryTemplate.getParentId())) {
             cond.isEmpty("parentId");
         } else {
@@ -121,9 +121,9 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
      * @return
      */
     public List<T> getNodeChildren(T nodeQueryTemplate) {
-        ExAssert.isNull(nodeQueryTemplate.getSchema());
+        ExAssert.isNull(nodeQueryTemplate.getGenus());
         Condition cond = new Condition();
-        cond.eq("schema", nodeQueryTemplate.getSchema());
+        cond.eq("genus", nodeQueryTemplate.getGenus());
         if (StringUtils.isEmpty(nodeQueryTemplate.getId())) {
             cond.isEmpty("parentId");
         } else {

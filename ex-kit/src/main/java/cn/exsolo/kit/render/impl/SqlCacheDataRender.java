@@ -73,15 +73,15 @@ public abstract class SqlCacheDataRender implements DataRender {
             @Override
             public void execute(List<String> list) {
                 Condition cond = new Condition();
-                cond.in("key", list);
+                cond.in("keyValue", list);
                 StringBuilder sql = new StringBuilder();
                 sql.append("select * from (" + getSql() + ") t where 1=1");
                 Map<String, Object> queryParamMap = new HashMap<>();
                 CommonOrmUtils.generateConditionSql(sql, "t", cond, queryParamMap);
                 List<Map> data = baseDAO.queryForList(sql.toString(), queryParamMap, Map.class);
                 for (Map row : data) {
-                    String key = getKey((String) row.get("key"));
-                    row.remove("key");
+                    String key = getKey((String) row.get("keyValue"));
+                    row.remove("keyValue");
                     //放入缓存
                     cs.pubMap(key, row);
                     hitMap.put(key, row);

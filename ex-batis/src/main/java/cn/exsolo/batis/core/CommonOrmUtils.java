@@ -427,12 +427,12 @@ public class CommonOrmUtils {
             throw new BaseOrmException("更新模式不支持过滤器");
         }
         String tableName = CommonOrmUtils.getTableFromClz(clz);
-        sql.append(" delete from ").append(tableName).append(" a ");
+        sql.append(" delete from ").append(tableName);
         //where条件处理
         StringBuilder whereStr = new StringBuilder();
         if(cond.getCompares()!=null&&cond.getCompares().size()>0){
             for (ICompareBean item : cond.getCompares()) {
-                processCondition("a",item, whereStr, values);
+                processCondition(null,item, whereStr, values);
             }
         }else{
             throw new BaseOrmException("更新模式必须带有条件");

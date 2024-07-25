@@ -69,7 +69,7 @@ import EditForm from './${BizName}ManageEditForm.vue'
 const columns: BaseTableCol[] = [
   #foreach ($field in $fields)
   #if($field.inTable)
-  { colKey: '${field.code}', title: '${field.name}' }
+  { colKey: '${field.code}', title: '${field.name}' },
   #end
   #end
 
@@ -124,7 +124,9 @@ const handleDelete = (id: string) => {
     onConfirm: () => {
       post('api/${sysName}/${moduleName}/${bizName}/delete', { id: id }).then(() => {
         MessagePlugin.success('删除成功')
-      })
+      }).then(() => {
+          exTableRef.value.refresh()
+        })
       confirmDialog.destroy()
     },
   })

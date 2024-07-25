@@ -3,24 +3,14 @@ package cn.exsolo.basic.web;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
-import cn.exsolo.auth.utils.SecurityUserContext;
 import cn.exsolo.basic.org.po.OrgNodePO;
 import cn.exsolo.basic.org.service.OrgManageService;
-import cn.exsolo.basic.org.vo.OrgTreeNodeVO;
 import cn.exsolo.basic.render.UserInfoDataRender;
-import cn.exsolo.basic.security.po.UserPO;
-import cn.exsolo.basic.tree.CommonTreeNodePO;
-import cn.exsolo.basic.tree.CommonTreeService;
-import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
-import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.render.stereotype.DataRenderProvider;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
-import com.google.common.reflect.TypeToken;
-import org.apache.commons.lang3.StringUtils;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,11 +38,11 @@ public class OrgManageController {
     @AccessView
     @RequestMapping(path = "children-page", method = RequestMethod.POST)
     public PageObject<OrgNodePO> page(
-            @RequestJSON String schema,
+            @RequestJSON String genus,
             @RequestJSON String parentId,
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
-        return orgManageService.orgPage(schema,parentId,cond,pagination);
+        return orgManageService.orgPage(genus,parentId,cond,pagination);
     }
 
     @AccessView
@@ -65,10 +55,10 @@ public class OrgManageController {
 
     @AccessView
     @RequestMapping(path = "nodes", method = RequestMethod.POST)
-    public List<OrgNodePO> nodes(@RequestParam() String schema,@RequestParam(required = false) String parentId) {
+    public List<OrgNodePO> nodes(@RequestParam() String genus,@RequestParam(required = false) String parentId) {
         OrgNodePO nodeQueryTemplate=  new OrgNodePO();
         nodeQueryTemplate.setId(parentId);
-        nodeQueryTemplate.setSchema(schema);
+        nodeQueryTemplate.setGenus(genus);
         return orgManageService.getNodeChildren(nodeQueryTemplate);
     }
 

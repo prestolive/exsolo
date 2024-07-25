@@ -10,8 +10,8 @@ import javax.persistence.Column;
  **/
 public abstract class CommonTreeNodePO extends AbstractPO {
 
-    @Column(name = "schema",nullable = false,length = 24,columnDefinition = "varchar(64)")
-    private String schema;
+    @Column(name = "genus",nullable = false,length = 24,columnDefinition = "varchar(64)")
+    private String genus;
 
     @Column(name = "innerCode",length = 128,columnDefinition = "varchar(128)")
     private String innerCode;
@@ -69,11 +69,11 @@ public abstract class CommonTreeNodePO extends AbstractPO {
         this.childCounts = childCounts;
     }
 
-    public String getSchema() {
-        return schema;
+    public String getGenus() {
+        return genus;
     }
 
-    public void setSchema(String schema) {
-        this.schema = schema;
+    public void setGenus(String genus) {
+        this.genus = genus;
     }
 }

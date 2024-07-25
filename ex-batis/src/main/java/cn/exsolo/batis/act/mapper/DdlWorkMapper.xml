@@ -17,7 +17,21 @@
         and a.attrelid = c.oid
         and a.attnum > 0
     </select>
-
+    <select id="selectTableColumnAll" resultType="cn.exsolo.batis.act.dto.ActDdTableColumnDTO" databaseId="mysql">
+        SELECT
+        TABLE_NAME AS `tableName`,
+        case when IS_NULLABLE='NO' then false else true end AS nullable,
+        COLUMN_NAME AS `columnName`,
+        COLUMN_TYPE AS `columnType`
+        FROM
+        INFORMATION_SCHEMA.COLUMNS a
+        WHERE
+        TABLE_SCHEMA not in( 'performance_schema' ,'information_schema','mysql','sys')
+        ORDER BY
+        TABLE_SCHEMA,
+        TABLE_NAME,
+        ORDINAL_POSITION;
+    </select>
     <select id="selectTableIndexAll" resultType="cn.exsolo.batis.act.dto.ActDdTableIndexDTO" databaseId="pg">
         select a.tablename as tableName,
         a.indexname as indexName,
@@ -28,8 +42,23 @@
         inner join pg_index c on b.oid = c.indexrelid
         where a.schemaname ='public'  and c.indisprimary=false
     </select>
+    <select id="selectTableIndexAll" resultType="cn.exsolo.batis.act.dto.ActDdTableIndexDTO" databaseId="mysql">
+        SELECT
+        TABLE_NAME AS `tableName`,
+        INDEX_NAME AS `indexName`,
+        NON_UNIQUE AS `isUnique`,
+        GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX ASC SEPARATOR ',') AS `indexFields`
+        FROM
+        INFORMATION_SCHEMA.STATISTICS
+        WHERE
+        TABLE_SCHEMA not in( 'performance_schema' ,'information_schema','mysql','sys') and INDEX_NAME not in('PRIMARY')
+        GROUP BY
+        TABLE_SCHEMA, TABLE_NAME, INDEX_NAME, NON_UNIQUE, INDEX_TYPE
+        ORDER BY
+        TABLE_SCHEMA, TABLE_NAME, INDEX_NAME;
+    </select>
 
-    <update id="createTable" parameterType="cn.exsolo.batis.act.bo.ActTableBO">
+    <update id="createTable" parameterType="cn.exsolo.batis.act.bo.ActTableBO" databaseId="pg">
         create table ${name} (
         <foreach collection="columns"  separator=","  item="column" index="index">
             ${column.name}  ${column.actSuggestDatatypeBO.targetType}
@@ -39,10 +68,22 @@
         )
     </update>
 
-    <update id="dropIndex" parameterType="cn.exsolo.batis.act.bo.ActTableIndexBO">
-        drop index ${name}
+    <update id="createTable" parameterType="cn.exsolo.batis.act.bo.ActTableBO" databaseId="mysql">
+        create table ${name} (
+        <foreach collection="columns"  separator=","  item="column" index="index">
+            ${column.name}  ${column.actSuggestDatatypeBO.targetType}
+            <if test="!column.nullable">not null</if>
+        </foreach>
+        ,primary key (${primaryKey})
+        ) default charset=utf8mb4
     </update>
 
+    <update id="dropIndex" parameterType="cn.exsolo.batis.act.bo.ActTableIndexBO" databaseId="pg">
+        drop index ${name}
+    </update>
+    <update id="dropIndex" parameterType="cn.exsolo.batis.act.bo.ActTableIndexBO" databaseId="mysql">
+        alter table ${tableName} drop index ${name}
+    </update>
     <update id="createIndex" parameterType="cn.exsolo.batis.act.bo.ActTableIndexBO">
         create <if test="unique">unique</if> index ${name} on ${tableName} (
         ${fields}

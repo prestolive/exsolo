@@ -17,6 +17,6 @@ public class UserInfoDataRender extends SqlCacheDataRender {
 
     @Override
     public String getSql() {
-        return "select id as key,loginCode,userName,phone,email from ex_user";
+        return "select id as keyValue,loginCode,userName,phone,email from ex_user";
     }
 }

@@ -106,6 +106,12 @@ public class ModelDocService {
                 row.setInputType("selector");
                 row.setCompareType("eq");
             }
+            if(field.getName().equals("id")||field.getName().equals("ts")||field.getName().equals("createTs")){
+                row.setInTable(false);
+                row.setInForm(false);
+                row.setInCondition(false);
+                row.setEditAble(false);
+            }
             list.add(row);
         }
         if(meta==null){

@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Table;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -52,6 +55,12 @@ public class ModelDocController {
     public List<DevClzBO> allController() {
         if(list==null){
             list = modelDocService.getModels();
+            Collections.sort(list, new Comparator<DevClzBO>() {
+                @Override
+                public int compare(DevClzBO o1, DevClzBO o2) {
+                    return o1.getClz().compareTo(o2.getClz());
+                }
+            });
         }
         return list;
     }

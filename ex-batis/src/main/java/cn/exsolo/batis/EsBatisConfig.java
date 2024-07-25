@@ -3,10 +3,12 @@ package cn.exsolo.batis;
 
 import cn.exsolo.batis.core.ext.ResultTypeInterceptor;
 import com.github.pagehelper.PageInterceptor;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.mapping.VendorDatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -14,12 +16,16 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Locale;
 import java.util.Properties;
 
 @EnableTransactionManagement
 @Configuration
 @MapperScan("cn.exsolo")
 public class EsBatisConfig {
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverName;
 
     @Bean
     public DatabaseIdProvider getDatabaseIdProvider() {
@@ -37,7 +43,17 @@ public class EsBatisConfig {
     public Interceptor[] getInterceptor() {
         PageInterceptor pageInterceptor = new PageInterceptor();
         Properties properties = new Properties();
-        properties.setProperty("helperDialect", "postgresql");
+        String helperDialect = "postgresql";
+        if(StringUtils.isNotEmpty(driverName)){
+            if(driverName.toLowerCase(Locale.ROOT).contains("mysql")){
+                helperDialect = "mysql";
+            }else if(driverName.toLowerCase(Locale.ROOT).contains("h2")){
+                helperDialect = "h2";
+            }else if(driverName.toLowerCase(Locale.ROOT).contains("oracle")){
+                helperDialect = "oracle";
+            }
+        }
+        properties.setProperty("helperDialect", helperDialect);
         pageInterceptor.setProperties(properties);
         return new Interceptor[]{pageInterceptor, new ResultTypeInterceptor()};
     }

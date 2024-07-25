@@ -37,10 +37,10 @@ public class OrgManageService extends CommonTreeService<OrgNodePO> {
     }
 
 
-    public PageObject<OrgNodePO> orgPage(String schema, String parentId, Condition fCond, Pagination pagination) {
-        ExAssert.isNull(schema);
+    public PageObject<OrgNodePO> orgPage(String genus, String parentId, Condition fCond, Pagination pagination) {
+        ExAssert.isNull(genus);
         Condition cond = new Condition();
-        cond.eq("schema", schema);
+        cond.eq("genus", genus);
         if (StringUtils.isNotEmpty(parentId)) {
             OrgNodePO nodeQueryTemplate=  new OrgNodePO();
             nodeQueryTemplate.setId(parentId);
