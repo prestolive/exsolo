@@ -13,6 +13,7 @@ import javax.persistence.Table;
  * @date 2021/6/26
  **/
 
+@Deprecated
 @Table(name="ex_bpm_org_job_rela",indexes = @Index(columnList = "orgId,orgJobId",unique = true))
 public class OrgJobRelaPO extends AbstractPO {
 
