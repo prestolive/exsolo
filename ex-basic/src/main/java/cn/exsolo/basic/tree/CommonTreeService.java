@@ -59,18 +59,8 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
         checkNode(node);
         baseDAO.insertOrUpdateValueObject(node);
         //重置同级的的顺序号和内码
-        rebuildTree(node);
-
+        rebuildSelfLevel(node);
         return node;
-    }
-
-    private void rebuildTree(T node){
-        if(StringUtils.isNotEmpty(node.getParentId())){
-            T parent = getParent(node);
-            rebuildOrderAndInnerCode(parent);
-        }else{
-            rebuildOrderAndInnerCode(node);
-        }
     }
 
     /**
@@ -143,10 +133,7 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
         T node = getNode(nodeQueryTemplate);
         processDelete(node);
         //重置同级的的顺序号和内码
-        if(StringUtils.isNotEmpty(node.getParentId())){
-            T parent = getParent(node);
-            rebuildOrderAndInnerCode(parent);
-        }
+        rebuildSelfLevel(node);
     }
 
     public void processDelete(T nodeQueryTemplate){
@@ -161,32 +148,36 @@ public abstract class CommonTreeService<T extends CommonTreeNodePO> {
         baseDAO.deleteByID(nodeQueryTemplate.getClass(), nodeQueryTemplate.getId());
     }
 
-    /**
-     * 重置 node 当前层级
-     * @param node
-     */
-    public void rebuildOrderAndInnerCode(T node) {
-        List<T> children = getNodeChildren(node);
-        String innerCodePath = (node.getInnerCode() == null ? "" : node.getInnerCode());
-        node.setChildCounts(children.size());
-        baseDAO.insertOrUpdateValueObject(node);
-//        String parentId = node.getParentId();
-//        if (StringUtils.isNotEmpty(parentId)) {
-//            T parent = getParent(node);
-//            parent.setChildCounts(children.size());
-//            baseDAO.insertOrUpdateValueObject(parent);
-//            innerCodePath += (parent.getInnerCode() == null ? "" : parent.getInnerCode());
-//        }
-        for (int i = 0; i < children.size(); i++) {
-            int index = i % 256;
-            String code = String.format("%02x", index).toUpperCase(Locale.ROOT);
-            T row = children.get(i);
-            row.setInnerCode(innerCodePath + code);
-            row.setDeep(row.getInnerCode().length() / 2);
-            row.setSortNo((i + 1) * 10);
-            baseDAO.insertOrUpdateValueObject(row);
-            rebuildOrderAndInnerCode(row);
+    private void rebuildSelfLevel(T node){
+        List<T> brothers = getNodeBrothers(node);
+        if(StringUtils.isNotEmpty(node.getParentId())){
+            T parent = getParent(node);
+            rebuildList(parent.getInnerCode(),brothers);
+        }else{
+            rebuildList("",brothers);
         }
     }
+
+    private int rebuildList(String rootInnerCodePath,List<T> list){
+        for (int i=0;i<list.size();i++) {
+            T row = list.get(i);
+            int index = i % 256;
+            String code = String.format("%02x", index).toUpperCase(Locale.ROOT);
+            row.setInnerCode(rootInnerCodePath + code);
+            row.setDeep(row.getInnerCode().length() / 2);
+            row.setSortNo((i + 1) * 10);
+            List<T> children = getNodeChildren(row);
+            if(children!=null&&children.size()>0){
+                row.setChildCounts(children.size());
+                baseDAO.insertOrUpdateValueObject(row);
+                rebuildList(row.getInnerCode(), children);
+            }else{
+                baseDAO.insertOrUpdateValueObject(row);
+            }
+        }
+        return list.size();
+    }
+
+
 
 }
