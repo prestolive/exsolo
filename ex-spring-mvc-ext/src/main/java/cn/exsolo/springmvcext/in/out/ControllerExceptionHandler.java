@@ -63,7 +63,6 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(ExDeclaredException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public BaseResponse<?> handleDeclaredException(Throwable e) {
-        String traceId = GenerateID.next();
         ExDeclaredException exception = (ExDeclaredException) e;
         String errcode = exception.getErrorItem().name();
         String errmsg = formatErrorMessage(exception);
@@ -74,6 +73,21 @@ public class ControllerExceptionHandler {
         }
         return resp;
     }
+
+    @ExceptionHandler(ExSafeDeclaredException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public BaseResponse<?> handleSafeDeclaredException(Throwable e) {
+        ExDeclaredException exception = (ExDeclaredException) e;
+        String errcode = exception.getErrorItem().name();
+        String errmsg = formatErrorMessage(exception);
+        log.error(errmsg,e);
+        BaseResponse resp = new BaseResponse<>(-1, errcode, errmsg, exception.getResponseData());
+        if(DevKitSettingProvider.IS_ALLOW_WEB_ERROR_STACK){
+            fillStack(resp,e);
+        }
+        return resp;
+    }
+
 
     private BaseResponse<?> commonErrorMessageProcess(Throwable e,String errcode){
         String traceId = GenerateID.next();

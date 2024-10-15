@@ -78,58 +78,58 @@
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>comm</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>console</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-batis</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-kit</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-kit-console</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-basic</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-spring-mvc-ext</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-passwd</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-base</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-auth-server</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>cn.exsolo</groupId>
                 <artifactId>ex-bpm</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.4-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

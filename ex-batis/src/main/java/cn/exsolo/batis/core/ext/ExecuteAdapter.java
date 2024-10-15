@@ -43,7 +43,9 @@ public class ExecuteAdapter {
                             continue;
                         }
                         row.put(originKey, row.get(key));
-                        removeKeys.add(key.toString());
+                        if(!originKey.equals(key.toString())){
+                            removeKeys.add(key.toString());
+                        }
                     }
                     for(String removeKey : removeKeys){
                         row.remove(removeKey);
