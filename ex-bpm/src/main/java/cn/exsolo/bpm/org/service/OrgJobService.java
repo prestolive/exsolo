@@ -5,7 +5,9 @@ import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
+import cn.exsolo.bpm.org.ExBpmOrgErrorCodeEnum;
 import cn.exsolo.bpm.org.po.OrgJobPO;
+import cn.exsolo.comm.ex.ExDeclaredException;
 import cn.exsolo.kit.utils.ExAssert;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class OrgJobService {
         if (fCond != null) {
             cond.and(fCond);
         }
+        cond.orderBy("grade", Condition.DESC);
         cond.orderBy("createTs", Condition.DESC);
         cond.orderBy("id", Condition.DESC);
         return baseDAO.queryBeanPageByCond(OrgJobPO.class, cond, pagination);
@@ -47,6 +50,7 @@ public class OrgJobService {
      * @param po
      */
     public void add(OrgJobPO po){
+        checkCode(po);
         if(StringUtils.isEmpty(po.getModifiedBy())){
             po.setModifiedBy(SecurityUserContext.getUserID());
         }
@@ -59,12 +63,23 @@ public class OrgJobService {
      */
     public void update(OrgJobPO po){
         ExAssert.isNull(po, po.getId());
+        checkCode(po);
         if(StringUtils.isEmpty(po.getModifiedBy())){
             po.setModifiedBy(SecurityUserContext.getUserID());
         }
-        OrgJobPO exist = baseDAO.queryBeanByID(OrgJobPO.class, po.getId());
-        exist.setName(po.getName());
-        baseDAO.insertOrUpdateValueObject(exist);
+        baseDAO.insertOrUpdateValueObject(po);
+    }
+
+    private void checkCode(OrgJobPO po){
+        Condition cond = new Condition();
+        cond.eq("code", po.getCode());
+
+        if(StringUtils.isNotEmpty(po.getId())){
+            cond.ne("id",po.getId());
+        }
+        if(baseDAO.existsByCond(OrgJobPO.class, cond)){
+            throw new ExDeclaredException(ExBpmOrgErrorCodeEnum.JOB_CODE_DUPLICATE, po.getCode());
+        }
     }
 
     /**

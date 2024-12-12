@@ -69,10 +69,9 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
             //开始处理
             if (targetRows.size() > 0) {
                 String keyField = dataRenderProvider.keyField();
-                //初始化
-                render.initRender(keyField, methodParameter);
                 //提取key
                 List<Pair<Object, Map>> pairList = new ArrayList<>();
+                Set<Object> keyValues= new HashSet<>();
                 for (Map row : targetRows) {
                     Object keyValue = getKeyValue(row, keyField);
                     if(keyValue==null){
@@ -80,8 +79,9 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
                     }
                     Pair pair = Pair.of(keyValue, row);
                     pairList.add(pair);
+                    keyValues.add(keyValue.toString());
                 }
-                render.preRender(pairList);
+                render.preRender(keyValues);
                 //渲染查询
                 for (Pair<Object, Map> pair : pairList) {
                     Map<String, Object> rowFrame = render.getRenderFrame(pair.getLeft(), pair.getRight());

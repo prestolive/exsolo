@@ -16,17 +16,6 @@ public class FlowNodeBO {
 
     private Integer y;
 
-
-    private FlowPropertiesBO[] properties;
-
-    public FlowPropertiesBO[] getProperties() {
-        return properties;
-    }
-
-    public void setProperties(FlowPropertiesBO[] properties) {
-        this.properties = properties;
-    }
-
     public String getId() {
         return id;
     }

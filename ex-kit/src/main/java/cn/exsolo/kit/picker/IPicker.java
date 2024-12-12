@@ -17,8 +17,6 @@ public interface IPicker {
 
     PageObject<ExPickerOptionBO> find(Pagination pagination, String keyword, Condition cond);
 
-    ExPickerOptionBO getSingle(String id);
-
     List<ExPickerOptionBO> getList(List<String> ids);
 
 }

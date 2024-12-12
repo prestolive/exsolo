@@ -31,7 +31,7 @@ public class JobPicker  implements IPicker {
     public PageObject<ExPickerOptionBO> find(Pagination pagination, String keyword, Condition customCond) {
         Condition cond = new Condition();
         if(StringUtils.isNotEmpty(keyword)) {
-            cond.lk("name", keyword);
+            cond.or(new Condition().lk("name", keyword),new Condition().lk("code",keyword));
         }
         if(customCond !=null){
             cond.and(customCond);
@@ -45,18 +45,8 @@ public class JobPicker  implements IPicker {
         return page;
     }
 
-    private String commonSql = "select id as value,name as label,'' as sub from ex_bpm_org_job a where 1=1 ";
+    private String commonSql = "select id as value,name as label,grade as sub from ex_bpm_org_job a where 1=1 ";
 
-    @Override
-    public ExPickerOptionBO getSingle(String id) {
-        List<String> ids = new ArrayList<>();
-        ids.add(id);
-        List<ExPickerOptionBO> list = getList(ids);
-        if(list.size()>0){
-            return list.get(0);
-        }
-        return null;
-    }
 
     @Override
     public List<ExPickerOptionBO> getList(List<String> ids) {

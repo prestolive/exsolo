@@ -1,5 +1,7 @@
 package cn.exsolo.kit.picker.bo;
 
+import java.util.List;
+
 /**
  * @author prestolive
  * @date 2021/8/13
@@ -21,6 +23,36 @@ public class ExPickerOptionBO {
     private String echo4;
 
     private String echo5;
+
+    private String parent;
+
+    private int childCounts;
+
+    private List<ExPickerOptionBO> children;
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+    public int getChildCounts() {
+        return childCounts;
+    }
+
+    public void setChildCounts(int childCounts) {
+        this.childCounts = childCounts;
+    }
+
+    public List<ExPickerOptionBO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ExPickerOptionBO> children) {
+        this.children = children;
+    }
 
     public String getValue() {
         return value;

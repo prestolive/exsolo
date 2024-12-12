@@ -19,8 +19,14 @@ public class OrgJobPO extends AbstractPO {
     @Column(name = "id",nullable = false,length = 24,columnDefinition = "char(24)")
     private String id;
 
-    @Column(name = "name",nullable = false,length = 24,columnDefinition = "varchar(128)")
+    @Column(name = "name",nullable = false,length = 128,columnDefinition = "varchar(128)")
     private String name;
+
+    @Column(name = "code",nullable = false,length = 64,columnDefinition = "varchar(64)")
+    private String code;
+
+    @Column(name = "grade",nullable = false,length = 64,columnDefinition = "varchar(64)")
+    private String grade;
 
     @Column(name = "modifiedBy",length = 24,columnDefinition = "char(24)")
     private String modifiedBy;
@@ -50,5 +56,21 @@ public class OrgJobPO extends AbstractPO {
 
     public void setModifiedBy(String modifiedBy) {
         this.modifiedBy = modifiedBy;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 }

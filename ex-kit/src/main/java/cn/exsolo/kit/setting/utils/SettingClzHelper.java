@@ -48,6 +48,8 @@ public class SettingClzHelper {
         try {
             clz = Class.forName(clzName);
         } catch (ClassNotFoundException e) {
+            return;
+        }catch (Throwable e){
             throw new ExDevException(String.format("初始化配置类失败:%s",clzName) + e.getMessage(), e);
         }
         Field[] fields = clz.getDeclaredFields();

@@ -20,24 +20,26 @@ public class SpringMvcExtForBatis {
             String action = item.getString("action");
             String key = item.getString("key");
             String value = item.getString("value");
+            Integer domain = item.getInteger("domain");
+            domain = domain ==null?0:domain;
             if ("eq".equals(action)) {
-                cond.eq(key,value);
+                cond.withDomain(domain).eq(key,value);
             }else if("ne".equals(action)) {
-                cond.ne(key,value);
+                cond.withDomain(domain).ne(key,value);
             }else if("gt".equals(action)) {
-                cond.gt(key,value);
+                cond.withDomain(domain).gt(key,value);
             }else if("lt".equals(action)) {
-                cond.lt(key,value);
+                cond.withDomain(domain).lt(key,value);
             }else if("ge".equals(action)) {
-                cond.ge(key,value);
+                cond.withDomain(domain).ge(key,value);
             }else if("le".equals(action)) {
-                cond.le(key,value);
+                cond.withDomain(domain).le(key,value);
             }else if("lk".equals(action)) {
-                cond.lk(key,value);
+                cond.withDomain(domain).lk(key,value);
             }else if("lkl".equals(action)) {
-                cond.lkl(key,value);
+                cond.withDomain(domain).lkl(key,value);
             }else if("lkr".equals(action)) {
-                cond.lkr(key,value);
+                cond.withDomain(domain).lkr(key,value);
             }
         }
         return cond;

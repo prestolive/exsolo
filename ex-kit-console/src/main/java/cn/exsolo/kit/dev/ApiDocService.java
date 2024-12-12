@@ -67,10 +67,13 @@ public class ApiDocService {
             doc.setName(pathToName(doc.getPath()));
             doc.setNameLower(firstCharLower(doc.getName()));
             //解析返回参数
-            doc.setReturnType(getDocTypeBO(doc.getName(), null, method.getGenericReturnType(),false));
+            //FIXME method.getGenericReturnType() 返回的是泛型  getReturnType 返回的是具体类型
+//            doc.setReturnType(getDocTypeBO(doc.getName(), null, method.getReturnType(), false));
+            doc.setReturnType(getDocTypeBO(doc.getName(), null, method.getGenericReturnType(), false));
             //解析参数
             String[] paramNames = discoverer.getParameterNames(method);
-            Type[] paramTypes = method.getGenericParameterTypes();
+            //FIXME method.getGenericParameterTypes 返回的是泛型
+            Type[] paramTypes = method.getParameterTypes();
             if (paramTypes.length > 0) {
                 List<ApiDocTypeBO> paramTypeList = new ArrayList<>();
                 for (int i = 0; i < paramTypes.length; i++) {
@@ -82,7 +85,7 @@ public class ApiDocService {
                         continue;
                     }
                     String paramName = paramNames[i];
-                    paramTypeList.add(getDocTypeBO(doc.getName(), paramName, type,false));
+                    paramTypeList.add(getDocTypeBO(doc.getName(), paramName, type, false));
                 }
                 doc.setParamTypes(paramTypeList);
             }
@@ -152,7 +155,7 @@ public class ApiDocService {
         }
     }
 
-    private ApiDocTypeBO getDocTypeBO(String rootName, String name, Type type,boolean isLoop) {
+    private ApiDocTypeBO getDocTypeBO(String rootName, String name, Type type, boolean isLoop) {
         if ("void".equals(type.getTypeName())) {
             return null;
         }
@@ -183,25 +186,17 @@ public class ApiDocService {
         bo.setName(StringUtils.isEmpty(name) ? returnName : name);
         bo.setNullAble(true);
         String jsType = JsTypeMapEnum.getJavaScriptTypeName(realClz);
-        if(isLoop){
+        if (isLoop) {
             bo.setTsType(firstCharUpper(classToName(realClz.getName())));
             bo.setObject(true);
-        }else{
-            if ("object".equals(jsType)&&!isLoop) {
-                Field[] fields = realClz.getDeclaredFields();
-                List<ApiDocTypeBO> types = new ArrayList<>();
-                for (Field field : fields) {
-                    Column col = field.getAnnotation(Column.class);
-                    boolean loop = false;
-                    if (field.getGenericType().getTypeName().equals(type.getTypeName())) {
-                        loop = true;
-                    }
-                    ApiDocTypeBO docType = getDocTypeBO(rootName, field.getName(), field.getGenericType(),loop);
-                    if (col != null) {
-                        docType.setDatatype(docType.getDatatype());
-                        docType.setNullAble(col.nullable());
-                    }
-                    types.add(docType);
+        } else {
+            if ("object".equals(jsType) && !isLoop) {
+                //获取当前类的字段
+                List<ApiDocTypeBO> types = getClzFields(rootName, type, realClz);
+                Class parentClz = realClz.getSuperclass();
+                if (parentClz != null && !parentClz.getName().equals(Object.class.getName())) {
+                    List<ApiDocTypeBO> parentTypes = getClzFields(rootName, type, parentClz);
+                    types.addAll(parentTypes);
                 }
                 bo.setFieldTypes(types);
                 bo.setTsType(firstCharUpper(classToName(realClz.getName())));
@@ -212,6 +207,25 @@ public class ApiDocService {
             }
         }
         return bo;
+    }
+
+    private List<ApiDocTypeBO> getClzFields(String rootName, Type type, Class realClz) {
+        Field[] fields = realClz.getDeclaredFields();
+        List<ApiDocTypeBO> types = new ArrayList<>();
+        for (Field field : fields) {
+            Column col = field.getAnnotation(Column.class);
+            boolean loop = false;
+            if (field.getGenericType().getTypeName().equals(type.getTypeName())) {
+                loop = true;
+            }
+            ApiDocTypeBO docType = getDocTypeBO(rootName, field.getName(), field.getGenericType(), loop);
+            if (col != null) {
+                docType.setDatatype(docType.getDatatype());
+                docType.setNullAble(col.nullable());
+            }
+            types.add(docType);
+        }
+        return types;
     }
 
 

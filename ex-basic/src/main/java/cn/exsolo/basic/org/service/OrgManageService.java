@@ -24,6 +24,11 @@ public class OrgManageService extends CommonTreeService<OrgNodePO> {
     private BaseDAO baseDAO;
 
     @Override
+    public OrgNodePO createTemplate() {
+        return new OrgNodePO();
+    }
+
+    @Override
     protected boolean nodeEquals(OrgNodePO brother, OrgNodePO target) {
         return brother.getOrgName().equals(target.getOrgName());
     }

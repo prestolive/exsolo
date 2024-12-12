@@ -3,6 +3,7 @@ package cn.exsolo.basic.tree;
 import cn.exsolo.batis.core.AbstractPO;
 
 import javax.persistence.Column;
+import java.util.List;
 
 /**
  * @author prestolive
@@ -28,6 +29,17 @@ public abstract class CommonTreeNodePO extends AbstractPO {
     @Column(name = "childCounts",columnDefinition = "int(2)")
     private Integer childCounts;
 
+
+    private List<CommonTreeNodePO> paths;
+
+
+    public List<CommonTreeNodePO> getPaths() {
+        return paths;
+    }
+
+    public void setPaths(List<CommonTreeNodePO> paths) {
+        this.paths = paths;
+    }
 
     public String getInnerCode() {
         return innerCode;

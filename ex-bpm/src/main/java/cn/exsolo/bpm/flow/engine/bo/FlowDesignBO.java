@@ -3,10 +3,11 @@ package cn.exsolo.bpm.flow.engine.bo;
 import java.util.Arrays;
 
 /**
+ * 流程设计的数据整包
  * @author prestolive
  * @date 2021/10/24
  **/
-public class FlowConfigBO {
+public class FlowDesignBO {
 
     private String code;
 
@@ -14,11 +15,21 @@ public class FlowConfigBO {
 
     private FlowNodeBO[] nodes;
 
+    private FlowNodeConfigBO[] nodeConfigs;
+
     private FlowPathBO[] paths;
 
     private FlowContextFieldBO[] fields;
 
     private Integer version;
+
+    public FlowNodeConfigBO[] getNodeConfigs() {
+        return nodeConfigs;
+    }
+
+    public void setNodeConfigs(FlowNodeConfigBO[] nodeConfigs) {
+        this.nodeConfigs = nodeConfigs;
+    }
 
     public String getCode() {
         return code;

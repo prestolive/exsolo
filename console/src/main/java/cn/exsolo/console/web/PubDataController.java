@@ -3,10 +3,13 @@ package cn.exsolo.console.web;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.batis.core.PageObject;
 import cn.exsolo.batis.core.Pagination;
+import cn.exsolo.comm.ex.ExDeclaredException;
+import cn.exsolo.console.ExPubDataErrorCodeEnum;
 import cn.exsolo.console.picker.PickerFactory;
 import cn.exsolo.console.pub.service.ItemQueryService;
 import cn.exsolo.console.pub.vo.CommItemVO;
 import cn.exsolo.kit.picker.IPicker;
+import cn.exsolo.kit.picker.ITreePicker;
 import cn.exsolo.kit.picker.bo.ExPickerOptionBO;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,18 @@ public class PubDataController {
             @RequestJSON Pagination pagination) {
         IPicker picker = pickerFactory.getPicker(code);
         return picker.find(pagination, keyword, cond);
+    }
+
+    @RequestMapping(path = "picker/children", method = RequestMethod.POST)
+    public List<ExPickerOptionBO> children(
+            @RequestJSON String code,
+            @RequestJSON String parentId) {
+        IPicker picker = pickerFactory.getPicker(code);
+        if(picker instanceof ITreePicker){
+            ITreePicker treePicker = (ITreePicker) picker;
+            return treePicker.getNodes(parentId);
+        }
+        throw new ExDeclaredException(ExPubDataErrorCodeEnum.NO_TREE_PICKER);
     }
 
     @RequestMapping(path = "picker/get", method = RequestMethod.POST)

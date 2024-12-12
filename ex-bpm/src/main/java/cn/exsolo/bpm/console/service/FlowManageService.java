@@ -10,10 +10,9 @@ import cn.exsolo.bpm.console.po.FlowContentPO;
 import cn.exsolo.bpm.console.po.FlowVersionPO;
 import cn.exsolo.bpm.console.po.FlowPO;
 import cn.exsolo.bpm.flow.engine.FlowEngineUtils;
-import cn.exsolo.bpm.flow.engine.bo.FlowConfigBO;
+import cn.exsolo.bpm.flow.engine.bo.FlowDesignBO;
 import cn.exsolo.comm.ex.ExDeclaredException;
 import cn.exsolo.kit.utils.ExAssert;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +102,7 @@ public class FlowManageService {
         }
     }
 
-    public FlowConfigBO addNewVersion(FlowPO flowPO) {
+    public FlowDesignBO addNewVersion(FlowPO flowPO) {
         ExAssert.isNull(flowPO);
         //
         List<FlowVersionPO> existVersions = getExistsVersions(flowPO.getCode());
@@ -113,13 +112,13 @@ public class FlowManageService {
         }
         Integer version = existVersions.size() > 0 ? (existVersions.get(0).getVersion() + 1) : 1;
         //
-        FlowConfigBO config = FlowEngineUtils.getInitFlow(flowPO);
+        FlowDesignBO config = FlowEngineUtils.getInitFlow(flowPO);
         config.setVersion(version);
         saveVersion(config);
         return config;
     }
 
-    public void saveVersion(FlowConfigBO config) {
+    public void saveVersion(FlowDesignBO config) {
         FlowVersionPO version = getVersion(config.getCode(), config.getVersion());
         if (version == null) {
             version = new FlowVersionPO();
@@ -135,10 +134,10 @@ public class FlowManageService {
     }
 
 
-    public FlowConfigBO getContent(String code, Integer version) {
+    public FlowDesignBO getContent(String code, Integer version) {
         String id = String.format("%s_%d", code, version);
         FlowContentPO contentPO = baseDAO.queryBeanByID(FlowContentPO.class, id);
-        FlowConfigBO configBO = JSONObject.parseObject(contentPO.getContent(), FlowConfigBO.class);
+        FlowDesignBO configBO = JSONObject.parseObject(contentPO.getContent(), FlowDesignBO.class);
         return configBO;
     }
 
@@ -146,7 +145,7 @@ public class FlowManageService {
         return baseDAO.queryBeanByCond(FlowVersionPO.class, new Condition().eq("code", code).orderBy("version", Condition.DESC));
     }
 
-    private void saveContent(FlowConfigBO config) {
+    private void saveContent(FlowDesignBO config) {
         String id = String.format("%s_%d", config.getCode(), config.getVersion());
         baseDAO.deleteByCond(FlowContentPO.class, new Condition().eq("id", id));
         FlowContentPO contentPO = new FlowContentPO();

@@ -9,7 +9,7 @@ import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.bpm.console.bo.FlowInfoBO;
 import cn.exsolo.bpm.console.po.FlowPO;
 import cn.exsolo.bpm.console.service.FlowManageService;
-import cn.exsolo.bpm.flow.engine.bo.FlowConfigBO;
+import cn.exsolo.bpm.flow.engine.bo.FlowDesignBO;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -64,15 +64,15 @@ public class FlowManageController {
 
     @AccessEdit
     @RequestMapping(path = "content/load", method = RequestMethod.POST)
-    public FlowConfigBO saveContent(@RequestParam() String code,@RequestParam Integer version) {
+    public FlowDesignBO saveContent(@RequestParam() String code, @RequestParam Integer version) {
         return flowManageService.getContent(code,version);
     }
 
     @AccessEdit
     @RequestMapping(path = "content/new-version", method = RequestMethod.POST)
-    public FlowConfigBO newVersion(@RequestParam() String code) {
+    public FlowDesignBO newVersion(@RequestParam() String code) {
         FlowPO flowPO = flowManageService.getByCode(code);
-        FlowConfigBO config = flowManageService.addNewVersion(flowPO);
+        FlowDesignBO config = flowManageService.addNewVersion(flowPO);
         return config;
     }
 
@@ -85,7 +85,7 @@ public class FlowManageController {
 
     @AccessEdit
     @RequestMapping(path = "content/save-content", method = RequestMethod.POST)
-    public void saveContent(@RequestJSON() FlowConfigBO config) {
+    public void saveContent(@RequestJSON() FlowDesignBO config) {
         flowManageService.saveVersion(config);
     }
 

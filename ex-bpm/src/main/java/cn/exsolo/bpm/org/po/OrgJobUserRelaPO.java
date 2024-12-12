@@ -12,15 +12,12 @@ import javax.persistence.Table;
  * @author prestolive
  * @date 2021/6/26
  **/
-@Table(name="ex_bpm_org_job_user_rela",indexes = @Index(columnList = "orgUserId,orgJobId",unique = true))
+@Table(name="ex_bpm_org_job_user_rela",indexes = @Index(columnList = "orgId,userId,orgJobId",unique = true))
 public class OrgJobUserRelaPO extends AbstractPO {
 
     @Id
     @Column(name = "id",nullable = false,length = 24,columnDefinition = "char(24)")
     private String id;
-
-    @Column(name = "orgUserId",nullable = false,length = 24,columnDefinition = "char(24)")
-    private String orgUserId;
 
     /**
      * 冗余存，根据orgUserId 带出
@@ -51,13 +48,6 @@ public class OrgJobUserRelaPO extends AbstractPO {
         this.id = id;
     }
 
-    public String getOrgUserId() {
-        return orgUserId;
-    }
-
-    public void setOrgUserId(String orgUserId) {
-        this.orgUserId = orgUserId;
-    }
 
     public String getOrgId() {
         return orgId;

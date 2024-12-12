@@ -36,9 +36,10 @@ public class AccessMethodInterceptor extends AuthorizingAnnotationMethodIntercep
     private ConcurrentHashMap cache = new ConcurrentHashMap();
 
     private void assertAuth(MethodInvocation mi){
+        Class realController = mi.getThis().getClass();
         Subject subject = SecurityUtils.getSubject();
         Class parent =  mi.getMethod().getDeclaringClass();
-        AccessProvider accessProvider = (AccessProvider) parent.getAnnotation(AccessProvider.class);
+        AccessProvider accessProvider = (AccessProvider) realController.getAnnotation(AccessProvider.class);
         if(accessProvider==null){
             throw new ExDevException(" No annotation @AccessProvider set in target class "+parent.getName()+"");
         }

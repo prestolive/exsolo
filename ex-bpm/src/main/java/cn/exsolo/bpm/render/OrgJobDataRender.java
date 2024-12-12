@@ -1,4 +1,4 @@
-package cn.exsolo.basic.render;
+package cn.exsolo.bpm.render;
 
 import cn.exsolo.kit.render.impl.SqlCacheDataRender;
 import org.springframework.core.MethodParameter;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
  * @date 2021/3/6
  **/
 @Component
-public class UserInfoDataRender extends SqlCacheDataRender {
+public class OrgJobDataRender extends SqlCacheDataRender {
 
     @Override
     public String getSql() {
-        return "select id as keyValue,loginCode,userName,phone,email from ex_user";
+        return "select id as keyValue,name,code,grade from ex_bpm_org_job";
     }
 }

@@ -1,4 +1,4 @@
-package cn.exsolo.basic.security.picker;
+package cn.exsolo.basic.picker;
 
 import cn.exsolo.batis.core.*;
 import cn.exsolo.kit.picker.IPicker;
@@ -47,16 +47,6 @@ public class DefaultUserPicker implements IPicker {
 
     private String commonSql = "select id as value,userName as label,loginCode as sub from ex_user a where 1=1 ";
 
-    @Override
-    public ExPickerOptionBO getSingle(String id) {
-        List<String> ids = new ArrayList<>();
-        ids.add(id);
-        List<ExPickerOptionBO> list = getList(ids);
-        if(list.size()>0){
-            return list.get(0);
-        }
-        return null;
-    }
 
     @Override
     public List<ExPickerOptionBO> getList(List<String> ids) {

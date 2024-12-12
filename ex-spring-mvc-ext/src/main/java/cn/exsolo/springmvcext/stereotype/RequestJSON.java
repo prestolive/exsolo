@@ -12,4 +12,6 @@ public @interface RequestJSON {
 
     String value() default "";
 
+    boolean required()  default true;
+
 }

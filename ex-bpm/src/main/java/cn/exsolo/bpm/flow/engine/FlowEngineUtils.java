@@ -1,7 +1,7 @@
 package cn.exsolo.bpm.flow.engine;
 
 import cn.exsolo.bpm.console.po.FlowPO;
-import cn.exsolo.bpm.flow.engine.bo.FlowConfigBO;
+import cn.exsolo.bpm.flow.engine.bo.FlowDesignBO;
 import cn.exsolo.bpm.flow.engine.bo.FlowNodeBO;
 import cn.exsolo.bpm.flow.engine.bo.FlowNodeType;
 import cn.exsolo.bpm.flow.engine.bo.FlowPathBO;
@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
  **/
 public class FlowEngineUtils {
 
-    public static FlowConfigBO getInitFlow(FlowPO flowPO) {
-        FlowConfigBO bo = new FlowConfigBO();
+    public static FlowDesignBO getInitFlow(FlowPO flowPO) {
+        FlowDesignBO bo = new FlowDesignBO();
         bo.setCode(flowPO.getCode());
         bo.setLabel(flowPO.getLabel());
         bo.setVersion(1);
@@ -50,7 +50,7 @@ public class FlowEngineUtils {
 
     }
 
-    public static String getFlowHash(FlowConfigBO bo) {
+    public static String getFlowHash(FlowDesignBO bo) {
         List<String> strs = new ArrayList<>();
         strs.add(bo.getCode());
         if (bo.getNodes() != null) {

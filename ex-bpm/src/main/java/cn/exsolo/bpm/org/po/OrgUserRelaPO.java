@@ -32,6 +32,9 @@ public class OrgUserRelaPO extends AbstractPO {
     @Column(name = "orgJobUserRelaId",nullable = true,length = 24,columnDefinition = "char(24)")
     private String orgJobUserRelaId;
 
+    @Column(name = "orgJobId",nullable = true,length = 24,columnDefinition = "char(24)")
+    private String orgJobId;
+
     @Override
     public String getId() {
         return id;
@@ -64,5 +67,13 @@ public class OrgUserRelaPO extends AbstractPO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getOrgJobId() {
+        return orgJobId;
+    }
+
+    public void setOrgJobId(String orgJobId) {
+        this.orgJobId = orgJobId;
     }
 }

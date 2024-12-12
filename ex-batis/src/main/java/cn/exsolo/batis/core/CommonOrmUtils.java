@@ -13,6 +13,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by prestolive on 2018/2/2.
@@ -145,13 +147,20 @@ public class CommonOrmUtils {
 
 
     }
-
-
+    private static final String FIELD_NAME_REGEX = "^[a-zA-Z0-9_]+$";
+    private static final Pattern pattern = Pattern.compile(FIELD_NAME_REGEX);
+    private static void sqlFieldStrCheck(String fieldName){
+        Matcher matcher = pattern.matcher(fieldName);
+        if(!matcher.matches()){
+            throw new IllegalArgumentException("字段存在非法字符");
+        }
+    }
 
     private static void processCondition(String tableAlias, ICompareBean item, StringBuilder sb, Map<String,Object> values) {
         Integer paramIdx = values.size()+1;
         if (item instanceof CompareBaseBean) {
             CompareBaseBean bean = (CompareBaseBean) item;
+            sqlFieldStrCheck(bean.getField());
             String field = StringUtils.isNotEmpty(tableAlias)?tableAlias+"."+bean.getField():bean.getField();
             if(bean.isLower()){
                 field = "lower("+field+")";

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class ItemTagPO extends AbstractPO {
 
     @Id
-    @Column(name = "id",nullable = false,length = 64,columnDefinition = "varchar(24)")
+    @Column(name = "id",nullable = false,length = 64,columnDefinition = "varchar(64)")
     private String id;
 
     /**

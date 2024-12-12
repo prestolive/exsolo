@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,13 +20,9 @@ import java.util.Map;
 @Component
 public class AnyEnumItemDataRender implements DataRender {
 
-    @Override
-    public void initRender(String keyField, MethodParameter methodParameter) {
-
-    }
 
     @Override
-    public void preRender(List<Pair<Object, Map>> pairList) {
+    public void preRender(Collection<Object> keyValues) {
 
     }
 

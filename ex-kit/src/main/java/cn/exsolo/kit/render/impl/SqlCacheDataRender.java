@@ -47,18 +47,18 @@ public abstract class SqlCacheDataRender implements DataRender {
 
 
     @Override
-    public final void preRender(List<Pair<Object, Map>> pairList) {
+    public final void preRender(Collection<Object> keyValues) {
         IExCacheStorage cs = getCacheStorage();
-        List<String> keyValues = pairList.stream().map((row) -> row.getLeft().toString()).distinct().collect(Collectors.toList());
+//        List<String> keyValues = pairList.stream().map((row) -> row.getLeft().toString()).distinct().collect(Collectors.toList());
         Map hitMap = new HashMap();
         Set<String> toFixedSet = new HashSet<>();
-        for (String keyValue : keyValues) {
-            String cacheKey = getKey(keyValue);
+        for (Object keyValue : keyValues) {
+            String cacheKey = getKey(keyValue.toString());
             Map row = cs.getMap(cacheKey);
             if (row != null) {
                 hitMap.put(cacheKey, row);
             } else {
-                toFixedSet.add(keyValue);
+                toFixedSet.add(keyValue.toString());
             }
         }
         if (toFixedSet.size() > 0) {

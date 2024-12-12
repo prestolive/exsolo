@@ -24,6 +24,11 @@ public class ExAssert {
         }
     }
 
+    public static void isEmpty(Object... objs){
+        for(Object obj:objs){
+            isEmpty(obj);
+        }
+    }
     public static void isEmpty(Object obj){
         if(obj==null){
             throw new ExDevException("assert null");

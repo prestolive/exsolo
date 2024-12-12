@@ -46,6 +46,14 @@
             <groupId>cn.exsolo</groupId>
             <artifactId>ex-auth-passwd</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>ex-basic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.exsolo</groupId>
+            <artifactId>ex-basic</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

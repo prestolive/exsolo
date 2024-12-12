@@ -20,8 +20,10 @@ public class FlowPathBO {
 
     private String endPort;
 
+    @Deprecated
     private FlowRuleComboBO rule;
 
+    @Deprecated
     private FlowPropertiesBO[] properties;
 
     public FlowPropertiesBO[] getProperties() {
