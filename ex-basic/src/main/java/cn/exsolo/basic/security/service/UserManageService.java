@@ -31,16 +31,12 @@ public class UserManageService {
     @Autowired
     private PasswdService passwdService;
 
-    public PageObject<UserPO> page(Condition fCond, List<ItemCommStatusEnum> enumStatus, Pagination pagination) {
-        Condition cond = new Condition();
-        if(fCond!=null){
-            cond.and(fCond);
+    public PageObject<UserPO> page(Condition fCond,  Pagination pagination) {
+        if(fCond==null){
+            fCond = new Condition();
         }
-        if(ObjectUtils.isNotEmpty(enumStatus)){
-            cond.in("status",enumStatus);
-        }
-        cond.orderBy("createTs", Condition.DESC);
-        return baseDAO.queryBeanPageByCond(UserPO.class, cond, pagination);
+        fCond.orderBy("createTs", Condition.DESC);
+        return baseDAO.queryBeanPageByCond(UserPO.class, fCond, pagination);
     }
 
     public UserPO get(String userId){

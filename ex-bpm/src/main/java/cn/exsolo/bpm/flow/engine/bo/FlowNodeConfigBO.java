@@ -14,7 +14,17 @@ public class FlowNodeConfigBO {
      */
     private Boolean isBackOnLine;
 
-    private FlowOperatorRuleItemBO[] operatorRules;
+    private FlowOperatorRuleBO[] operatorRules;
+
+    private FlowPortRuleBO[] portRules;
+
+    public FlowPortRuleBO[] getPortRules() {
+        return portRules;
+    }
+
+    public void setPortRules(FlowPortRuleBO[] portRules) {
+        this.portRules = portRules;
+    }
 
     public String getNodeId() {
         return nodeId;
@@ -32,11 +42,11 @@ public class FlowNodeConfigBO {
         isBackOnLine = backOnLine;
     }
 
-    public FlowOperatorRuleItemBO[] getOperatorRules() {
+    public FlowOperatorRuleBO[] getOperatorRules() {
         return operatorRules;
     }
 
-    public void setOperatorRules(FlowOperatorRuleItemBO[] operatorRules) {
+    public void setOperatorRules(FlowOperatorRuleBO[] operatorRules) {
         this.operatorRules = operatorRules;
     }
 }

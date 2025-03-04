@@ -92,9 +92,9 @@ public class OrgSettingService {
         }
         //按用户过滤
         ConditionFilter userFilter = new ConditionFilter("userId", UserPO.class, "id");
-        if (fCond != null) {
-            userFilter.and(fCond.withDomain1());
-        }
+//        if (fCond != null) {
+//            userFilter.and(fCond.withDomain1());
+//        }
         cond.exist(userFilter);
         //按组织的innerCode过滤所有下属组织的用户
         ConditionFilter orgFilter = new ConditionFilter("orgId", OrgNodePO.class, "id");
@@ -103,9 +103,9 @@ public class OrgSettingService {
         }else{
             orgFilter.eq("id",org.getId());
         }
-        if (fCond != null) {
-            orgFilter.and(fCond.withDomain2());
-        }
+//        if (fCond != null) {
+//            orgFilter.and(fCond.withDomain2());
+//        }
         cond.exist(orgFilter);
         cond.orderBy("createTs", Condition.DESC);
         cond.orderBy("id", Condition.DESC);

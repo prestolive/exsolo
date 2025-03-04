@@ -41,12 +41,26 @@ public class RequestJsonArgumentResolver implements HandlerMethodArgumentResolve
         HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
         String annoValue = parameter.getParameterAnnotation(RequestJSON.class).value();
         String fieldName = StringUtils.isEmpty(annoValue) ? parameter.getParameterName() : annoValue;
-        Object inputContent = resolveName(fieldName, parameter, webRequest);
-        if(ObjectUtils.isEmpty(inputContent)){
-            return null;
-        }
         Class clz = parameter.getParameterType();
-        if (isPrimitive(clz)) {
+        boolean isPrimitive = getIsPrimitive(clz);
+        boolean isCondition = !isPrimitive && clz.getName().equals(Condition.class.getName());
+        if(isCondition){
+            Object tableCondContent = resolveName("__table_cond", parameter, webRequest);
+            if(tableCondContent==null){
+                tableCondContent = resolveName("cond", parameter, webRequest);
+            }
+            if(tableCondContent==null){
+                tableCondContent  = resolveName(fieldName, parameter, webRequest);
+            }
+            if(ObjectUtils.isEmpty(tableCondContent)){
+                return null;
+            }
+            return SpringMvcExtForBatis.json2Condition(tableCondContent.toString(),fieldName);
+        }else if(isPrimitive){
+            Object inputContent = resolveName(fieldName, parameter, webRequest);
+            if(ObjectUtils.isEmpty(inputContent)) {
+                return null;
+            }
             WebDataBinder binder = binderFactory.createBinder(webRequest, (Object) null, fieldName);
             Object obj = null;
             try {
@@ -57,16 +71,13 @@ public class RequestJsonArgumentResolver implements HandlerMethodArgumentResolve
                 throw new MethodArgumentTypeMismatchException(fieldName, var12.getRequiredType(), fieldName, parameter, var12.getCause());
             }
             return obj;
-        } else {
-            Object obj ;
-            if(!clz.getName().equals(Condition.class.getName())){
-                Gson gson = new Gson();
-                obj = gson.fromJson(inputContent.toString(),clz);
-//                obj = JSON.parseObject(inputContent.toString(),clz);
-                return obj;
-            }else{
-                return SpringMvcExtForBatis.json2Condition(inputContent.toString());
+        }else{
+            Object inputContent = resolveName(fieldName, parameter, webRequest);
+            if(ObjectUtils.isEmpty(inputContent)) {
+                return null;
             }
+            Gson gson = new Gson();
+            return gson.fromJson(inputContent.toString(),clz);
         }
     }
 
@@ -104,7 +115,7 @@ public class RequestJsonArgumentResolver implements HandlerMethodArgumentResolve
      * @param clazz
      * @return
      */
-    private static boolean isPrimitive(Class<?> clazz) {
+    private static boolean getIsPrimitive(Class<?> clazz) {
         return clazz.isPrimitive()
                 || clazz == Boolean.class
                 || clazz == Character.class

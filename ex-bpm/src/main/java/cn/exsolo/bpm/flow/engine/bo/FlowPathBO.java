@@ -1,7 +1,5 @@
 package cn.exsolo.bpm.flow.engine.bo;
 
-import java.util.Arrays;
-
 /**
  * @author prestolive
  * @date 2021/10/24
@@ -19,29 +17,6 @@ public class FlowPathBO {
     private String startPort;
 
     private String endPort;
-
-    @Deprecated
-    private FlowRuleComboBO rule;
-
-    @Deprecated
-    private FlowPropertiesBO[] properties;
-
-    public FlowPropertiesBO[] getProperties() {
-        return properties;
-    }
-
-    public void setProperties(FlowPropertiesBO[] properties) {
-        this.properties = properties;
-    }
-
-
-    public FlowRuleComboBO getRule() {
-        return rule;
-    }
-
-    public void setRule(FlowRuleComboBO rule) {
-        this.rule = rule;
-    }
 
     public String getId() {
         return id;
@@ -100,8 +75,6 @@ public class FlowPathBO {
                 ", endId='" + endId + '\'' +
                 ", startPort='" + startPort + '\'' +
                 ", endPort='" + endPort + '\'' +
-                ", rule=" + rule +
-                ", properties=" + Arrays.toString(properties) +
                 '}';
     }
 }

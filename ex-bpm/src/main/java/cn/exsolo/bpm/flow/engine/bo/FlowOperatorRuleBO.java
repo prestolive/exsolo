@@ -8,7 +8,7 @@ import cn.exsolo.bpm.console.ExBpmRuleOptionUserEnum;
  * @author prestolive
  * @date 2024/12/4
  **/
-public class FlowOperatorRuleItemBO {
+public class FlowOperatorRuleBO {
 
     private String targetType;
 

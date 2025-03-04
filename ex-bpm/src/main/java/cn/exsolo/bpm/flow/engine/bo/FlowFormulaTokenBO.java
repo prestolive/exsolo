@@ -1,26 +1,24 @@
 package cn.exsolo.bpm.flow.engine.bo;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 
 /**
  * @author prestolive
  * @date 2021/10/24
  **/
-public class FlowRuleItemTokenBO {
+public class FlowFormulaTokenBO {
 
-    private FlowRuleItemTokenType tokenType;
+    private FlowFormulaTokenType tokenType;
 
     private String token;
 
-    private FlowRuleItemTokenBO[] subTokens;
+    private FlowFormulaTokenBO[] subTokens;
 
-    public FlowRuleItemTokenType getTokenType() {
+    public FlowFormulaTokenType getTokenType() {
         return tokenType;
     }
 
-    public void setTokenType(FlowRuleItemTokenType tokenType) {
+    public void setTokenType(FlowFormulaTokenType tokenType) {
         this.tokenType = tokenType;
     }
 
@@ -32,11 +30,11 @@ public class FlowRuleItemTokenBO {
         this.token = token;
     }
 
-    public FlowRuleItemTokenBO[] getSubTokens() {
+    public FlowFormulaTokenBO[] getSubTokens() {
         return subTokens;
     }
 
-    public void setSubTokens(FlowRuleItemTokenBO[] subTokens) {
+    public void setSubTokens(FlowFormulaTokenBO[] subTokens) {
         this.subTokens = subTokens;
     }
 

@@ -6,14 +6,14 @@ import java.util.Arrays;
  * @author prestolive
  * @date 2021/10/24
  **/
-public class FlowRuleItemBO {
+public class FlowFormulaItemBO {
 
     /**
      * 用于显示的完整公式
      */
     private String formula;
 
-    private FlowRuleItemTokenBO[] tokens;
+    private FlowFormulaTokenBO[] tokens;
 
     public String getFormula() {
         return formula;
@@ -23,11 +23,11 @@ public class FlowRuleItemBO {
         this.formula = formula;
     }
 
-    public FlowRuleItemTokenBO[] getTokens() {
+    public FlowFormulaTokenBO[] getTokens() {
         return tokens;
     }
 
-    public void setTokens(FlowRuleItemTokenBO[] tokens) {
+    public void setTokens(FlowFormulaTokenBO[] tokens) {
         this.tokens = tokens;
     }
 

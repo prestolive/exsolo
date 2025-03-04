@@ -16,11 +16,6 @@ public class Condition {
     public static String DESC = "DESC";
 
     protected List<ICompareBean> compares;
-    protected List<ICompareBean> compares_1;
-    protected List<ICompareBean> compares_2;
-    protected List<ICompareBean> compares_3;
-
-    public int domain = 0;
 
     private List<ConditionFilter> existFilters;
 
@@ -30,24 +25,13 @@ public class Condition {
 
     public Condition() {
         this.compares = new ArrayList<>();
-        this.compares_1 = new ArrayList<>();
-        this.compares_2 = new ArrayList<>();
-        this.compares_3 = new ArrayList<>();
         this.existFilters = new ArrayList<>();
         this.unExistFilters = new ArrayList<>();
         this.orders = new ArrayList<>();
     }
 
     public void addCompare(ICompareBean bean) {
-        if (domain == 0) {
-            compares.add(bean);
-        } else if (domain == 1) {
-            this.compares_1.add(bean);
-        } else if (domain == 2) {
-            this.compares_2.add(bean);
-        } else if (domain == 3) {
-            this.compares_3.add(bean);
-        }
+        compares.add(bean);
     }
 
     public List<ICompareBean> getCompares() {
@@ -64,22 +48,6 @@ public class Condition {
 
     public List<OrderBaseBean> getOrders() {
         return orders;
-    }
-
-    public ConditionDomainDelegate withDomain(int domain){
-        if(domain<0||domain>3){
-            throw new IllegalArgumentException("查询条件作用域仅支持0,1,2,3");
-        }
-        return new ConditionDomainDelegate(this,domain);
-    }
-    public ConditionDomainDelegate withDomain1(){
-        return new ConditionDomainDelegate(this,1);
-    }
-    public ConditionDomainDelegate withDomain2(){
-        return new ConditionDomainDelegate(this,2);
-    }
-    public ConditionDomainDelegate withDomain3(){
-        return new ConditionDomainDelegate(this,3);
     }
 
 
@@ -226,15 +194,15 @@ public class Condition {
         return this;
     }
 
-    public Condition and(ConditionDomainDelegate delegate){
-        if (delegate.getCompares().size() == 0) {
-            return this;
-        }
-        for(ICompareBean item : delegate.getCompares()){
-            addCompare(item);
-        }
-        return this;
-    }
+//    public Condition and(ConditionDomainDelegate delegate){
+//        if (delegate.getCompares().size() == 0) {
+//            return this;
+//        }
+//        for(ICompareBean item : delegate.getCompares()){
+//            addCompare(item);
+//        }
+//        return this;
+//    }
 
 
     public Condition orderBy(String field) {

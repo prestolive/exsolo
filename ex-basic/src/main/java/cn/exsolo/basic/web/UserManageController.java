@@ -41,15 +41,10 @@ public class UserManageController {
     @DataRenderProvider(path = "values", keyField = "status", dataRenderClass = AnyEnumItemDataRender.class)
     @RequestMapping(path = "page", method = RequestMethod.POST)
     public PageObject<UserPO> page(
-            @RequestJSON() String[] status,
             @RequestJSON Condition cond,
             @RequestJSON Pagination pagination) {
 
-        List<ItemCommStatusEnum> enumStatus = null;
-        if (status != null) {
-            enumStatus = Arrays.stream(status).map(row -> Enum.valueOf(ItemCommStatusEnum.class, row)).collect(Collectors.toList());
-        }
-        return userManageService.page(cond, enumStatus, pagination);
+        return userManageService.page(cond, pagination);
     }
 
     @AccessView
