@@ -154,6 +154,7 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
             //替换原对象
             targetObj.put(key,rowMap);
         }
+        paths.add(key);
     }
 
 

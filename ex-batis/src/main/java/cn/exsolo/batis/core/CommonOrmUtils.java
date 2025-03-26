@@ -123,7 +123,8 @@ public class CommonOrmUtils {
         StringBuilder sb = new StringBuilder();
         for(int i =0;i<items.size();i++){
             OrderBaseBean item = items.get(i);
-            String field = tableAlias + "." + item.getField();
+            String ta = StringUtils.isEmpty(tableAlias)?"":(tableAlias + ".");
+            String field =  ta+ item.getField();
             if(i>0){
                 sb.append(",");
             }

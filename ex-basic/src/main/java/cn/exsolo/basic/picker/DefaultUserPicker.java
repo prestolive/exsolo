@@ -31,21 +31,17 @@ public class DefaultUserPicker implements IPicker {
     public PageObject<ExPickerOptionBO> find(Pagination pagination, String keyword, Condition customCond) {
         Condition cond = new Condition();
         if(StringUtils.isNotEmpty(keyword)) {
-            cond.lk("userName", keyword);
+            cond.or(new Condition().lk("userName", keyword),new Condition().lk("loginCode", keyword));
         }
         if(customCond !=null){
             cond.and(customCond);
         }
-        StringBuilder sql = new StringBuilder();
-        Map<String,Object> values=  new HashMap<>();
-        sql.append(commonSql);
-        CommonOrmUtils.generateConditionSql(sql,"a",cond,values);
-        sql.append(" order by a.id desc");
-        PageObject<ExPickerOptionBO> page = baseDAO.queryForPage(sql.toString(),values,ExPickerOptionBO.class,pagination);
-        return page;
+        cond.orderBy("a.id",Condition.DESC);
+        Map<String,Object> values = new HashMap<>();
+        return baseDAO.queryForPage(commonSql,cond,values,ExPickerOptionBO.class,pagination);
     }
 
-    private String commonSql = "select id as value,userName as label,loginCode as sub from ex_user a where 1=1 ";
+    private String commonSql = "select id as value,userName as label,loginCode as sub from ex_user a";
 
 
     @Override

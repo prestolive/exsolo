@@ -10,10 +10,7 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -29,16 +26,12 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
      */
     private Map<String, String[]> params;
 
-    /**
-     * 用于保存读取body中数据
-     */
     private byte[] body;
 
     /**
      * 用于保存读取body中数据
      */
     private String bodyMessage;
-
     /**
      * 自定义构造方法
      * @param request
@@ -48,6 +41,7 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
         super(request);
         //参数保存
         this.params = new HashMap<>();
+
         //初始化参数
         String method = request.getMethod().toLowerCase(Locale.ROOT);
         String contentType = request.getContentType();
@@ -56,7 +50,8 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
         }
         if(StringUtils.isEmpty(contentType)){
             //解析数据流数据
-            saveInputStreamData(request);
+//            saveInputStreamData(request);
+            readRequestBody(request);
             Enumeration<String> headerNames = request.getParameterNames();
             while (headerNames.hasMoreElements()) {
                 String key = headerNames.nextElement();
@@ -64,7 +59,8 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
             }
         }else if (contentType.startsWith(ContentType.JSON.toString())) {
             //解析数据流数据
-            saveInputStreamData(request);
+//            saveInputStreamData(request);
+            readRequestBody(request);
             JSONObject parameter = JSON.parseObject(this.getBodyMessage());
             this.addAllParameters(parameter);
         } else if (contentType.startsWith(ContentType.XML.toString())) {
@@ -144,23 +140,6 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
         return values;
     }
 
-
-    /**
-     * 获取body中的数据
-     * @return
-     */
-    public byte[] getBody() {
-        return this.body;
-    }
-
-    /**
-     * 把处理后的参数放到body里面
-     * @param body
-     */
-    public void setBody(byte[] body) {
-        this.body = body;
-    }
-
     /**
      * 获取处理过的参数数据
      * @return
@@ -202,20 +181,33 @@ public class PlatParamsRequestWrapper extends HttpServletRequestWrapper {
         }
     }
 
-    /**
-     * 保存请求的InputSteam的数据
-     * @param request
-     * @throws IOException
-     */
-    private void saveInputStreamData(HttpServletRequest request) throws IOException {
-        int contentLength = request.getContentLength();
-        if(contentLength<=0){
-            return;
+//    /**
+//     * 保存请求的InputSteam的数据
+//     * @param request
+//     * @throws IOException
+//     */
+//    private void saveInputStreamData(HttpServletRequest request) throws IOException {
+//        int contentLength = request.getContentLength();
+//        if(contentLength<=0){
+//            return;
+//        }
+//        ServletInputStream inputStream = request.getInputStream();
+//        this.body = new byte[contentLength];
+//        inputStream.read(this.body, 0, contentLength);
+//        this.bodyMessage =   new String(this.body, StandardCharsets.UTF_8);
+//    }
+
+    private void readRequestBody(HttpServletRequest request) throws IOException {
+        try (InputStream inputStream = request.getInputStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            body = outputStream.toByteArray();
+            bodyMessage = new String(body, StandardCharsets.UTF_8);
         }
-        ServletInputStream inputStream = request.getInputStream();
-        this.body = new byte[contentLength];
-        inputStream.read(this.body, 0, contentLength);
-        this.bodyMessage =   new String(this.body, StandardCharsets.UTF_8);
     }
 
 }
