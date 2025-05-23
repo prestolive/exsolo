@@ -148,7 +148,7 @@ public class CommonOrmUtils {
 
 
     }
-    private static final String FIELD_NAME_REGEX = "^[a-zA-Z0-9_]+$";
+    private static final String FIELD_NAME_REGEX = "^[a-zA-Z_][a-zA-Z0-9_.]*$";
     private static final Pattern pattern = Pattern.compile(FIELD_NAME_REGEX);
     private static void sqlFieldStrCheck(String fieldName){
         Matcher matcher = pattern.matcher(fieldName);

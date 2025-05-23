@@ -1,6 +1,5 @@
 package cn.exsolo.kit.console.api;
 
-import cn.exsolo.auth.shiro.ext.stereotype.AccessConfig;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Access;
 import java.util.List;
 
 /**

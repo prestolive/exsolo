@@ -1,9 +1,7 @@
 package cn.exsolo.batis.core;
 
 
-import cn.exsolo.batis.core.condition.CompareBaseBean;
 import cn.exsolo.batis.core.condition.ICompareBean;
-import cn.exsolo.batis.core.ex.BaseOrmException;
 
 import java.util.List;
 

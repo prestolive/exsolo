@@ -11,12 +11,12 @@ import cn.exsolo.comm.ex.ExDeclaredException;
 import cn.exsolo.comm.utils.TsUtil;
 import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.utils.ExAssert;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author prestolive
@@ -36,6 +36,18 @@ public class UserManageService {
             fCond = new Condition();
         }
         fCond.orderBy("createTs", Condition.DESC);
+        String sql1 = "select loginCode from ex_user a where 1=1 order by a.loginCode desc";
+        String sql2 = "select loginCode from ex_user a where 1=1";
+        String sql3 = "select loginCode from ex_user a order by a.loginCode desc";
+        String sql4 = "select loginCode from ex_user a ";
+        Condition testCond = new Condition();
+        testCond.eq("loginCode","admin");
+//        testCond.orderBy("userName");
+        Map<String,Object> values = new HashMap<>();
+        baseDAO.queryForList(sql1,testCond,values,UserPO.class);
+        baseDAO.queryForList(sql2,testCond,values,UserPO.class);
+        baseDAO.queryForList(sql3,testCond,values,UserPO.class);
+        baseDAO.queryForList(sql4,testCond,values,UserPO.class);
         return baseDAO.queryBeanPageByCond(UserPO.class, fCond, pagination);
     }
 

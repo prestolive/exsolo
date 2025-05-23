@@ -38,7 +38,6 @@ public class UserPO  extends AbstractPO {
     @Column(name = "activeTs",nullable = true,length = 19,columnDefinition = "char(19)")
     private String activeTs;
 
-
     @Override
     public String getId() {
         return id;

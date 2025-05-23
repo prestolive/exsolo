@@ -4,7 +4,6 @@ import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.comm.utils.ExAnnotationUtil;
 import cn.exsolo.kit.ex.EsBuilderException;
-import cn.exsolo.kit.item.ItemCommStatusEnum;
 import cn.exsolo.kit.item.po.ItemPO;
 import cn.exsolo.kit.item.po.ItemTagPO;
 import cn.exsolo.kit.item.po.ItemTextPO;

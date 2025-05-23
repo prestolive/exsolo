@@ -84,7 +84,7 @@ public class OrgSettingService {
      * @param pagination
      * @return
      */
-    public PageObject<OrgUserRelaPO> userPage(String orgId,Boolean includeChild,Condition fCond, Pagination pagination) {
+    public PageObject<OrgUserRelaPO> userPage(String orgId, Boolean includeChild, Condition fCond, Pagination pagination) {
         OrgNodePO org = baseDAO.queryBeanByID(OrgNodePO.class, orgId);
         Condition cond = new Condition();
         if (fCond != null) {

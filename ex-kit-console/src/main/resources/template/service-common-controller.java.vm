@@ -3,9 +3,9 @@ package ${packageName}.web
 import cn.exsolo.auth.shiro.ext.stereotype.AccessEdit;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessProvider;
 import cn.exsolo.auth.shiro.ext.stereotype.AccessView;
-import cn.exsolo.batis.core.Condition;
-import cn.exsolo.batis.core.PageObject;
-import cn.exsolo.batis.core.Pagination;
+import cn.exsolo.baits.core.Condition;
+import cn.exsolo.baits.core.PageObject;
+import cn.exsolo.baits.core.Pagination;
 import ${modelClassName};
 import cn.exsolo.${moduleName}.service.${BizName}Service;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;

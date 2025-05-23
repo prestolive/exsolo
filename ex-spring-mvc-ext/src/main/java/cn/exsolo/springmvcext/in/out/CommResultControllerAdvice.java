@@ -17,11 +17,17 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * 1. 为所有的response套上标准的返回报文格式
  * 2. 实现数据渲染器
+ *
+ * path写法
+ * 1、常规：order.goods
+ * 2、迭代.order.list(loop->children)
  *
  * @author prestolive
  */
@@ -34,10 +40,10 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        if (body != null && body instanceof BaseResponse) {
+        if (body instanceof BaseResponse) {
             return body;
         }
-        BaseResponse<?> baseResponse = new BaseResponse(0, null, null, body);
+        BaseResponse<?> baseResponse = new BaseResponse<>(0, null, null, body);
         List<DataRenderProvider> dataRenderProviderList = new ArrayList<>();
         DataRenderProvider dataRenderProviderOne = methodParameter.getMethodAnnotation(DataRenderProvider.class);
         if (dataRenderProviderOne != null) {
@@ -45,117 +51,21 @@ public class CommResultControllerAdvice implements ResponseBodyAdvice {
         }
         DataRenderProviders dataRenderProviders = methodParameter.getMethodAnnotation(DataRenderProviders.class);
         if (dataRenderProviders != null) {
-            for (DataRenderProvider row : dataRenderProviders.value()) {
-                dataRenderProviderList.add(row);
-            }
+            dataRenderProviderList.addAll(Arrays.asList(dataRenderProviders.value()));
         }
-        if (dataRenderProviderList.size() == 0) {
+        if (dataRenderProviderList.isEmpty()) {
             return baseResponse;
         }
         //数据渲染器，先转成对象
-        Map respMap = BeanUtil.beanToMap(baseResponse);
+        Map respMap = RenderUtils.data2map(baseResponse);
         for (DataRenderProvider dataRenderProvider : dataRenderProviderList) {
             //处理类
             Class processClz = dataRenderProvider.dataRenderClass();
             DataRender render = (DataRender) SpringContext.getContext().getBean(processClz);
-            //查出数据行
-            List<Map> targetRows = new ArrayList<>();
-            //路径栈
-            Stack<String> stack = new Stack<>();
-            stack.add("data");
-            stack.addAll(Arrays.stream(dataRenderProvider.path().split("\\.")).filter(str->StringUtils.isNotEmpty(str)).collect(Collectors.toList()));
-            Collections.reverse(stack);
-            fetchRows(stack, respMap, targetRows);
-            //开始处理
-            if (targetRows.size() > 0) {
-                String keyField = dataRenderProvider.keyField();
-                //提取key
-                List<Pair<Object, Map>> pairList = new ArrayList<>();
-                Set<Object> keyValues= new HashSet<>();
-                for (Map row : targetRows) {
-                    Object keyValue = getKeyValue(row, keyField);
-                    if(keyValue==null){
-                        continue;
-                    }
-                    Pair pair = Pair.of(keyValue, row);
-                    pairList.add(pair);
-                    keyValues.add(keyValue.toString());
-                }
-                render.preRender(keyValues);
-                //渲染查询
-                for (Pair<Object, Map> pair : pairList) {
-                    Map<String, Object> rowFrame = render.getRenderFrame(pair.getLeft(), pair.getRight());
-                    rowDataRender(pair.getRight(), rowFrame, dataRenderProvider);
-                }
-            }
+            //渲染
+            RenderUtils.render(respMap,dataRenderProvider.path(),dataRenderProvider.keyField(),render,dataRenderProvider.defineAlias(),dataRenderProvider.wapperType().name());
         }
         return JSONObject.toJSON(respMap);
     }
-
-    private void rowDataRender(Map row, Map<String, Object> renderFrame, DataRenderProvider dataRenderProvider) {
-        if (renderFrame != null) {
-            if (dataRenderProvider.wapperType() == DataRenderProvider.WapperType.alias) {
-                String alias = dataRenderProvider.defineAlias();
-                if (StringUtils.isEmpty(alias)) {
-                    alias = "_" + dataRenderProvider.keyField();
-                }
-                row.put(alias, renderFrame);
-            } else if (dataRenderProvider.wapperType() == DataRenderProvider.WapperType.flat) {
-                for (String key : renderFrame.keySet()) {
-                    row.put(key, renderFrame.get(key));
-                }
-            }
-        }
-    }
-
-
-    private Object getKeyValue(Map row, String keyField) {
-        Object obj = row.get(keyField);
-        return obj;
-    }
-
-    /**
-     * 找到目标行，目标行必须是对象或map，找到目标行后默认都转成map，保留属性的原始类型
-     *
-     * @param paths
-     * @param targetObj
-     * @param targetRows
-     */
-    private void fetchRows(Stack<String> paths, Map targetObj, List<Map> targetRows) {
-        String key = paths.pop();
-        boolean end = paths.size() == 0;
-        Object obj = targetObj.get(key);
-        if (obj == null) {
-            return;
-        }
-        if (obj.getClass().isArray()) {
-           //FIXME
-        } else if (obj instanceof Collection) {
-            Iterator it = ((Collection) obj).iterator();
-                List list = new ArrayList();
-                while (it.hasNext()) {
-                    Map rowMap = BeanUtil.beanToMap(it.next());
-                    list.add(rowMap);
-                    if(end){
-                        targetRows.add(rowMap);
-                    }else{
-                        fetchRows(paths, rowMap, targetRows);
-                    }
-                }
-                //替换原对象
-                targetObj.put(key,list);
-        } else {
-            Map rowMap = BeanUtil.beanToMap(obj);
-            if (end) {
-                targetRows.add(rowMap);
-            } else {
-                fetchRows(paths, rowMap, targetRows);
-            }
-            //替换原对象
-            targetObj.put(key,rowMap);
-        }
-        paths.add(key);
-    }
-
 
 }

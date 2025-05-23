@@ -1,6 +1,6 @@
 package cn.exsolo.basic;
 
-import cn.exsolo.batis.act.mapper.DdlWorkMapper;
+import cn.exsolo.starter.act.mapper.DdlWorkMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,5 @@
 package cn.exsolo.batis.core;
 
-import cn.exsolo.batis.core.condition.ICompareBean;
 import cn.exsolo.batis.core.ex.BaseOrmException;
 import cn.exsolo.batis.core.ext.ExecuteAdapter;
 import cn.exsolo.batis.core.utils.GenerateID;
@@ -405,7 +404,8 @@ public class BaseDAO {
         String orderPlaceKey = "___#xy_chang_wai_order_yan_sheng_pin_2025#___";
         String orderFullPlaceKey = "___#xy_chang_wai_full_order_yan_sheng_pin_2025#___";
         //用基础sql为key，从缓存获取，不用每次都处理AST分析
-        String sqlTemplate = sqlCache.get(sql);
+        String cacheKey = StringUtils.joinWith(":",sql,condSql,orderSql);
+        String sqlTemplate = sqlCache.get(cacheKey);
         if(sqlTemplate==null){
             try {
                 Statement statement =  CCJSqlParserUtil.parse(sql);
@@ -446,7 +446,7 @@ public class BaseDAO {
             } catch (JSQLParserException e) {
                 throw new ExDevException(e.getMessage(),e);
             }
-            sqlCache.put(sql,sqlTemplate);
+            sqlCache.put(cacheKey,sqlTemplate);
         }
         //替换
         sqlTemplate = sqlTemplate.replace(wherePlaceKey,StringUtils.isEmpty(condSqlStr)?"1=1":condSqlStr);

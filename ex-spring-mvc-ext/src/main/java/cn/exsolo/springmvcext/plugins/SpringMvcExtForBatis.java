@@ -1,9 +1,10 @@
 package cn.exsolo.springmvcext.plugins;
 
 import cn.exsolo.batis.core.Condition;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -15,21 +16,37 @@ import org.apache.commons.lang3.StringUtils;
 public class SpringMvcExtForBatis {
 
     public static Condition json2Condition(String json, String fieldName) {
-        JSONArray list = JSON.parseArray(json);
+        Gson gson = new Gson();
+        JsonArray list = gson.fromJson(json,JsonArray.class);
         Condition cond = new Condition();
         for (int i = 0; i < list.size(); i++) {
-            JSONObject item = list.getJSONObject(i);
-            String domain = item.getString("domain");
+            JsonObject item = list.get(i).getAsJsonObject();
+            String domain = getAsString(item,"domain");
             //没有设置的默认值cond
             domain = domain == null ? "cond" : domain;
             if (!fieldName.equals(domain)) {
                 continue;
             }
-            String action = item.getString("action");
-            String key = item.getString("key");
-            String value = item.getString("value");
-            String order = item.getString("order");
-            if (StringUtils.isNotEmpty(value)) {
+            String action = getAsString(item,"action");
+            String key = getAsString(item,"key");
+            JsonElement valueEle = item.get("value");
+            Object value =null;
+            Object[] valueArr =null;
+            if(valueEle.isJsonPrimitive()) {
+                if(valueEle.getAsJsonPrimitive().isString()){
+                    value = valueEle.getAsString();
+                }else if(valueEle.getAsJsonPrimitive().isNumber()){
+                    value = valueEle.getAsNumber();
+                }
+            }else if(valueEle.isJsonArray()){
+                JsonArray jsonArr = valueEle.getAsJsonArray();
+                valueArr = new Object[jsonArr.size()];
+                for (int index = 0; index< jsonArr.size();index ++) {
+                    valueArr[index] = jsonArr.get(index).getAsString();
+                }
+            }
+            String order = getAsString(item,"order");
+            if (value!=null || valueArr!=null) {
                 if ("eq".equals(action)) {
                     cond.eq(key, value);
                 } else if ("ne".equals(action)) {
@@ -49,8 +66,11 @@ public class SpringMvcExtForBatis {
                 } else if ("lkr".equals(action)) {
                     cond.lkr(key, value);
                 } else if ("in".equals(action)) {
-                    JSONArray arr = item.getJSONArray("value");
-                    cond.in(key, arr);
+                    if(valueArr!=null){
+                        cond.in(key, valueArr);
+                    }else {
+                        cond.in(key, new Object[]{value});
+                    }
                 }
             }
             if (StringUtils.isNotEmpty(order)) {
@@ -58,5 +78,13 @@ public class SpringMvcExtForBatis {
             }
         }
         return cond;
+    }
+
+    private static String getAsString(JsonObject item,String key){
+        JsonElement ele = item.get(key);
+        if(ele==null){
+            return null;
+        }
+        return ele.getAsString();
     }
 }

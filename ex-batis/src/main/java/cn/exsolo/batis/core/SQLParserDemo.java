@@ -8,7 +8,6 @@ import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.statement.update.Update;
 
 public class SQLParserDemo {
     public static void main(String[] args) {

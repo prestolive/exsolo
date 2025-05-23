@@ -1,7 +1,5 @@
 package cn.exsolo.batis.core;
 
-import org.apache.commons.collections.OrderedMap;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;

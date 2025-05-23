@@ -23,11 +23,11 @@ public class ActSuggestDatatypeBO {
 
     private Class classType;
 
-    public cn.exsolo.batis.act.utils.StandType getStandType() {
+    public StandType getStandType() {
         return standType;
     }
 
-    public void setStandType(cn.exsolo.batis.act.utils.StandType standType) {
+    public void setStandType(StandType standType) {
         this.standType = standType;
     }
 

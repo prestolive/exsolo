@@ -1,7 +1,6 @@
 package cn.exsolo.basic.tree;
 
 import cn.exsolo.basic.item.ExTreeErrorCodeEnum;
-import cn.exsolo.basic.org.po.OrgNodePO;
 import cn.exsolo.batis.core.BaseDAO;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.comm.ex.ExDeclaredException;

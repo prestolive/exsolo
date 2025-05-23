@@ -1,13 +1,15 @@
 package cn.exsolo.basic.picker;
 
-import cn.exsolo.batis.core.*;
+import cn.exsolo.batis.core.BaseDAO;
+import cn.exsolo.batis.core.Condition;
+import cn.exsolo.batis.core.PageObject;
+import cn.exsolo.batis.core.Pagination;
 import cn.exsolo.kit.picker.IPicker;
 import cn.exsolo.kit.picker.bo.ExPickerOptionBO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +50,8 @@ public class DefaultUserPicker implements IPicker {
     public List<ExPickerOptionBO> getList(List<String> ids) {
         Condition cond = new Condition();
         cond.in("id",ids);
-        StringBuilder sql = new StringBuilder();
         Map<String,Object> values=  new HashMap<>();
-        sql.append(commonSql);
-        CommonOrmUtils.generateConditionSql(sql,"a",cond,values);
-        return baseDAO.queryForList(sql.toString(),values,ExPickerOptionBO.class);
+        return baseDAO.queryForList(commonSql,cond,values,ExPickerOptionBO.class);
     }
 
     public ExPickerOptionBO[] get(String... id) {

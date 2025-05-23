@@ -3,7 +3,6 @@ package cn.exsolo.springmvcext.in;
 import cn.exsolo.batis.core.Condition;
 import cn.exsolo.springmvcext.plugins.SpringMvcExtForBatis;
 import cn.exsolo.springmvcext.stereotype.RequestJSON;
-import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
